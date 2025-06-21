@@ -59,14 +59,14 @@ export default function Index() {
                 <Button
                   variant="primary"
                   size="lg"
-                  className="w-full px-8 py-4 text-lg font-semibold sm:w-auto"
+                  className="w-full px-8 py-4 text-lg font-semibold sm:w-auto transition-transform duration-200 hover:scale-105"
                 >
                   Explore Our Tools
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full px-8 py-4 text-lg sm:w-auto"
+                  className="w-full px-8 py-4 text-lg sm:w-auto transition-transform duration-200 hover:scale-105"
                 >
                   Learn More
                 </Button>
@@ -159,7 +159,7 @@ export default function Index() {
                 {featuredProjects.map((project) => (
                   <Card
                     key={project.title}
-                    className="flex h-full flex-col text-left"
+                    className="flex h-full flex-col text-left transition-transform duration-300 hover:-translate-y-2"
                   >
                     <div className="flex-grow">
                       <div className="mb-4 flex items-start justify-between">
@@ -170,7 +170,7 @@ export default function Index() {
                           href={project.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-gray-400 transition-colors hover:text-blue-500 dark:hover:text-blue-400"
+                          className="text-gray-400 transition-colors duration-200 hover:text-blue-500 dark:hover:text-blue-400"
                           aria-label={`${project.title} on GitHub`}
                         >
                           <GitHubIcon className="h-6 w-6" />
