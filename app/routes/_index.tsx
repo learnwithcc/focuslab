@@ -2,53 +2,60 @@ import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "FocusLab - Neurodivergent-Friendly Development Tools" },
+    { name: "description", content: "Building accessible development tools and solutions for neurodivergent developers and teams." },
   ];
 };
 
 export default function Index() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Welcome to <span className="sr-only">Remix</span>
-          </h1>
-          <div className="h-[144px] w-[434px]">
-            <img
-              src="/logo-light.png"
-              alt="Remix"
-              className="block w-full dark:hidden"
-            />
-            <img
-              src="/logo-dark.png"
-              alt="Remix"
-              className="hidden w-full dark:block"
-            />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <main className="w-full">
+        {/* Hero Section */}
+        <section className="relative">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Hero content will be implemented in subtask 2 */}
+            <div className="py-16 lg:py-20">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                Welcome to FocusLab
+              </h1>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                Building neurodivergent-friendly development tools
+              </p>
+            </div>
           </div>
-        </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <p className="leading-6 text-gray-700 dark:text-gray-200">
-            What&apos;s next?
-          </p>
-          <ul>
-            {resources.map(({ href, text, icon }) => (
-              <li key={href}>
-                <a
-                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {icon}
-                  {text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+        </section>
+
+        {/* Mission Statement Section */}
+        <section className="bg-gray-50 dark:bg-gray-800">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Mission content will be implemented in subtask 3 */}
+            <div className="py-16">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Our Mission
+              </h2>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                Mission statement content coming soon...
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Projects Section */}
+        <section className="bg-white dark:bg-gray-900">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Projects content will be implemented in subtask 4 */}
+            <div className="py-16">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Featured Projects
+              </h2>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                Project showcase coming soon...
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
