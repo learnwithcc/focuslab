@@ -49,14 +49,60 @@ export default function Index() {
         {/* Mission Statement Section */}
         <section className="bg-gray-50 dark:bg-gray-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Mission content will be implemented in subtask 3 */}
-            <div className="py-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Our Mission
-              </h2>
-              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                Mission statement content coming soon...
-              </p>
+            <div className="py-16 lg:py-20">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                {/* Mission Statement Content */}
+                <div className="order-2 lg:order-1">
+                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                    Our Mission
+                  </h2>
+                  <div className="space-y-6 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p>
+                      Every developer deserves tools that work <em>with</em> their unique way of thinking, 
+                      not against it. We're building development solutions specifically designed for 
+                      neurodivergent minds—tools that reduce cognitive load, enhance focus, and 
+                      celebrate different ways of processing information.
+                    </p>
+                    <p>
+                      Whether you're ADHD, autistic, dyslexic, or think differently in any way, 
+                      our mission is to create an ecosystem where your neurodivergent traits become 
+                      superpowers in your development journey.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Founder Story */}
+                <div className="order-1 lg:order-2">
+                  <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        F
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                          Founder's Story
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Building from experience
+                        </p>
+                      </div>
+                    </div>
+                    <blockquote className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                      "As a neurodivergent developer, I've experienced firsthand the frustration of 
+                      tools that seem designed for neurotypical workflows. After years of adapting 
+                      myself to fit the tools, I realized we needed tools that adapt to us instead. 
+                      FocusLab was born from this vision—creating development environments that 
+                      embrace neurodiversity as a strength."
+                    </blockquote>
+                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <strong className="text-gray-700 dark:text-gray-300">FocusLab Founder</strong> — 
+                        Passionate about inclusive development tools
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
