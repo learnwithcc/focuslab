@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Button } from "~/components";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,14 +15,33 @@ export default function Index() {
         {/* Hero Section */}
         <section className="relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Hero content will be implemented in subtask 2 */}
-            <div className="py-16 lg:py-20">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-                Welcome to FocusLab
+            <div className="py-16 lg:py-20 text-center">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+                Development Tools Built for{" "}
+                <span className="text-blue-600 dark:text-blue-400">
+                  Neurodivergent Minds
+                </span>
               </h1>
-              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                Building neurodivergent-friendly development tools
+              <p className="mt-6 text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                Creating accessible, intuitive development solutions that work with your brain, not against it. 
+                Empowering neurodivergent developers to build amazing things.
               </p>
+              <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold"
+                >
+                  Explore Our Tools
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto px-8 py-4 text-lg"
+                >
+                  Learn More
+                </Button>
+              </div>
             </div>
           </div>
         </section>
