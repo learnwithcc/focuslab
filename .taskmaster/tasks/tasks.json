@@ -129,7 +129,7 @@
               4
             ],
             "details": "Create theme application logic that updates CSS custom properties on the document root element when theme changes. Implement class toggling on html/body elements for theme-specific styles. Update CSS custom properties for colors (--primary-purple, --teal-primary, --orange-accent) based on current theme. Ensure smooth transitions between themes and proper cleanup of theme classes.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify theme switching updates all UI elements correctly and CSS custom properties reflect current theme values"
           }
         ]
@@ -825,7 +825,7 @@
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-21T20:14:34.790Z",
+      "updated": "2025-06-21T20:15:03.329Z",
       "description": "Tasks for master context"
     }
   }
