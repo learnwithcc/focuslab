@@ -1,12 +1,40 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Button } from "~/components";
+import { Button, Card, GitHubIcon } from "~/components";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "FocusLab - Neurodivergent-Friendly Development Tools" },
-    { name: "description", content: "Building accessible development tools and solutions for neurodivergent developers and teams." },
+    {
+      name: "description",
+      content:
+        "Building accessible development tools and solutions for neurodivergent developers and teams.",
+    },
   ];
 };
+
+const featuredProjects = [
+  {
+    title: "Task Master AI",
+    description:
+      "An intelligent, context-aware task management and development automation tool designed to streamline workflows for neurodivergent developers. It simplifies project planning, execution, and tracking, allowing for more focused and productive coding sessions.",
+    href: "https://github.com/focus-lab-ltd/task-master-ai",
+    tags: ["AI", "CLI", "Automation", "Developer Tool"],
+  },
+  {
+    title: "Directus MCP Server",
+    description:
+      "A powerful backend server that seamlessly integrates with Directus and GitHub, providing a robust Mission Control Platform (MCP) for managing complex development projects. It enables real-time data synchronization, automated workflows, and streamlined content management.",
+    href: "https://github.com/focus-lab-ltd/directus-mcp-server",
+    tags: ["Directus", "Node.js", "API", "GitHub Integration"],
+  },
+  {
+    title: "FocusLab Website",
+    description:
+      "The official website for FocusLab, built with Remix, Tailwind CSS, and TypeScript. It serves as a central hub for our tools, resources, and community, showcasing our commitment to accessible and neurodivergent-friendly design.",
+    href: "https://github.com/focus-lab-ltd/focuslab",
+    tags: ["Remix", "React", "Tailwind CSS", "TypeScript"],
+  },
+];
 
 export default function Index() {
   return (
@@ -15,29 +43,30 @@ export default function Index() {
         {/* Hero Section */}
         <section className="relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-16 lg:py-20 text-center">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+            <div className="py-16 text-center lg:py-20">
+              <h1 className="leading-tight text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Development Tools Built for{" "}
                 <span className="text-blue-600 dark:text-blue-400">
                   Neurodivergent Minds
                 </span>
               </h1>
-              <p className="mt-6 text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Creating accessible, intuitive development solutions that work with your brain, not against it. 
-                Empowering neurodivergent developers to build amazing things.
+              <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-300 sm:text-xl lg:text-2xl">
+                Creating accessible, intuitive development solutions that work
+                with your brain, not against it. Empowering neurodivergent
+                developers to build amazing things.
               </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Button
                   variant="primary"
                   size="lg"
-                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold"
+                  className="w-full px-8 py-4 text-lg font-semibold sm:w-auto"
                 >
                   Explore Our Tools
                 </Button>
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full sm:w-auto px-8 py-4 text-lg"
+                  className="w-full px-8 py-4 text-lg sm:w-auto"
                 >
                   Learn More
                 </Button>
@@ -50,22 +79,25 @@ export default function Index() {
         <section className="bg-gray-50 dark:bg-gray-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 lg:py-20">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                 {/* Mission Statement Content */}
                 <div className="order-2 lg:order-1">
-                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                  <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
                     Our Mission
                   </h2>
-                  <div className="space-y-6 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <div className="space-y-6 leading-relaxed text-lg text-gray-600 dark:text-gray-300">
                     <p>
-                      Every developer deserves tools that work <em>with</em> their unique way of thinking, 
-                      not against it. We're building development solutions specifically designed for 
-                      neurodivergent minds—tools that reduce cognitive load, enhance focus, and 
-                      celebrate different ways of processing information.
+                      Every developer deserves tools that work <em>with</em>{" "}
+                      their unique way of thinking, not against it. We're
+                      building development solutions specifically designed for
+                      neurodivergent minds—tools that reduce cognitive load,
+                      enhance focus, and celebrate different ways of processing
+                      information.
                     </p>
                     <p>
-                      Whether you're ADHD, autistic, dyslexic, or think differently in any way, 
-                      our mission is to create an ecosystem where your neurodivergent traits become 
+                      Whether you're ADHD, autistic, dyslexic, or think
+                      differently in any way, our mission is to create an
+                      ecosystem where your neurodivergent traits become
                       superpowers in your development journey.
                     </p>
                   </div>
@@ -73,9 +105,9 @@ export default function Index() {
 
                 {/* Founder Story */}
                 <div className="order-1 lg:order-2">
-                  <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                  <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+                    <div className="mb-6 flex items-center">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-2xl font-bold text-white">
                         F
                       </div>
                       <div className="ml-4">
@@ -87,17 +119,21 @@ export default function Index() {
                         </p>
                       </div>
                     </div>
-                    <blockquote className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      "As a neurodivergent developer, I've experienced firsthand the frustration of 
-                      tools that seem designed for neurotypical workflows. After years of adapting 
-                      myself to fit the tools, I realized we needed tools that adapt to us instead. 
-                      FocusLab was born from this vision—creating development environments that 
-                      embrace neurodiversity as a strength."
+                    <blockquote className="leading-relaxed text-gray-700 dark:text-gray-300">
+                      "As a neurodivergent developer, I've experienced firsthand
+                      the frustration of tools that seem designed for
+                      neurotypical workflows. After years of adapting myself to
+                      fit the tools, I realized we needed tools that adapt to us
+                      instead. FocusLab was born from this vision—creating
+                      development environments that embrace neurodiversity as a
+                      strength."
                     </blockquote>
-                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+                    <div className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-600">
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        <strong className="text-gray-700 dark:text-gray-300">FocusLab Founder</strong> — 
-                        Passionate about inclusive development tools
+                        <strong className="text-gray-700 dark:text-gray-300">
+                          FocusLab Founder
+                        </strong>{" "}
+                        — Passionate about inclusive development tools
                       </p>
                     </div>
                   </div>
@@ -110,14 +146,55 @@ export default function Index() {
         {/* Featured Projects Section */}
         <section className="bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Projects content will be implemented in subtask 4 */}
-            <div className="py-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Featured Projects
+            <div className="py-16 text-center lg:py-20">
+              <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+                Our Flagship Projects
               </h2>
-              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                Project showcase coming soon...
+              <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
+                We're actively developing open-source tools to make the
+                developer experience more accessible and productive for
+                everyone.
               </p>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {featuredProjects.map((project) => (
+                  <Card
+                    key={project.title}
+                    className="flex h-full flex-col text-left"
+                  >
+                    <div className="flex-grow">
+                      <div className="mb-4 flex items-start justify-between">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          {project.title}
+                        </h3>
+                        <a
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-400 transition-colors hover:text-blue-500 dark:hover:text-blue-400"
+                          aria-label={`${project.title} on GitHub`}
+                        >
+                          <GitHubIcon className="h-6 w-6" />
+                        </a>
+                      </div>
+                      <p className="mb-4 text-gray-600 dark:text-gray-300">
+                        {project.description}
+                      </p>
+                    </div>
+                    <div className="mt-auto border-t border-gray-200 pt-4 dark:border-gray-700">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         </section>

@@ -7,23 +7,13 @@ export * from './types';
 export * from './utils';
 
 // Component exports
-export { Button } from './Button';
-export { Input } from './Input';
-export { Navigation } from './Navigation';
-export { 
-  Header, 
-  Main, 
-  Footer, 
-  PageLayout, 
-  Section, 
-  Container 
-} from './Layout';
-export { 
-  Card, 
-  CardHeader, 
-  CardContent, 
-  CardFooter, 
-  CardImage 
-} from './Card';
+export * from './Button';
+export * from './Input';
+export * from './Navigation';
+export * from './Layout';
+export * from './Card';
+export * from './Modal';
+export * from './ErrorBoundary';
+export * from './icons';
 
 // Add component exports here as they are created 
