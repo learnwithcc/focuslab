@@ -6,4 +6,8 @@
 export * from './types';
 export * from './utils';
 
+// Component exports
+export { Button } from './Button';
+export { Input } from './Input';
+
 // Add component exports here as they are created 

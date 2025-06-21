@@ -163,7 +163,7 @@
               1
             ],
             "details": "Create Button component with forwardRef, supporting variants (primary, secondary, outline), sizes, disabled states, and loading states. Implement proper focus styles and ARIA attributes. Build Input component with label association, error states, validation feedback, and proper ARIA describedby for error messages. Include support for different input types and placeholder text.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test all button variants and states, keyboard navigation, screen reader compatibility. Test input validation, error states, and proper label associations."
           },
           {
@@ -825,7 +825,7 @@
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-21T20:20:17.273Z",
+      "updated": "2025-06-21T20:22:43.170Z",
       "description": "Tasks for master context"
     }
   }
