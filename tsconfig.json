@@ -26,6 +26,13 @@
       "~/*": ["./app/*"]
     },
 
+    // Additional strict mode options for enhanced type safety
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+
     // Vite takes care of building everything, not tsc.
     "noEmit": true
   }
