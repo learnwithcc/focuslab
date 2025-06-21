@@ -1,12 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+@layer base {
+  :root {
+    /* Light theme colors */
+    --primary-purple: #4a0e4e;
+    --teal-primary: #00b2a9;
+    --orange-accent: #ff6b35;
+  }
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+  .dark {
+    /* Dark theme colors */
+    --primary-purple: #7b2cbf;
+    --teal-primary: #20c997;
+    --orange-accent: #fd7e14;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+
+  html,
+  body {
+    @apply bg-white dark:bg-gray-950 transition-colors duration-200;
+
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+    }
   }
 }
