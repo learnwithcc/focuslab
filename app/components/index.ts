@@ -9,5 +9,6 @@ export * from './utils';
 // Component exports
 export { Button } from './Button';
 export { Input } from './Input';
+export { Navigation } from './Navigation';
 
 // Add component exports here as they are created 
