@@ -1,7 +1,7 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react';
+import React, { forwardRef, useState, useRef } from 'react';
 import type { BaseComponentProps } from './types';
-import { baseStyles, buildComponentClasses } from './utils/styles';
-import { Keys, isArrowKey } from './utils/accessibility';
+import { buildComponentClasses } from './utils/styles';
+import { Keys } from './utils/accessibility';
 
 export interface NavigationItem {
   id: string;

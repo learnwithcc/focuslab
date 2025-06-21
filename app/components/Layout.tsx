@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import type { BaseComponentProps } from './types';
-import { buildComponentClasses, layoutClasses } from './utils/styles';
+import { buildComponentClasses } from './utils/styles';
 
 // Header Component
 export interface HeaderProps extends BaseComponentProps {
@@ -247,48 +247,30 @@ Section.displayName = 'Section';
 
 // Container Component for wrapping content
 export interface ContainerProps extends BaseComponentProps {
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '7xl' | 'full';
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '6xl' | '7xl' | 'full';
   padding?: boolean;
+  centered?: boolean;
 }
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  (
-    {
-      children,
-      className = '',
-      maxWidth = '7xl',
-      padding = true,
-      'data-testid': testId,
-      ...rest
-    },
-    ref
-  ) => {
-    const maxWidthClasses = {
-      sm: 'max-w-sm',
-      md: 'max-w-md',
-      lg: 'max-w-lg',
-      xl: 'max-w-xl',
-      '2xl': 'max-w-2xl',
-      '7xl': 'max-w-7xl',
-      full: 'max-w-full'
-    };
-
+  ({ children, className = '', maxWidth = 'lg', centered = true, padding = true, ...rest }, ref) => {
     const containerClasses = buildComponentClasses(
-      // Base container styles
-      maxWidth !== 'full' ? 'mx-auto' : undefined,
-      maxWidthClasses[maxWidth],
-      padding ? 'px-4 sm:px-6 lg:px-8' : undefined,
-      
+      'w-full',
+      padding && 'px-4 sm:px-6 lg:px-8',
+      maxWidth === 'sm' && 'max-w-sm',
+      maxWidth === 'md' && 'max-w-md',
+      maxWidth === 'lg' && 'max-w-lg',
+      maxWidth === 'xl' && 'max-w-xl',
+      maxWidth === '2xl' && 'max-w-2xl',
+      maxWidth === '4xl' && 'max-w-4xl',
+      maxWidth === '6xl' && 'max-w-6xl',
+      maxWidth === 'full' && 'max-w-full',
+      maxWidth !== 'full' && centered && 'mx-auto',
       className
     );
 
     return (
-      <div
-        ref={ref}
-        className={containerClasses}
-        data-testid={testId}
-        {...rest}
-      >
+      <div ref={ref} className={containerClasses} {...rest}>
         {children}
       </div>
     );

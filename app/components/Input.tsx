@@ -4,14 +4,11 @@ import type {
 } from './types';
 import { 
   getSizeStyles, 
-  getInputStyles, 
-  baseStyles, 
   buildComponentClasses 
 } from './utils/styles';
 import { 
   generateId, 
-  getFormAriaAttributes,
-  srOnlyClass 
+  getFormAriaAttributes
 } from './utils/accessibility';
 
 export interface InputProps 
@@ -58,77 +55,83 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const [internalId] = useState(() => providedId || generateId('input'));
+    const [internalIdState] = useState(() => providedId || generateId('input'));
     const sizeStyles = getSizeStyles(size);
-    const inputStyles = getInputStyles();
     
-    const hasError = Boolean(error);
-    const errorMessage = typeof error === 'string' ? error : '';
+    const internalId = providedId || internalIdState;
+    const helperId = helperText || error ? `${internalId}-help` : undefined;
     
-    // Generate ARIA attributes
-    const ariaAttributes = getFormAriaAttributes({
+    // Build aria attributes object dynamically to handle exactOptionalPropertyTypes
+    const ariaAttributesConfig: {
+      id?: string;
+      error?: string | boolean;
+      helperText?: string;
+      required?: boolean;
+      describedBy?: string;
+    } = {
       id: internalId,
-      error: error || undefined,
-      helperText: helperText || undefined,
-      required,
-      describedBy: ariaDescribedby || undefined
-    });
+      required
+    };
     
+    if (typeof error === 'string') {
+      ariaAttributesConfig.error = error;
+    } else if (error) {
+      ariaAttributesConfig.error = true;
+    }
+    
+    if (helperText) {
+      ariaAttributesConfig.helperText = helperText;
+    }
+    
+    if (helperId) {
+      ariaAttributesConfig.describedBy = helperId;
+    }
+    
+    const ariaAttributes = getFormAriaAttributes(ariaAttributesConfig);
+
     const inputClasses = buildComponentClasses(
       // Base styles
-      baseStyles.reset,
-      baseStyles.transition,
-      baseStyles.borderRadius,
-      baseStyles.border,
-      baseStyles.focusVisible,
-      'w-full',
+      'block w-full px-3 py-2 border rounded-md shadow-sm',
+      'focus:outline-none focus:ring-2 focus:ring-offset-0',
+      'transition-colors duration-200',
       
       // Size styles
       sizeStyles.padding,
       sizeStyles.text,
       sizeStyles.height,
       
-      // Input variant styles
-      inputStyles.base,
-      !disabled && !hasError && inputStyles.focus,
-      hasError && inputStyles.error,
-      disabled && inputStyles.disabled,
+      // State styles
+      error
+        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500',
       
-      // Custom classes
+      disabled
+        ? 'bg-gray-50 text-gray-500 cursor-not-allowed'
+        : 'bg-white text-gray-900',
+      
       className
     );
 
-    const labelClasses = buildComponentClasses(
-      'block text-sm font-medium text-gray-700 mb-1',
-      hideLabel && srOnlyClass
-    );
-
     return (
-      <div className="w-full">
+      <div className="space-y-1">
         {label && (
-          <label 
+          <label
             htmlFor={internalId}
-            className={labelClasses}
+            className={`block text-sm font-medium ${
+              error ? 'text-red-700' : 'text-gray-700'
+            } ${required ? "after:content-['*'] after:ml-0.5 after:text-red-500" : ''}`}
           >
             {label}
-            {required && (
-              <span className="text-red-500 ml-1" aria-label="required">
-                *
-              </span>
-            )}
           </label>
         )}
         
         <input
+          {...rest}
+          {...ariaAttributes}
           ref={ref}
-          type={type}
           id={internalId}
-          name={name}
-          className={inputClasses}
-          disabled={disabled}
+          type={type}
           placeholder={placeholder}
-          autoFocus={autoFocus}
-          tabIndex={tabIndex}
           value={value}
           defaultValue={defaultValue}
           onChange={onChange}
@@ -136,30 +139,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           onBlur={onBlur}
           onKeyDown={onKeyDown}
           onKeyUp={onKeyUp}
-          aria-label={!label ? ariaLabel : undefined}
-          aria-labelledby={ariaLabelledby}
-          data-testid={testId}
-          {...ariaAttributes}
-          {...rest}
+          disabled={disabled}
+          required={required}
+          className={inputClasses}
+          data-testid={'data-testid' in rest ? rest['data-testid'] : undefined}
         />
         
-        {helperText && !hasError && (
-          <p 
-            id={`${internalId}-helper`}
-            className="mt-1 text-sm text-gray-600"
+        {(helperText || error) && (
+          <p
+            id={`${internalId}-help`}
+            className={`text-sm ${
+              error ? 'text-red-600' : 'text-gray-500'
+            }`}
+            role={error ? 'alert' : undefined}
+            aria-live={error ? 'polite' : undefined}
           >
-            {helperText}
-          </p>
-        )}
-        
-        {hasError && errorMessage && (
-          <p 
-            id={`${internalId}-error`}
-            className="mt-1 text-sm text-red-600"
-            role="alert"
-            aria-live="polite"
-          >
-            {errorMessage}
+            {error || helperText}
           </p>
         )}
       </div>
@@ -167,4 +162,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input'; 
+Input.displayName = 'Input';

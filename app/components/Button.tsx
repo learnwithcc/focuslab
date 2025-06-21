@@ -1,11 +1,7 @@
 import React, { forwardRef } from 'react';
 import type { 
-  InteractiveComponentProps, 
-  SizeProps, 
-  VariantProps, 
-  LoadingProps, 
-  FocusableProps, 
-  KeyboardProps 
+  BaseComponentProps, 
+  LoadingProps 
 } from './types';
 import { 
   getSizeStyles, 
@@ -13,15 +9,28 @@ import {
   baseStyles, 
   buildComponentClasses 
 } from './utils/styles';
-import { isActionKey } from './utils/accessibility';
 
 export interface ButtonProps 
-  extends InteractiveComponentProps, 
-          LoadingProps, 
-          FocusableProps, 
-          KeyboardProps {
+  extends BaseComponentProps, 
+          LoadingProps {
   type?: 'button' | 'submit' | 'reset';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  autoFocus?: boolean;
+  tabIndex?: number;
+  onFocus?: (event: React.FocusEvent<HTMLButtonElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLButtonElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+  onKeyUp?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'data-testid'?: string;
+  loading?: boolean;
+  loadingText?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

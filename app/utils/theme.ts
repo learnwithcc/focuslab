@@ -84,10 +84,9 @@ export const createThemeListener = (callback: (theme: Theme) => void): (() => vo
 /**
  * Utility to get theme-aware CSS custom property values
  * @param property - The CSS custom property name (without -- prefix)
- * @param theme - The theme context
  * @returns The computed value of the CSS custom property
  */
-export const getThemeProperty = (property: string, theme?: Theme): string => {
+export const getThemeProperty = (property: string): string => {
   if (typeof document === 'undefined') return '';
   
   const root = document.documentElement;

@@ -1,6 +1,6 @@
 // Accessibility utility functions for consistent ARIA attributes and focus management
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 // Generate unique IDs for components
 let idCounter = 0;
