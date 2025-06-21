@@ -1,0 +1,367 @@
+<context>
+# FocusLab.io - Product Requirements Document (PRD)
+**Version**: 2.0
+**Date**: June 21, 2025
+**Status**: Complete Rebuild
+
+---
+
+## 1. EXECUTIVE SUMMARY
+
+### 1.1 Project Overview
+FocusLab.io is a specialized technology company creating tools specifically designed for neurodivergent developers (ADHD, autism, and other cognitive differences). The website serves as both a marketing platform and portfolio showcase for their accessibility-first development approach.
+
+### 1.2 Business Objectives
+- Establish FocusLab as the leading provider of neurodivergent-friendly developer tools
+- Generate qualified leads for upcoming product launches
+- Build community around inclusive development practices
+- Showcase technical expertise and accessibility commitment
+
+### 1.3 Success Metrics
+- Newsletter signup conversion rate: 15%+
+- Page load speed: <2 seconds first contentful paint
+- Accessibility compliance: WCAG 2.1 AA standard
+- Mobile traffic optimization: 60%+ mobile users
+
+---
+
+## 2. PRODUCT VISION & STRATEGY
+
+### 2.1 Vision Statement
+"Empowering neurodivergent developers with tools that reduce cognitive load, minimize decision fatigue, and streamline context switching."
+
+### 2.2 Target Audience
+
+#### Primary Users
+- **Neurodivergent Developers** (ADHD, autism, dyslexia)
+  - Needs: Reduced cognitive load, clear navigation, consistent UI
+  - Pain Points: Information overload, decision fatigue, context switching
+
+#### Secondary Users
+- **Engineering Teams** implementing accessibility
+- **Tech Leaders** interested in inclusive development
+- **Entrepreneurs** building neurodivergent-friendly products
+
+### 2.3 Competitive Positioning
+- **Differentiator**: Only company exclusively focused on neurodivergent developer experience
+- **Advantage**: Lived experience combined with technical expertise
+- **Market Gap**: Accessibility tools typically focus on end users, not developers
+
+---
+
+## 3. FUNCTIONAL REQUIREMENTS
+
+### 3.1 Core Pages & Content
+
+#### 3.1.1 Homepage
+**Hero Section**
+- Compelling headline about neurodivergent-friendly tools
+- Clear value proposition and call-to-action
+- Visual hierarchy optimized for cognitive accessibility
+
+**Mission Statement**
+- Detailed explanation of accessibility-first approach
+- Founder story and credibility indicators
+- Social proof and community building
+
+**Featured Projects**
+- Highlight of primary tool: "Directus MCP Server"
+- GitHub integration with live stats
+- Technical demonstration videos
+
+**Building the Future Section**
+- Three key value propositions:
+  1. Cognitive Load Reduction
+  2. Decision Fatigue Minimization  
+  3. Context Switching Streamlining
+- Feature cards with clear benefits
+
+#### 3.1.2 About Section
+- Founder profile: Chris Cameron
+- Company mission and values
+- Team approach to neurodivergent development
+- Contact information and social links
+
+#### 3.1.3 Projects Portfolio
+**Current Projects**
+- Directus MCP Server (active)
+- Technical specifications and use cases
+
+**Coming Soon Projects**
+- FormFlex: Dynamic form platform
+- LeadWave: Post-webinar lead capture
+- AirSchema: Airtable API service
+
+### 3.2 Interactive Features
+
+#### 3.2.1 Newsletter Subscription
+- Email validation and error handling
+- Success/failure feedback
+- Integration with email marketing platform
+- GDPR compliance considerations
+
+#### 3.2.2 Contact Forms
+- Multiple contact methods
+- Form validation with clear error messages
+- Accessibility-compliant form design
+
+#### 3.2.3 Theme System
+- Light/dark mode toggle
+- User preference persistence
+- Smooth transitions between themes
+- System preference detection
+
+---
+</context>
+<PRD>
+## 4. TECHNICAL REQUIREMENTS
+
+### 4.1 Framework & Architecture
+
+#### 4.1.1 Core Technology Stack
+- **Framework**: Remix.js
+- **Language**: TypeScript for type safety
+- **Styling**: Tailwind CSS with custom design system
+- **Deployment**: Vercel (primary), Netlify (fallback)
+
+#### 4.1.2 Performance Requirements
+- **Core Web Vitals**:
+  - LCP: <2.5 seconds
+  - FID: <100ms
+  - CLS: <0.1
+- **Lighthouse Score**: 95+ across all categories
+- **Bundle Size**: <200KB initial load
+
+### 4.2 Design System
+
+#### 4.2.1 Color Palette
+**Light Theme**
+- Primary Purple: `#4a0e4e`
+- Teal Primary: `#00b2a9`
+- Orange Accent: `#ff6b35`
+- Neutral Grays: `#f8f9fa` to `#212529`
+
+**Dark Theme**
+- Primary Purple: `#7b2cbf`
+- Teal Primary: `#20c997`
+- Orange Accent: `#fd7e14`
+- Dark Neutrals: `#212529` to `#f8f9fa`
+
+#### 4.2.2 Typography
+- **Primary Font**: Inter (Google Fonts)
+- **Font Sizes**: Consistent scale (14px, 16px, 18px, 24px, 32px, 48px)
+- **Line Heights**: 1.5 for body text, 1.2 for headings
+- **Font Weights**: 400 (regular), 500 (medium), 600 (semibold)
+
+### 4.3 Component Architecture
+
+#### 4.3.1 Core Components
+- Navigation with accessibility support
+- Hero sections with optimized animations
+- Feature cards with consistent layouts
+- Forms with validation and error handling
+- Image optimization with lazy loading
+
+#### 4.3.2 UI Component Library
+- Button variants with clear focus states
+- Input fields with proper labeling
+- Modal dialogs with focus management
+- Loading states and feedback
+
+---
+
+## 5. ACCESSIBILITY REQUIREMENTS
+
+### 5.1 WCAG 2.1 AA Compliance
+- **Perceivable**: Alt text, color contrast, text sizing
+- **Operable**: Keyboard navigation, focus management
+- **Understandable**: Clear language, consistent navigation
+- **Robust**: Semantic HTML, screen reader compatibility
+
+### 5.2 Neurodivergent-Specific Features
+- **Cognitive Load Reduction**: Minimal design, clear hierarchy
+- **Attention Management**: No auto-playing media, subtle animations
+- **Decision Support**: Limited choices, clear CTAs
+- **Consistent Patterns**: Predictable navigation and layout
+
+### 5.3 Testing Requirements
+- **Automated Testing**: axe-core integration
+- **Manual Testing**: Screen reader validation
+- **User Testing**: Neurodivergent developer feedback
+
+---
+
+## 6. SEO & CONTENT STRATEGY
+
+### 6.1 Technical SEO
+- **Structured Data**: Organization, Website, Person schemas
+- **Meta Tags**: Complete Open Graph and Twitter Card setup
+- **Canonical URLs**: Proper URL structure
+- **Sitemap**: XML sitemap generation
+
+### 6.2 Content Strategy
+- **Primary Keywords**: "neurodivergent developers", "accessibility tools", "ADHD development"
+- **Content Types**: Tool documentation, accessibility guides, founder story
+- **Blog Platform**: Technical articles about inclusive development
+
+---
+
+## 7. PERFORMANCE & OPTIMIZATION
+
+### 7.1 Image Optimization
+- **Formats**: WebP/AVIF with fallbacks
+- **Lazy Loading**: Intersection Observer implementation
+- **Responsive Images**: Multiple breakpoints and densities
+- **Blur Placeholders**: Smooth loading experience
+
+### 7.2 Code Optimization
+- **Bundle Splitting**: Route-based code splitting
+- **Tree Shaking**: Remove unused code
+- **Compression**: Gzip/Brotli compression
+- **Caching**: Aggressive caching for static assets
+
+### 7.3 Monitoring
+- **Core Web Vitals**: Real User Monitoring (RUM)
+- **Error Tracking**: Sentry or similar service
+- **Analytics**: Privacy-focused analytics solution
+
+---
+
+## 8. SECURITY REQUIREMENTS
+
+### 8.1 Security Headers
+- Content Security Policy (CSP)
+- HTTP Strict Transport Security (HSTS)
+- X-Frame-Options: DENY
+- X-Content-Type-Options: nosniff
+
+### 8.2 Data Protection
+- **Newsletter Data**: Secure storage and processing
+- **Contact Forms**: Spam protection and validation
+- **Privacy Policy**: GDPR/CCPA compliance
+
+---
+
+## 9. TESTING STRATEGY
+
+### 9.1 Automated Testing
+- **Unit Tests**: Component functionality
+- **Integration Tests**: Form submissions, navigation
+- **E2E Tests**: Critical user journeys
+- **Accessibility Tests**: Automated a11y validation
+
+### 9.2 Manual Testing
+- **Cross-Browser**: Chrome, Firefox, Safari, Edge
+- **Device Testing**: Mobile, tablet, desktop
+- **Screen Readers**: NVDA, JAWS, VoiceOver
+- **User Testing**: Neurodivergent developer feedback
+
+---
+
+## 10. DEPLOYMENT & INFRASTRUCTURE
+
+### 10.1 Hosting Requirements
+- **Primary**: Vercel with edge functions
+- **CDN**: Global content delivery
+- **SSL**: Automatic HTTPS certificates
+- **Monitoring**: Uptime and performance monitoring
+
+### 10.2 CI/CD Pipeline
+- **Build Process**: Automated builds on Git push
+- **Testing**: Run all tests before deployment
+- **Preview Deployments**: Branch-based previews
+- **Production**: Automated deployment from main branch
+
+---
+
+## 11. ANALYTICS & TRACKING
+
+### 11.1 User Analytics
+- **Page Views**: Track popular content
+- **User Flow**: Understand user journeys
+- **Conversion Tracking**: Newsletter signups, contact forms
+- **Performance Metrics**: Core Web Vitals tracking
+
+### 11.2 Privacy Compliance
+- **Cookie Consent**: GDPR-compliant cookie management
+- **Data Minimization**: Only collect necessary data
+- **Analytics**: Privacy-focused solution (Plausible/Fathom)
+
+---
+
+## 12. MAINTENANCE & UPDATES
+
+### 12.1 Content Management
+- **Static Content**: Markdown files or CMS integration
+- **Project Updates**: Easy addition of new tools/projects
+- **Blog Platform**: Content creation workflow
+
+### 12.2 Technical Maintenance
+- **Dependency Updates**: Regular security updates
+- **Performance Monitoring**: Continuous optimization
+- **Accessibility Audits**: Quarterly reviews
+
+---
+
+## 13. FUTURE ENHANCEMENTS
+
+### 13.1 Phase 2 Features
+- **User Dashboard**: Personalized tool recommendations
+- **Community Forum**: Developer discussion platform
+- **Resource Library**: Accessibility guides and templates
+
+### 13.2 Integration Roadmap
+- **CRM Integration**: Lead management system
+- **Email Marketing**: Advanced segmentation
+- **Product Launches**: Integrated announcement system
+
+---
+
+## 14. BUDGET & TIMELINE
+
+### 14.1 Development Phases
+- **Phase 1**: Core website (2-3 weeks)
+- **Phase 2**: Advanced features (1-2 weeks)
+- **Phase 3**: Testing and optimization (1 week)
+
+### 14.2 Resource Requirements
+- **Development**: 1 full-stack developer
+- **Design**: Design system and asset creation
+- **Content**: Copy writing and optimization
+- **Testing**: Accessibility and user testing
+
+---
+
+## 15. RISK MITIGATION
+
+### 15.1 Technical Risks
+- **Framework Selection**: Choose stable, well-supported technology
+- **Performance**: Early optimization and monitoring
+- **Accessibility**: Continuous testing and validation
+
+### 15.2 Business Risks
+- **User Adoption**: Early user feedback and iteration
+- **Content Strategy**: Clear, compelling messaging
+- **Competition**: Unique positioning and value proposition
+
+---
+
+## 16. SUCCESS CRITERIA
+
+### 16.1 Technical Metrics
+- 95+ Lighthouse score across all categories
+- <2s page load time
+- Zero accessibility violations
+- 99.9% uptime
+
+### 16.2 Business Metrics
+- 15%+ newsletter conversion rate
+- 50%+ increase in project inquiries
+- Positive feedback from neurodivergent developer community
+- Featured in accessibility/developer publications
+
+---
+
+**Document Prepared By**: CC
+**Priority Level**: High - Business Critical
+</PRD>

@@ -1,0 +1,832 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Remix.js Project with TypeScript and Core Dependencies",
+        "description": "Initialize the Remix.js project with TypeScript configuration, install core dependencies including Tailwind CSS, and set up the basic project structure",
+        "details": "Create new Remix project using `npx create-remix@latest --template remix-run/remix/templates/remix --typescript`. Install dependencies: @remix-run/node, @remix-run/react, @remix-run/serve, tailwindcss, @tailwindcss/typography, @types/react, @types/react-dom. Configure tsconfig.json with strict mode. Set up Tailwind CSS with PostCSS configuration. Create basic folder structure: app/components, app/routes, app/styles, app/utils, public/images.",
+        "testStrategy": "Verify project builds successfully with `npm run build`, TypeScript compilation passes without errors, and Tailwind CSS is properly configured by testing basic utility classes",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initialize Remix.js Project with TypeScript Template",
+            "description": "Create a new Remix.js project using the official TypeScript template and verify the initial setup",
+            "dependencies": [],
+            "details": "Run `npx create-remix@latest --template remix-run/remix/templates/remix --typescript` to create the project. Navigate to the project directory and verify that the basic Remix structure is created with TypeScript configuration files (tsconfig.json, remix.config.js). Ensure the project initializes without errors by running `npm run dev` briefly.\n<info added on 2025-06-21T19:58:20.539Z>\nSuccessfully initialized Remix.js project with TypeScript template. Remix project created with TypeScript configuration including tsconfig.json with strict mode settings. Build test successful with npm run build completing without errors. All key files present including package.json, tsconfig.json, and app/ directory. Project name corrected from \"--typescript\" to \"focuslab\". Tailwind CSS was included automatically in the template.\n</info added on 2025-06-21T19:58:20.539Z>",
+            "status": "done",
+            "testStrategy": "Verify project creation by checking for key files (package.json, tsconfig.json, app/ directory) and ensure the dev server starts without errors"
+          },
+          {
+            "id": 2,
+            "title": "Install and Configure Core Dependencies",
+            "description": "Install all required dependencies including Remix core packages, TypeScript types, and Tailwind CSS",
+            "dependencies": [
+              1
+            ],
+            "details": "Install core dependencies: `npm install @remix-run/node @remix-run/react @remix-run/serve`. Install TypeScript types: `npm install -D @types/react @types/react-dom`. Install Tailwind CSS and related packages: `npm install -D tailwindcss @tailwindcss/typography postcss autoprefixer`. Verify all packages are correctly added to package.json.",
+            "status": "pending",
+            "testStrategy": "Check package.json for all dependencies and run `npm ls` to verify no dependency conflicts exist"
+          },
+          {
+            "id": 3,
+            "title": "Configure TypeScript with Strict Mode",
+            "description": "Update tsconfig.json to enable strict mode and configure optimal TypeScript settings for the Remix project",
+            "dependencies": [
+              2
+            ],
+            "details": "Modify tsconfig.json to include strict mode settings: set `strict: true`, `noImplicitAny: true`, `strictNullChecks: true`, `noImplicitReturns: true`. Configure path mapping for clean imports. Ensure Remix-specific TypeScript configurations are preserved. Add any additional compiler options needed for the project structure.",
+            "status": "pending",
+            "testStrategy": "Run `npx tsc --noEmit` to verify TypeScript compilation without errors and test strict mode by creating a sample component with type annotations"
+          },
+          {
+            "id": 4,
+            "title": "Setup Tailwind CSS with PostCSS Configuration",
+            "description": "Initialize Tailwind CSS configuration, set up PostCSS, and integrate with Remix's styling system",
+            "dependencies": [
+              2
+            ],
+            "details": "Run `npx tailwindcss init -p` to create tailwind.config.js and postcss.config.js. Configure tailwind.config.js to scan app/**/*.{js,ts,jsx,tsx} files. Add Tailwind directives to app/styles/tailwind.css (@tailwind base, components, utilities). Update app/root.tsx to import the Tailwind CSS file. Configure PostCSS to work with Remix's build system.",
+            "status": "pending",
+            "testStrategy": "Add a test component with Tailwind classes and verify styles are applied correctly in the browser"
+          },
+          {
+            "id": 5,
+            "title": "Create Basic Project Folder Structure",
+            "description": "Set up the organized folder structure for components, routes, styles, utilities, and public assets",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create directory structure: app/components/ (for reusable UI components), app/routes/ (for Remix routes - may already exist), app/styles/ (for CSS files), app/utils/ (for utility functions), public/images/ (for static image assets). Add index.ts files where appropriate for clean imports. Create a basic README.md with project setup instructions and folder structure documentation.",
+            "status": "pending",
+            "testStrategy": "Verify all directories are created correctly and test the structure by creating sample files in each directory to ensure imports work properly"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement Design System and Theme Configuration",
+        "description": "Create the design system with custom color palette, typography, and theme switching functionality for light/dark modes",
+        "details": "Extend Tailwind config with custom colors: primary-purple (#4a0e4e light, #7b2cbf dark), teal-primary (#00b2a9 light, #20c997 dark), orange-accent (#ff6b35 light, #fd7e14 dark). Configure Inter font from Google Fonts. Create theme context using React Context API with useTheme hook. Implement theme persistence using localStorage. Add CSS custom properties for theme variables. Create utility functions for theme detection and switching.",
+        "testStrategy": "Test theme switching functionality, verify color contrast ratios meet WCAG AA standards using tools like WebAIM, validate font loading and fallbacks work correctly",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Tailwind CSS with Custom Design Tokens",
+            "description": "Extend Tailwind configuration to include custom color palette, typography, and CSS custom properties for theme variables",
+            "dependencies": [],
+            "details": "Modify tailwind.config.js to add custom colors (primary-purple, teal-primary, orange-accent) with light/dark variants. Configure Inter font from Google Fonts in the theme configuration. Set up CSS custom properties in globals.css for dynamic theme switching. Define color variables that can be updated via JavaScript for theme changes.",
+            "status": "pending",
+            "testStrategy": "Verify custom colors render correctly in browser dev tools and confirm Inter font loads properly"
+          },
+          {
+            "id": 2,
+            "title": "Create Theme Context and Provider Component",
+            "description": "Implement React Context API for theme management with provider component and initial state handling",
+            "dependencies": [
+              1
+            ],
+            "details": "Create ThemeContext using React.createContext with default values for theme state (light/dark) and theme switching function. Build ThemeProvider component that wraps the application and manages theme state. Initialize theme state with system preference detection using window.matchMedia('(prefers-color-scheme: dark)'). Ensure context provides both current theme value and toggle function.",
+            "status": "pending",
+            "testStrategy": "Test context provider renders without errors and provides expected default values"
+          },
+          {
+            "id": 3,
+            "title": "Implement useTheme Hook with Utility Functions",
+            "description": "Create custom hook for theme consumption and utility functions for theme detection and switching logic",
+            "dependencies": [
+              2
+            ],
+            "details": "Build useTheme custom hook that consumes ThemeContext and provides theme state and switching functions. Create utility functions: detectSystemTheme() for system preference detection, applyTheme() for applying theme classes to document root, and validateTheme() for theme value validation. Include error handling for context usage outside provider.",
+            "status": "pending",
+            "testStrategy": "Unit test hook returns correct values and utility functions work with different theme inputs"
+          },
+          {
+            "id": 4,
+            "title": "Add Theme Persistence with localStorage Integration",
+            "description": "Implement localStorage functionality to persist user theme preferences across browser sessions",
+            "dependencies": [
+              3
+            ],
+            "details": "Add localStorage integration to ThemeProvider for reading saved theme preference on mount and saving theme changes. Implement getStoredTheme() and setStoredTheme() functions with error handling for localStorage access. Update theme switching logic to persist changes immediately. Handle edge cases like localStorage being unavailable or containing invalid data.",
+            "status": "pending",
+            "testStrategy": "Test theme persistence across page refreshes and verify graceful fallback when localStorage is unavailable"
+          },
+          {
+            "id": 5,
+            "title": "Apply Dynamic Theme Classes and CSS Variables",
+            "description": "Implement the actual theme switching mechanism that updates CSS custom properties and applies theme classes to the DOM",
+            "dependencies": [
+              4
+            ],
+            "details": "Create theme application logic that updates CSS custom properties on the document root element when theme changes. Implement class toggling on html/body elements for theme-specific styles. Update CSS custom properties for colors (--primary-purple, --teal-primary, --orange-accent) based on current theme. Ensure smooth transitions between themes and proper cleanup of theme classes.",
+            "status": "pending",
+            "testStrategy": "Verify theme switching updates all UI elements correctly and CSS custom properties reflect current theme values"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Build Core UI Component Library",
+        "description": "Develop reusable UI components including buttons, inputs, navigation, and layout components with accessibility features",
+        "details": "Create components: Button (variants: primary, secondary, outline with focus states), Input (with proper labeling and validation), Navigation (with keyboard navigation support), Layout (header, main, footer), Card (for feature sections), Modal (with focus management). Implement proper ARIA attributes, semantic HTML, and keyboard navigation. Use forwardRef for proper ref handling. Include loading states and error boundaries.",
+        "testStrategy": "Test keyboard navigation, screen reader compatibility using NVDA/VoiceOver, validate ARIA attributes with axe-core, test focus management in modals",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up component library foundation and accessibility utilities",
+            "description": "Create the foundational structure for the component library including TypeScript interfaces, accessibility utilities, and common styling patterns",
+            "dependencies": [],
+            "details": "Create base interfaces for component props (size, variant, disabled states). Implement accessibility utilities for ARIA attributes, focus management, and keyboard event handlers. Set up common CSS classes or styled-components for consistent spacing, colors, and typography. Create utility functions for generating unique IDs and managing focus traps.",
+            "status": "pending",
+            "testStrategy": "Unit tests for utility functions and accessibility helpers. Test ARIA attribute generation and focus management utilities."
+          },
+          {
+            "id": 2,
+            "title": "Implement Button and Input components with variants and accessibility",
+            "description": "Build Button component with primary, secondary, and outline variants, and Input component with proper labeling and validation support",
+            "dependencies": [
+              1
+            ],
+            "details": "Create Button component with forwardRef, supporting variants (primary, secondary, outline), sizes, disabled states, and loading states. Implement proper focus styles and ARIA attributes. Build Input component with label association, error states, validation feedback, and proper ARIA describedby for error messages. Include support for different input types and placeholder text.",
+            "status": "pending",
+            "testStrategy": "Test all button variants and states, keyboard navigation, screen reader compatibility. Test input validation, error states, and proper label associations."
+          },
+          {
+            "id": 3,
+            "title": "Create Navigation component with keyboard support",
+            "description": "Build a navigation component that supports keyboard navigation, proper ARIA roles, and responsive behavior",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement Navigation component with semantic nav element, proper ARIA roles (navigation, menubar, menuitem). Add keyboard navigation support (arrow keys, Enter, Escape). Include support for nested menus, active states, and mobile responsive behavior. Implement focus management when navigating between menu items.",
+            "status": "pending",
+            "testStrategy": "Test keyboard navigation patterns, ARIA roles, focus management, and responsive behavior across different screen sizes."
+          },
+          {
+            "id": 4,
+            "title": "Build Layout and Card components with semantic structure",
+            "description": "Create Layout components (Header, Main, Footer) and Card component with proper semantic HTML and accessibility features",
+            "dependencies": [
+              1
+            ],
+            "details": "Build Layout components using semantic HTML5 elements (header, main, footer) with proper landmark roles. Implement flexible grid/flexbox layouts with responsive breakpoints. Create Card component with proper heading hierarchy, optional image support, and action areas. Ensure proper focus order and screen reader navigation through card content.",
+            "status": "pending",
+            "testStrategy": "Test semantic HTML structure, landmark navigation, responsive layouts, and screen reader compatibility for card content hierarchy."
+          },
+          {
+            "id": 5,
+            "title": "Implement Modal component with focus management and error boundaries",
+            "description": "Create Modal component with proper focus trapping, ARIA attributes, and implement error boundaries for the component library",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Build Modal component with focus trap implementation, proper ARIA roles (dialog, labelledby, describedby), and Escape key handling. Implement backdrop click to close, prevent body scroll when open, and restore focus to trigger element on close. Create error boundary components to wrap other components and handle rendering errors gracefully. Add portal rendering for modals to avoid z-index issues.",
+            "status": "pending",
+            "testStrategy": "Test focus trapping, keyboard navigation (Tab, Shift+Tab, Escape), ARIA attributes, and error boundary functionality. Test modal accessibility with screen readers."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Homepage Layout and Hero Section",
+        "description": "Create the homepage with hero section, mission statement, and featured projects showcase",
+        "details": "Build homepage route (app/routes/_index.tsx) with hero section containing compelling headline about neurodivergent-friendly tools, clear CTA button, and optimized visual hierarchy. Add mission statement section with founder story. Create featured projects section highlighting Directus MCP Server with GitHub integration. Implement responsive design using Tailwind breakpoints. Add subtle animations using CSS transitions, avoiding auto-playing content.",
+        "testStrategy": "Test responsive design across mobile/tablet/desktop, validate content hierarchy with screen readers, check animation performance and reduced motion preferences",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up homepage route structure and basic layout",
+            "description": "Create the main homepage route file and establish the basic page structure with semantic HTML elements",
+            "dependencies": [],
+            "details": "Create app/routes/_index.tsx with proper Remix route structure. Set up main page container with semantic HTML5 elements (header, main, sections). Import necessary dependencies including Tailwind CSS classes. Create basic page layout with proper spacing and container widths using Tailwind's responsive container classes.",
+            "status": "pending",
+            "testStrategy": "Verify route loads correctly, check HTML structure is semantic and accessible"
+          },
+          {
+            "id": 2,
+            "title": "Implement hero section with headline and CTA",
+            "description": "Build the hero section with compelling headline about neurodivergent-friendly tools, clear call-to-action button, and optimized visual hierarchy",
+            "dependencies": [
+              1
+            ],
+            "details": "Create hero section component with large, attention-grabbing headline emphasizing neurodivergent-friendly development tools. Add descriptive subheading explaining the value proposition. Implement prominent CTA button with proper contrast and hover states. Use Tailwind typography classes for optimal hierarchy (text-4xl/5xl for headline, text-lg/xl for subheading). Ensure proper spacing with py-16/20 and responsive text sizing.",
+            "status": "pending",
+            "testStrategy": "Test visual hierarchy, CTA button functionality, and responsive text scaling across devices"
+          },
+          {
+            "id": 3,
+            "title": "Create mission statement section with founder story",
+            "description": "Develop a dedicated section that presents the mission statement and includes the founder's story to build trust and connection",
+            "dependencies": [
+              1
+            ],
+            "details": "Create a mission statement section with clear, concise copy about making development tools more accessible for neurodivergent developers. Include founder story with personal touch, explaining motivation and background. Use proper content structure with headings, paragraphs, and potentially a founder photo placeholder. Implement responsive grid layout using Tailwind's grid system for text and image arrangement.",
+            "status": "pending",
+            "testStrategy": "Review content readability, check responsive layout behavior, validate accessibility of text content"
+          },
+          {
+            "id": 4,
+            "title": "Build featured projects showcase section",
+            "description": "Create a section highlighting the Directus MCP Server project with GitHub integration and other featured work",
+            "dependencies": [
+              1
+            ],
+            "details": "Design and implement a featured projects section with card-based layout showcasing the Directus MCP Server as the primary project. Include project title, description, key features, and GitHub link. Create responsive grid layout (1 column mobile, 2-3 columns desktop) using Tailwind grid classes. Add project cards with proper spacing, borders, and hover effects. Include GitHub integration indicators and technology badges.",
+            "status": "pending",
+            "testStrategy": "Test card layout responsiveness, verify external links work correctly, check hover interactions"
+          },
+          {
+            "id": 5,
+            "title": "Implement responsive design and subtle animations",
+            "description": "Apply responsive design using Tailwind breakpoints and add subtle CSS transitions for enhanced user experience",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "Implement comprehensive responsive design using Tailwind's breakpoint system (sm:, md:, lg:, xl:). Ensure all sections adapt properly across mobile, tablet, and desktop viewports. Add subtle CSS transitions for interactive elements like buttons, cards, and links using Tailwind's transition classes (transition-colors, transition-transform, duration-200/300). Avoid auto-playing animations, focusing on hover and focus states. Test and refine spacing, typography, and layout at all breakpoints.",
+            "status": "pending",
+            "testStrategy": "Test across multiple device sizes, verify animations are subtle and non-intrusive, check performance impact of transitions"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Create Newsletter Subscription System",
+        "description": "Implement newsletter signup functionality with email validation, error handling, and success feedback",
+        "details": "Create newsletter signup form component with email validation using HTML5 validation and custom regex. Implement Remix action for form submission handling. Add client-side and server-side validation with clear error messages. Create success/failure feedback states. Implement rate limiting to prevent spam. Add GDPR compliance checkbox and privacy policy link. Store email addresses securely (consider integration with services like ConvertKit or Mailchimp).",
+        "testStrategy": "Test form validation with invalid emails, verify error messages are accessible, test rate limiting functionality, validate GDPR compliance elements",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Newsletter Signup Form Component",
+            "description": "Build a React form component with email input, GDPR compliance checkbox, and privacy policy link",
+            "dependencies": [],
+            "details": "Create a form component with email input field using HTML5 email validation and custom regex pattern. Add required GDPR compliance checkbox with clear consent text. Include privacy policy link. Implement controlled form state management with proper TypeScript types. Add form styling with loading, error, and success states.",
+            "status": "pending",
+            "testStrategy": "Unit tests for form rendering, input validation, and state management. Test accessibility with screen readers."
+          },
+          {
+            "id": 2,
+            "title": "Implement Client-Side Validation",
+            "description": "Add comprehensive client-side email validation with real-time feedback and error messaging",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement email format validation using regex pattern and HTML5 validation API. Add real-time validation feedback as user types. Create clear error messages for invalid email formats, missing GDPR consent, and empty fields. Implement debounced validation to avoid excessive re-renders. Add visual indicators for validation states.",
+            "status": "pending",
+            "testStrategy": "Test various email formats, edge cases, and user interaction patterns. Verify error messages display correctly."
+          },
+          {
+            "id": 3,
+            "title": "Create Remix Action for Form Submission",
+            "description": "Build server-side form handler with validation, rate limiting, and email service integration",
+            "dependencies": [
+              2
+            ],
+            "details": "Create Remix action function to handle form submissions. Implement server-side email validation and GDPR consent verification. Add rate limiting using session-based tracking to prevent spam (max 3 submissions per hour). Integrate with email service API (ConvertKit or Mailchimp) for storing subscriber data. Handle API errors gracefully with proper error responses.",
+            "status": "pending",
+            "testStrategy": "Test form submission with valid/invalid data, rate limiting behavior, and email service integration. Mock external API calls for testing."
+          },
+          {
+            "id": 4,
+            "title": "Implement Success and Error Feedback System",
+            "description": "Create user feedback mechanisms for successful subscriptions and error handling",
+            "dependencies": [
+              3
+            ],
+            "details": "Implement success state with confirmation message and optional redirect. Create error handling for various failure scenarios (network errors, duplicate emails, service unavailable). Add toast notifications or inline feedback messages. Implement proper loading states during form submission. Ensure feedback is accessible and user-friendly.",
+            "status": "pending",
+            "testStrategy": "Test all feedback scenarios including success, various error types, and loading states. Verify accessibility of feedback messages."
+          },
+          {
+            "id": 5,
+            "title": "Add Security and Data Protection Features",
+            "description": "Implement security measures including CSRF protection, data sanitization, and privacy compliance",
+            "dependencies": [
+              4
+            ],
+            "details": "Add CSRF token validation to prevent cross-site request forgery. Implement input sanitization to prevent XSS attacks. Ensure secure transmission of data using HTTPS. Add proper error logging without exposing sensitive information. Implement data retention policies and provide unsubscribe mechanism. Add honeypot field for additional spam protection.",
+            "status": "pending",
+            "testStrategy": "Security testing for CSRF, XSS prevention, and data protection. Test unsubscribe functionality and verify no sensitive data exposure in logs."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Build About Section and Contact Forms",
+        "description": "Develop the about section with founder profile and implement contact forms with validation",
+        "details": "Create about section component with Chris Cameron profile, company mission, values, and team approach. Build contact form with fields: name, email, subject, message. Implement form validation with accessible error messages. Add multiple contact methods (email, social links). Create contact form action handler with spam protection (consider using services like Formspree or Netlify Forms). Implement proper form accessibility with labels, fieldsets, and error associations.",
+        "testStrategy": "Test form validation and submission, verify accessibility with screen readers, test spam protection mechanisms, validate contact information display",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create About Section Component Structure",
+            "description": "Build the foundational About section component with Chris Cameron's profile, company mission, values, and team approach sections",
+            "dependencies": [],
+            "details": "Create a responsive About component with sections for founder profile (photo, bio, background), company mission statement, core values list, and team approach philosophy. Use semantic HTML structure with proper headings hierarchy. Implement responsive design with CSS Grid/Flexbox for layout. Include placeholder content that can be easily updated.",
+            "status": "pending",
+            "testStrategy": "Test responsive behavior across different screen sizes and verify semantic HTML structure with accessibility tools"
+          },
+          {
+            "id": 2,
+            "title": "Build Contact Form Component with Fields",
+            "description": "Develop the contact form component with required fields: name, email, subject, and message",
+            "dependencies": [
+              1
+            ],
+            "details": "Create a controlled form component with input fields for name (text), email (email type), subject (text), and message (textarea). Implement proper form state management using React hooks. Add appropriate input types, placeholders, and required attributes. Style the form with consistent design patterns matching the About section.",
+            "status": "pending",
+            "testStrategy": "Test form field interactions, state updates, and basic form submission behavior"
+          },
+          {
+            "id": 3,
+            "title": "Implement Form Validation and Accessibility",
+            "description": "Add comprehensive form validation with accessible error messages and proper form accessibility features",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement client-side validation for required fields, email format, and message length limits. Create accessible error messages with proper ARIA attributes and associations. Add proper labels, fieldsets for grouping, and error announcements for screen readers. Implement real-time validation feedback with clear visual indicators.",
+            "status": "pending",
+            "testStrategy": "Test with screen readers, keyboard navigation, and various invalid input scenarios to ensure accessibility compliance"
+          },
+          {
+            "id": 4,
+            "title": "Add Multiple Contact Methods and Social Links",
+            "description": "Integrate additional contact methods including email links, social media links, and alternative contact information",
+            "dependencies": [
+              1
+            ],
+            "details": "Add a contact information section with direct email link, social media icons/links (LinkedIn, Twitter, etc.), and any additional contact methods. Create reusable social link components with proper accessibility attributes. Position these elements strategically within the About/Contact layout for optimal user experience.",
+            "status": "pending",
+            "testStrategy": "Verify all links work correctly, open in appropriate targets, and have proper accessibility labels"
+          },
+          {
+            "id": 5,
+            "title": "Implement Contact Form Submission with Spam Protection",
+            "description": "Create form submission handler with spam protection using external service integration",
+            "dependencies": [
+              3
+            ],
+            "details": "Integrate with a form handling service like Formspree or Netlify Forms for backend processing. Implement spam protection measures such as honeypot fields or reCAPTCHA. Add form submission states (loading, success, error) with appropriate user feedback. Handle form reset after successful submission and provide clear success/error messages.",
+            "status": "pending",
+            "testStrategy": "Test form submission end-to-end, verify spam protection works, and test various submission scenarios including network failures"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Projects Portfolio Section",
+        "description": "Create the projects showcase featuring current and upcoming tools with GitHub integration",
+        "details": "Build projects route and components showcasing Directus MCP Server with technical specifications. Create project cards for coming soon items: FormFlex, LeadWave, AirSchema. Implement GitHub API integration to fetch live repository stats (stars, forks, last updated). Add project filtering and categorization. Create detailed project pages with technical documentation and use cases. Implement lazy loading for project images and content.",
+        "testStrategy": "Test GitHub API integration and error handling, verify project card accessibility, test lazy loading performance, validate project detail page navigation",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Projects Route and Base Components Structure",
+            "description": "Set up the foundational routing and component architecture for the projects portfolio section",
+            "dependencies": [],
+            "details": "Create projects route in the routing system, establish base ProjectsPage component with layout structure, create reusable ProjectCard component with props interface for project data, set up project data models/interfaces for TypeScript, and implement basic responsive grid layout for project cards",
+            "status": "pending",
+            "testStrategy": "Unit tests for component rendering and props handling, route navigation tests"
+          },
+          {
+            "id": 2,
+            "title": "Implement GitHub API Integration Service",
+            "description": "Build service layer to fetch live repository statistics from GitHub API",
+            "dependencies": [
+              1
+            ],
+            "details": "Create GitHub API service with methods to fetch repository stats (stars, forks, last updated), implement error handling and rate limiting considerations, add caching mechanism for API responses to avoid excessive requests, create data transformation utilities to format GitHub data for UI consumption, and handle authentication if needed for higher rate limits",
+            "status": "pending",
+            "testStrategy": "Mock GitHub API responses for testing, test error scenarios and rate limiting, verify data transformation accuracy"
+          },
+          {
+            "id": 3,
+            "title": "Build Project Cards with Live Data Integration",
+            "description": "Create interactive project cards displaying both static project information and live GitHub statistics",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Integrate GitHub service into ProjectCard components, implement loading states for async GitHub data fetching, create project cards for Directus MCP Server with technical specifications, design and implement 'coming soon' cards for FormFlex, LeadWave, and AirSchema with placeholder content, add hover effects and interactive elements, and implement lazy loading for project images",
+            "status": "pending",
+            "testStrategy": "Test loading states and error handling, verify GitHub data integration, test responsive design across devices"
+          },
+          {
+            "id": 4,
+            "title": "Implement Project Filtering and Categorization System",
+            "description": "Add filtering capabilities to allow users to browse projects by category, status, and technology",
+            "dependencies": [
+              3
+            ],
+            "details": "Create filter component with options for project categories (tools, libraries, applications), status filters (active, coming soon, archived), technology stack filters, implement search functionality for project names and descriptions, add sort options (alphabetical, last updated, popularity), and maintain filter state in URL parameters for shareable links",
+            "status": "pending",
+            "testStrategy": "Test all filter combinations, verify URL state management, test search functionality with various inputs"
+          },
+          {
+            "id": 5,
+            "title": "Create Detailed Project Pages with Documentation",
+            "description": "Build individual project detail pages with comprehensive technical documentation and use cases",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create dynamic routing for individual project pages, implement detailed project page layout with sections for overview, technical specifications, installation instructions, use cases, and examples, integrate GitHub README content where applicable, add code syntax highlighting for examples, implement breadcrumb navigation, create related projects suggestions, and add social sharing capabilities",
+            "status": "pending",
+            "testStrategy": "Test dynamic routing with various project IDs, verify content rendering and syntax highlighting, test navigation flow between projects list and detail pages"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Implement SEO Optimization and Meta Tags",
+        "description": "Add comprehensive SEO optimization including structured data, meta tags, and sitemap generation",
+        "details": "Implement meta tags for each route using Remix meta function. Add Open Graph and Twitter Card tags. Create structured data schemas for Organization, Website, and Person using JSON-LD. Implement canonical URLs and proper URL structure. Generate XML sitemap dynamically. Add robots.txt file. Optimize for primary keywords: 'neurodivergent developers', 'accessibility tools', 'ADHD development'. Implement breadcrumb navigation with structured data.",
+        "testStrategy": "Validate structured data using Google's Rich Results Test, test meta tags with social media debuggers, verify sitemap accessibility and format, test SEO with Lighthouse",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Dynamic Meta Tags and Open Graph Integration",
+            "description": "Set up comprehensive meta tag system using Remix meta function for all routes, including Open Graph and Twitter Card tags",
+            "dependencies": [],
+            "details": "Create a centralized meta tag utility function that generates title, description, keywords, Open Graph (og:title, og:description, og:image, og:url, og:type), and Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image). Implement route-specific meta functions in each route file, ensuring proper keyword integration for 'neurodivergent developers', 'accessibility tools', and 'ADHD development'. Add canonical URL generation for each page.",
+            "status": "pending",
+            "testStrategy": "Verify meta tags appear correctly in browser dev tools and test with social media debuggers (Facebook Sharing Debugger, Twitter Card Validator)"
+          },
+          {
+            "id": 2,
+            "title": "Create JSON-LD Structured Data Schemas",
+            "description": "Implement structured data schemas for Organization, Website, and Person entities using JSON-LD format",
+            "dependencies": [
+              1
+            ],
+            "details": "Create JSON-LD components for Organization schema (company info, contact details, social profiles), Website schema (site navigation, search functionality), and Person schema (developer profiles, expertise areas). Embed these schemas in the document head using Remix's approach. Include relevant properties like @context, @type, name, description, url, sameAs, and specialty areas related to neurodivergent development and accessibility.",
+            "status": "pending",
+            "testStrategy": "Validate structured data using Google's Rich Results Test and Schema.org validator"
+          },
+          {
+            "id": 3,
+            "title": "Implement Breadcrumb Navigation with Structured Data",
+            "description": "Create dynamic breadcrumb navigation system with corresponding BreadcrumbList structured data",
+            "dependencies": [
+              2
+            ],
+            "details": "Build a breadcrumb component that automatically generates navigation paths based on current route. Implement BreadcrumbList JSON-LD schema with proper itemListElement structure including position, name, and item properties. Style breadcrumbs for accessibility with proper ARIA labels and semantic HTML. Ensure breadcrumbs update dynamically across all routes and maintain SEO-friendly URL structure.",
+            "status": "pending",
+            "testStrategy": "Test breadcrumb functionality across different routes and validate BreadcrumbList schema markup"
+          },
+          {
+            "id": 4,
+            "title": "Generate Dynamic XML Sitemap",
+            "description": "Create automated XML sitemap generation system that updates based on available routes and content",
+            "dependencies": [
+              3
+            ],
+            "details": "Implement a sitemap.xml route that dynamically generates XML sitemap including all public routes, blog posts, and profile pages. Include proper lastmod dates, changefreq, and priority values. Set up automatic sitemap updates when new content is added. Ensure sitemap follows XML sitemap protocol standards and includes proper namespace declarations.",
+            "status": "pending",
+            "testStrategy": "Validate XML sitemap format using online XML sitemap validators and test sitemap accessibility via robots.txt"
+          },
+          {
+            "id": 5,
+            "title": "Configure Robots.txt and SEO Infrastructure",
+            "description": "Set up robots.txt file and finalize SEO infrastructure including URL optimization and search engine directives",
+            "dependencies": [
+              4
+            ],
+            "details": "Create robots.txt file with proper directives for search engine crawlers, including sitemap location and crawl permissions. Implement clean URL structure ensuring no trailing slashes inconsistencies. Add meta robots tags where appropriate (noindex for admin pages, etc.). Set up proper HTTP headers for SEO (X-Robots-Tag when needed). Ensure all internal links use proper anchor text and maintain consistent URL structure throughout the application.",
+            "status": "pending",
+            "testStrategy": "Test robots.txt accessibility and validate URL structure consistency across the application"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Add Image Optimization and Performance Features",
+        "description": "Implement image optimization with WebP/AVIF formats, lazy loading, and responsive images",
+        "details": "Create image optimization utility using next/image-like functionality for Remix. Implement WebP/AVIF format support with fallbacks to JPEG/PNG. Add lazy loading using Intersection Observer API. Create responsive image component with multiple breakpoints and densities. Implement blur placeholders for smooth loading. Optimize images for different screen sizes and pixel densities. Add image compression and CDN integration preparation.",
+        "testStrategy": "Test image loading performance across different connection speeds, verify format fallbacks work correctly, test lazy loading behavior, measure Core Web Vitals impact",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Core Image Optimization Utility",
+            "description": "Build the foundational image optimization utility that handles format conversion, compression, and serves as the base for all image processing operations",
+            "dependencies": [],
+            "details": "Create an ImageOptimizer class that can convert images between formats (JPEG, PNG, WebP, AVIF), apply compression settings, and generate optimized versions. Implement format detection and automatic fallback logic. Use libraries like sharp or similar for server-side processing. Include configuration options for quality settings, compression levels, and supported formats.",
+            "status": "pending",
+            "testStrategy": "Unit tests for format conversion, compression quality verification, and performance benchmarks for different image sizes and formats"
+          },
+          {
+            "id": 2,
+            "title": "Implement Responsive Image Component with Multiple Breakpoints",
+            "description": "Create a responsive image component that generates and serves different image sizes based on screen breakpoints and pixel densities",
+            "dependencies": [
+              1
+            ],
+            "details": "Build a React component that generates srcset and sizes attributes for responsive images. Define breakpoint configurations (mobile, tablet, desktop) and pixel density variants (1x, 2x, 3x). Integrate with the image optimization utility to generate multiple image variants. Implement automatic size calculation based on container dimensions and viewport.",
+            "status": "pending",
+            "testStrategy": "Component testing with different viewport sizes, visual regression tests, and validation of generated srcset attributes"
+          },
+          {
+            "id": 3,
+            "title": "Add Lazy Loading with Intersection Observer",
+            "description": "Implement lazy loading functionality using the Intersection Observer API to defer image loading until they enter the viewport",
+            "dependencies": [
+              2
+            ],
+            "details": "Create a custom hook or component wrapper that uses Intersection Observer to detect when images enter the viewport. Implement loading states and error handling. Add configurable root margins for preloading images before they become visible. Include fallback for browsers without Intersection Observer support using scroll event listeners.",
+            "status": "pending",
+            "testStrategy": "Integration tests for viewport intersection detection, performance testing for scroll behavior, and accessibility testing for screen readers"
+          },
+          {
+            "id": 4,
+            "title": "Create Blur Placeholder System",
+            "description": "Implement a blur placeholder system that shows low-quality image previews while the full images are loading",
+            "dependencies": [
+              1
+            ],
+            "details": "Generate tiny, heavily compressed versions of images (typically 20-40 pixels wide) that can be embedded as base64 data URLs or served as separate ultra-small files. Create CSS transitions for smooth fade-in effects when the full image loads. Implement automatic blur placeholder generation during the image optimization process. Add support for solid color placeholders as an alternative.",
+            "status": "pending",
+            "testStrategy": "Visual testing for smooth transitions, performance testing for placeholder generation time, and user experience testing for perceived loading speed"
+          },
+          {
+            "id": 5,
+            "title": "Integrate CDN Preparation and Advanced Optimization Features",
+            "description": "Add CDN integration capabilities and advanced optimization features including automatic format selection and performance monitoring",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create CDN adapter interfaces for popular services (Cloudinary, ImageKit, etc.). Implement automatic format selection based on browser support (WebP for Chrome, AVIF for newer browsers, fallback to JPEG/PNG). Add image performance monitoring with metrics collection for loading times and format effectiveness. Include cache headers optimization and URL generation for CDN endpoints.",
+            "status": "pending",
+            "testStrategy": "Integration tests with CDN services, browser compatibility testing for format support detection, and performance monitoring validation"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Security Headers and Data Protection",
+        "description": "Add security headers, implement GDPR compliance, and set up data protection measures",
+        "details": "Configure security headers in Remix: Content Security Policy (CSP), HSTS, X-Frame-Options: DENY, X-Content-Type-Options: nosniff. Implement cookie consent management for GDPR compliance. Add privacy policy and terms of service pages. Secure form data handling with proper validation and sanitization. Implement rate limiting for form submissions. Add CSRF protection for forms. Configure secure session handling.",
+        "testStrategy": "Test security headers using security scanning tools, verify GDPR compliance elements, test rate limiting and CSRF protection, validate secure data handling",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Security Headers Middleware",
+            "description": "Implement comprehensive security headers in Remix application including CSP, HSTS, X-Frame-Options, and X-Content-Type-Options",
+            "dependencies": [],
+            "details": "Create a security headers middleware in app/utils/security.ts that sets Content-Security-Policy with appropriate directives for scripts, styles, and images. Configure Strict-Transport-Security with max-age and includeSubDomains. Set X-Frame-Options to DENY and X-Content-Type-Options to nosniff. Apply headers in root.tsx or via Remix's headers export function.",
+            "status": "pending",
+            "testStrategy": "Use browser dev tools and online security scanners to verify headers are properly set. Test CSP violations don't break functionality."
+          },
+          {
+            "id": 2,
+            "title": "Implement CSRF Protection for Forms",
+            "description": "Add Cross-Site Request Forgery protection to all forms in the application",
+            "dependencies": [
+              1
+            ],
+            "details": "Install and configure remix-utils CSRF protection or implement custom CSRF tokens. Generate unique tokens for each session, embed them in forms as hidden fields, and validate on form submission. Create utility functions for token generation and validation. Update all existing forms to include CSRF tokens.",
+            "status": "pending",
+            "testStrategy": "Test form submissions with valid and invalid CSRF tokens. Verify protection against cross-origin form submissions."
+          },
+          {
+            "id": 3,
+            "title": "Set Up Cookie Consent and GDPR Compliance",
+            "description": "Implement cookie consent banner and GDPR-compliant data handling mechanisms",
+            "dependencies": [
+              2
+            ],
+            "details": "Create a cookie consent component with options for essential, analytics, and marketing cookies. Store consent preferences in localStorage and respect user choices. Implement cookie categorization and conditional loading of third-party scripts. Add data processing notices and user rights information. Create mechanisms for users to withdraw consent.",
+            "status": "pending",
+            "testStrategy": "Test cookie consent flow, verify cookies are only set after consent, and validate that preferences persist across sessions."
+          },
+          {
+            "id": 4,
+            "title": "Create Privacy Policy and Terms of Service Pages",
+            "description": "Develop comprehensive privacy policy and terms of service pages with proper legal content",
+            "dependencies": [
+              3
+            ],
+            "details": "Create routes for /privacy-policy and /terms-of-service. Include sections on data collection, processing purposes, user rights under GDPR, cookie usage, data retention policies, and contact information for data protection inquiries. Make pages easily accessible from footer and during user registration. Implement version tracking for policy updates.",
+            "status": "pending",
+            "testStrategy": "Review content for GDPR compliance, test page accessibility and navigation, verify links work from all relevant pages."
+          },
+          {
+            "id": 5,
+            "title": "Implement Secure Form Handling and Rate Limiting",
+            "description": "Add comprehensive form validation, sanitization, rate limiting, and secure session handling",
+            "dependencies": [
+              4
+            ],
+            "details": "Implement server-side validation using Zod schemas for all form inputs. Add input sanitization to prevent XSS attacks. Set up rate limiting using Redis or in-memory store to limit form submissions per IP/user. Configure secure session handling with httpOnly, secure, and sameSite cookie attributes. Implement proper error handling that doesn't leak sensitive information.",
+            "status": "pending",
+            "testStrategy": "Test form validation with malicious inputs, verify rate limiting blocks excessive requests, and confirm sessions are secure and properly managed."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Add Accessibility Testing and WCAG Compliance",
+        "description": "Implement comprehensive accessibility testing with axe-core integration and WCAG 2.1 AA compliance validation",
+        "details": "Integrate @axe-core/react for automated accessibility testing. Create accessibility test suite covering keyboard navigation, screen reader compatibility, color contrast, and focus management. Implement skip links and proper heading hierarchy. Add ARIA landmarks and labels. Test with multiple screen readers (NVDA, JAWS, VoiceOver). Create accessibility statement page. Implement reduced motion preferences support. Add high contrast mode support.",
+        "testStrategy": "Run automated axe-core tests, perform manual screen reader testing, validate keyboard navigation paths, test color contrast ratios, verify reduced motion preferences",
+        "priority": "high",
+        "dependencies": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up axe-core integration and automated accessibility testing framework",
+            "description": "Install and configure @axe-core/react for automated accessibility testing. Set up the testing infrastructure to run accessibility checks during development and CI/CD pipeline.",
+            "dependencies": [],
+            "details": "Install @axe-core/react and @axe-core/playwright packages. Configure axe-core to run in development mode with React DevTools integration. Set up automated accessibility testing in Jest/Vitest test suite. Configure CI/CD pipeline to run accessibility tests and fail builds on violations. Create axe configuration file with WCAG 2.1 AA rules enabled.",
+            "status": "pending",
+            "testStrategy": "Verify axe-core detects common accessibility violations like missing alt text, insufficient color contrast, and missing form labels. Test integration in both development and CI environments."
+          },
+          {
+            "id": 2,
+            "title": "Implement keyboard navigation and focus management",
+            "description": "Ensure all interactive elements are keyboard accessible with proper focus management, skip links, and logical tab order throughout the application.",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement skip-to-content links at the top of each page. Ensure all interactive elements (buttons, links, form controls) are keyboard accessible with Tab/Shift+Tab navigation. Add focus indicators with sufficient contrast ratios. Implement focus trapping for modals and dropdowns. Create custom focus management hooks for complex components. Ensure logical tab order matches visual layout.",
+            "status": "pending",
+            "testStrategy": "Manual testing using only keyboard navigation. Automated tests to verify tab order and focus management. Test skip links functionality and focus trapping in modals."
+          },
+          {
+            "id": 3,
+            "title": "Add ARIA landmarks, labels, and semantic HTML structure",
+            "description": "Implement proper ARIA landmarks, labels, and semantic HTML to ensure screen reader compatibility and proper content structure.",
+            "dependencies": [
+              1
+            ],
+            "details": "Add ARIA landmarks (main, navigation, banner, contentinfo, complementary). Implement proper heading hierarchy (h1-h6) with no skipped levels. Add ARIA labels and descriptions for complex UI components. Use semantic HTML elements (nav, main, section, article, aside). Implement live regions for dynamic content updates. Add role attributes where semantic HTML is insufficient.",
+            "status": "pending",
+            "testStrategy": "Test with screen readers (NVDA, JAWS, VoiceOver) to verify proper content announcement. Automated tests to check ARIA attributes and heading hierarchy. Validate HTML semantics with accessibility validators."
+          },
+          {
+            "id": 4,
+            "title": "Implement color contrast compliance and visual accessibility features",
+            "description": "Ensure WCAG 2.1 AA color contrast compliance, implement high contrast mode support, and add reduced motion preferences.",
+            "dependencies": [
+              1
+            ],
+            "details": "Audit and fix color contrast ratios to meet WCAG 2.1 AA standards (4.5:1 for normal text, 3:1 for large text). Implement high contrast mode using CSS custom properties and prefers-contrast media query. Add support for prefers-reduced-motion to disable animations and transitions. Create color-blind friendly color schemes. Ensure focus indicators have sufficient contrast. Add visual indicators for required form fields beyond color alone.",
+            "status": "pending",
+            "testStrategy": "Use automated color contrast checking tools. Test high contrast mode across different browsers. Verify reduced motion preferences work correctly. Manual testing with color blindness simulators."
+          },
+          {
+            "id": 5,
+            "title": "Create comprehensive accessibility test suite and documentation",
+            "description": "Develop a complete accessibility test suite covering all WCAG 2.1 AA requirements and create accessibility statement and documentation.",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "Create comprehensive test suite covering keyboard navigation, screen reader compatibility, color contrast, and ARIA implementation. Write automated tests for all accessibility features. Create accessibility statement page documenting compliance level, known issues, and contact information. Develop accessibility testing guidelines for developers. Set up regular accessibility audits and monitoring. Create user documentation for accessibility features like keyboard shortcuts and screen reader usage.",
+            "status": "pending",
+            "testStrategy": "Run full accessibility audit with multiple tools (axe-core, WAVE, Lighthouse). Manual testing with various assistive technologies. User testing with people who use screen readers. Regular compliance monitoring and reporting."
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Setup Deployment Pipeline and Performance Monitoring",
+        "description": "Configure Vercel deployment with CI/CD pipeline, performance monitoring, and analytics integration",
+        "details": "Configure Vercel deployment with automatic builds from Git. Set up preview deployments for branches. Implement CI/CD pipeline with automated testing. Add performance monitoring with Core Web Vitals tracking. Integrate privacy-focused analytics (Plausible or Fathom). Configure error tracking with Sentry. Set up uptime monitoring. Implement caching strategies for static assets. Configure CDN for global content delivery.",
+        "testStrategy": "Test deployment pipeline with sample changes, verify performance monitoring data collection, test error tracking functionality, validate analytics integration and privacy compliance",
+        "priority": "medium",
+        "dependencies": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Vercel Deployment with Git Integration",
+            "description": "Set up Vercel project with automatic deployments from Git repository, including production and preview branch configurations",
+            "dependencies": [],
+            "details": "Connect Git repository to Vercel, configure build settings and environment variables, set up automatic deployments for main branch and preview deployments for feature branches. Configure build commands, output directory, and deployment triggers.",
+            "status": "pending",
+            "testStrategy": "Verify successful deployment by pushing to main branch and creating a test branch to confirm preview deployment functionality"
+          },
+          {
+            "id": 2,
+            "title": "Implement CI/CD Pipeline with Automated Testing",
+            "description": "Create GitHub Actions workflow for continuous integration with automated testing, linting, and build verification before deployment",
+            "dependencies": [
+              1
+            ],
+            "details": "Set up GitHub Actions workflow file with jobs for dependency installation, linting, unit tests, build verification, and integration with Vercel deployments. Configure test coverage reporting and failure notifications.",
+            "status": "pending",
+            "testStrategy": "Create failing tests to verify pipeline blocks deployment, then fix tests to confirm successful pipeline execution"
+          },
+          {
+            "id": 3,
+            "title": "Set Up Performance Monitoring and Core Web Vitals Tracking",
+            "description": "Implement performance monitoring system to track Core Web Vitals metrics and application performance in production",
+            "dependencies": [
+              1
+            ],
+            "details": "Integrate Web Vitals library to measure LCP, FID, CLS, and other performance metrics. Set up performance monitoring dashboard using Vercel Analytics or custom solution. Configure performance budgets and alerts for metric thresholds.",
+            "status": "pending",
+            "testStrategy": "Deploy performance monitoring and verify metrics collection by checking dashboard data and testing on various devices and network conditions"
+          },
+          {
+            "id": 4,
+            "title": "Integrate Privacy-Focused Analytics and Error Tracking",
+            "description": "Set up privacy-compliant analytics solution (Plausible or Fathom) and error tracking with Sentry for comprehensive monitoring",
+            "dependencies": [
+              1
+            ],
+            "details": "Configure Plausible or Fathom analytics with proper privacy settings and GDPR compliance. Set up Sentry for error tracking, performance monitoring, and release tracking. Configure error alerts and performance thresholds.",
+            "status": "pending",
+            "testStrategy": "Verify analytics data collection and error tracking by generating test events and errors, confirming data appears in respective dashboards"
+          },
+          {
+            "id": 5,
+            "title": "Configure CDN, Caching Strategies, and Uptime Monitoring",
+            "description": "Optimize content delivery through CDN configuration, implement caching strategies for static assets, and set up uptime monitoring",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Configure Vercel's Edge Network for global CDN, set up appropriate cache headers for static assets, implement service worker for offline caching if needed. Set up uptime monitoring with services like UptimeRobot or Pingdom with alert notifications.",
+            "status": "pending",
+            "testStrategy": "Test CDN performance from multiple geographic locations, verify caching behavior with browser dev tools, and confirm uptime monitoring alerts by temporarily breaking the site"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-06-21T19:45:52.930Z",
+      "updated": "2025-06-21T19:58:20.835Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
