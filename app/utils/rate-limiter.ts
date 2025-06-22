@@ -1,5 +1,21 @@
 import { rateLimit } from 'express-rate-limit';
-import { getClientIp } from 'remix-utils/get-client-ip';
+
+// Simple function to get client IP from request
+function getClientIP(request: Request): string {
+  // Try to get IP from various headers
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  
+  const realIP = request.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+  
+  // Fallback to a default IP if none found
+  return '127.0.0.1';
+}
 
 // Options for the rate limiter.
 const limiterOptions = {
@@ -19,7 +35,7 @@ const limiterOptions = {
  * };
  */
 export const apiLimiter = async (request: Request) => {
-  const ip = getClientIp(request);
+  const ip = getClientIP(request);
 
   const limiter = rateLimit({
     ...limiterOptions,
@@ -74,7 +90,7 @@ export const apiLimiter = async (request: Request) => {
  * };
  */
 export const formLimiter = async (request: Request) => {
-    const ip = getClientIp(request);
+    const ip = getClientIP(request);
 
     const limiter = rateLimit({
         windowMs: 1 * 60 * 1000, // 1 minute

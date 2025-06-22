@@ -22,5 +22,6 @@ export { SubscriberManagement } from './SubscriberManagement';
 export { CookieBanner } from './CookieBanner';
 export { CookieConsentModal } from './CookieConsentModal';
 export { CookieManager } from './CookieManager';
+export { Header } from './Header';
 
 // Add component exports here as they are created 

@@ -10,7 +10,7 @@ import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from '@remix-run/node';
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
-import { CookieManager } from "~/components";
+import { CookieManager, Header } from "~/components";
 import { NonceProvider, useNonce } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
@@ -38,8 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 // Apply security headers to all routes
 export const headers = createSecurityHeaders;
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const nonce = useNonce();
+export function Layout({ children, nonce }: { children: React.ReactNode; nonce: string }) {
   return (
     <html lang="en">
       <head>
@@ -56,6 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           Skip to main content
         </a>
         <CookieConsentProvider>
+          <Header />
           <main id="main-content">{children}</main>
           <CookieManager />
         </CookieConsentProvider>
@@ -72,7 +72,7 @@ export default function App() {
 
   return (
     <NonceProvider nonce={nonce}>
-      <Layout>
+      <Layout nonce={nonce}>
         <Outlet />
       </Layout>
     </NonceProvider>
