@@ -16,7 +16,7 @@ export interface InputProps
   label?: string;
   hideLabel?: boolean;
   size?: ComponentSize;
-  error?: string | boolean;
+  error?: string | boolean | undefined;
   helperText?: string;
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
   value?: string;

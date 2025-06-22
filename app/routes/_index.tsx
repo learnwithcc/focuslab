@@ -1,7 +1,7 @@
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Button, Card, GitHubIcon, NewsletterForm } from "~/components";
-import { validateNewsletterForm, type NewsletterFormValues } from "~/utils/validation";
+import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
 
 export const meta: MetaFunction = () => {
@@ -17,73 +17,69 @@ export const meta: MetaFunction = () => {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const email = formData.get('email')?.toString() || '';
-  const gdprConsent = formData.get('gdprConsent') === 'true';
+  
+  return validateForm(
+    formData,
+    newsletterSchema,
+    async (data) => {
+      const { email } = data;
+      // Get client IP for rate limiting
+      const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+                      request.headers.get('x-real-ip') || 
+                      '127.0.0.1';
 
-  // Server-side validation
-  const validationErrors = validateNewsletterForm({ email, gdprConsent });
-  if (Object.keys(validationErrors).length > 0) {
-    return json(
-      { success: false, errors: validationErrors },
-      { status: 400 }
-    );
-  }
+      // Check rate limit
+      const rateLimitResult = await checkRateLimit(clientIp);
+      if (!rateLimitResult.success || !rateLimitResult.isAllowed) {
+        return json(
+          {
+            success: false,
+            error: 'Too many subscription attempts. Please try again later.',
+            reset: rateLimitResult.reset,
+            remaining: rateLimitResult.remaining,
+          },
+          { 
+            status: 429,
+            headers: {
+              'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
+              'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
+              'X-RateLimit-Reset': rateLimitResult.reset?.toString() || '',
+              'Retry-After': rateLimitResult.reset ? 
+                Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString() : 
+                '3600'
+            }
+          }
+        );
+      }
 
-  // Get client IP for rate limiting
-  const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
-                  request.headers.get('x-real-ip') || 
-                  '127.0.0.1';
+      // Subscribe to newsletter with GDPR consent
+      const subscriptionResult = await subscribeToNewsletter({ email, gdprConsent: true }); // Assuming consent from form
+      if (!subscriptionResult.success) {
+        return json(
+          {
+            success: false,
+            error: subscriptionResult.error || 'Failed to subscribe to newsletter',
+          },
+          { status: subscriptionResult.error?.includes('already subscribed') ? 409 : 500 }
+        );
+      }
 
-  // Check rate limit
-  const rateLimitResult = await checkRateLimit(clientIp);
-  if (!rateLimitResult.success || !rateLimitResult.isAllowed) {
-    return json(
-      {
-        success: false,
-        error: 'Too many subscription attempts. Please try again later.',
-        reset: rateLimitResult.reset,
-        remaining: rateLimitResult.remaining,
-      },
-      { 
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
-          'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
-          'X-RateLimit-Reset': rateLimitResult.reset?.toString() || '',
-          'Retry-After': rateLimitResult.reset ? 
-            Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString() : 
-            '3600'
+      return json(
+        {
+          success: true,
+          message: 'Successfully subscribed to newsletter!',
+          remaining: rateLimitResult.remaining,
+          subscriber: subscriptionResult.data,
+        },
+        { 
+          status: 200,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
+            'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
+            'X-RateLimit-Reset': rateLimitResult.reset?.toString() || ''
+          }
         }
-      }
-    );
-  }
-
-  // Subscribe to newsletter with GDPR consent
-  const subscriptionResult = await subscribeToNewsletter({ email, gdprConsent });
-  if (!subscriptionResult.success) {
-    return json(
-      {
-        success: false,
-        error: subscriptionResult.error || 'Failed to subscribe to newsletter',
-      },
-      { status: subscriptionResult.error?.includes('already subscribed') ? 409 : 500 }
-    );
-  }
-
-  return json(
-    {
-      success: true,
-      message: 'Successfully subscribed to newsletter!',
-      remaining: rateLimitResult.remaining,
-      subscriber: subscriptionResult.data,
-    },
-    { 
-      status: 200,
-      headers: {
-        'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
-        'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
-        'X-RateLimit-Reset': rateLimitResult.reset?.toString() || ''
-      }
+      );
     }
   );
 }
@@ -233,42 +229,38 @@ export default function Index() {
               </p>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {featuredProjects.map((project) => (
-                  <Card
+                  <a
                     key={project.title}
-                    className="flex h-full flex-col text-left transition-transform duration-300 hover:-translate-y-2"
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg transition-transform duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label={`${project.title} - view on GitHub`}
                   >
-                    <div className="flex-grow">
-                      <div className="mb-4 flex items-start justify-between">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                          {project.title}
-                        </h3>
-                        <a
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 transition-colors duration-200 hover:text-blue-500 dark:hover:text-blue-400"
-                          aria-label={`${project.title} on GitHub`}
-                        >
-                          <GitHubIcon className="h-6 w-6" />
-                        </a>
+                    <Card className="flex h-full flex-col text-left">
+                      <div className="flex-grow">
+                        <div className="mb-4 flex items-start justify-between">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                            {project.title}
+                          </h3>
+                          <GitHubIcon className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {project.description}
+                        </p>
                       </div>
-                      <p className="mb-4 text-gray-600 dark:text-gray-300">
-                        {project.description}
-                      </p>
-                    </div>
-                    <div className="mt-auto border-t border-gray-200 pt-4 dark:border-gray-700">
-                      <div className="flex flex-wrap gap-2">
+                      <div className="mt-6 flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                            className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  </a>
                 ))}
               </div>
             </div>
