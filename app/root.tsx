@@ -14,6 +14,7 @@ import { CookieManager, Header } from "~/components";
 import { NonceProvider, useNonce } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
+import { Analytics } from "@vercel/analytics/react";
 
 import "./styles/tailwind.css";
 
@@ -61,6 +62,7 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         </CookieConsentProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
+        <Analytics />
       </body>
     </html>
   );

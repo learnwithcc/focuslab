@@ -38,6 +38,9 @@ importers:
       '@upstash/redis':
         specifier: ^1.35.0
         version: 1.35.0
+      '@vercel/analytics':
+        specifier: ^1.5.0
+        version: 1.5.0(@remix-run/react@2.16.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3))(react@18.3.1)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1487,6 +1490,32 @@ packages:
 
   '@vanilla-extract/private@1.0.9':
     resolution: {integrity: sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA==}
+
+  '@vercel/analytics@1.5.0':
+    resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vitejs/plugin-react@4.5.2':
     resolution: {integrity: sha512-QNVT3/Lxx99nMQWJWF7K4N6apUEuT0KlZA3mx/mVaoGj3smm/8rc8ezz15J1pcbcjDK0V15rpHetVfya08r76Q==}
@@ -5906,6 +5935,11 @@ snapshots:
       - terser
 
   '@vanilla-extract/private@1.0.9': {}
+
+  '@vercel/analytics@1.5.0(@remix-run/react@2.16.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3))(react@18.3.1)':
+    optionalDependencies:
+      '@remix-run/react': 2.16.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
+      react: 18.3.1
 
   '@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@24.0.3)(jiti@1.21.7)(yaml@2.8.0))':
     dependencies:
