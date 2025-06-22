@@ -4,6 +4,7 @@ import { useLoaderData, Link } from '@remix-run/react';
 import { projects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project } from '~/types/project';
+import { generateMeta, generatePageUrl, DEFAULT_SEO } from '~/utils/seo';
 import { ArrowLeft, ExternalLink, Github, Star, GitFork, Clock, AlertCircle } from 'lucide-react';
 
 type LoaderData = {
@@ -14,16 +15,32 @@ type LoaderData = {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.project) {
-    return [
-      { title: 'Project Not Found | Focus Lab' },
-      { name: 'description', content: 'The requested project could not be found.' },
-    ];
+    return generateMeta({
+      title: 'Project Not Found',
+      description: 'The requested project could not be found. Explore our other neurodivergent developer tools and accessibility projects.',
+      noIndex: true,
+    });
   }
 
-  return [
-    { title: `${data.project.title} | Focus Lab` },
-    { name: 'description', content: data.project.description },
+  const project = data.project;
+  const projectKeywords = [
+    ...DEFAULT_SEO.keywords,
+    'project details',
+    'technical documentation',
+    ...project.technologies.map((tech: { name: string }) => tech.name.toLowerCase()),
+    project.category,
+    project.status,
   ];
+
+  return generateMeta({
+    title: `${project.title} - Developer Tool`,
+    description: `${project.description} Built with ${project.technologies.map((t: { name: string }) => t.name).join(', ')}. A ${project.category} project focused on neurodivergent developer accessibility.`,
+    keywords: projectKeywords,
+    url: generatePageUrl(`/projects/${project.id}`),
+    canonical: `https://focuslab.dev/projects/${project.id}`,
+    image: project.imageUrl || DEFAULT_SEO.image,
+    type: 'article',
+  });
 };
 
 export async function loader({ params }: LoaderFunctionArgs): Promise<Response> {

@@ -1,15 +1,26 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Section, Container } from "~/components/Layout";
 import { ContactForm, ContactInfo } from "~/components";
+import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from "~/utils/seo";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "About Us - FocusLab" },
-    {
-      name: "description",
-      content: "Learn about FocusLab's mission, our founder Chris Cameron, and our commitment to neurodivergent-friendly development tools.",
-    },
-  ];
+  const breadcrumbKeywords = generateBreadcrumbKeywords('/about');
+  
+  return generateMeta({
+    title: "About Us - Neurodivergent Developer Tools",
+    description: "Learn about FocusLab's mission, our founder Chris Cameron, and our commitment to creating accessibility tools and ADHD development solutions.",
+    keywords: [
+      ...DEFAULT_SEO.keywords,
+      ...breadcrumbKeywords,
+      'Chris Cameron',
+      'neurodivergent founder',
+      'inclusive development',
+      'about focus lab'
+    ],
+    url: generatePageUrl('/about'),
+    canonical: 'https://focuslab.dev/about',
+    type: 'profile',
+  });
 };
 
 export default function About() {

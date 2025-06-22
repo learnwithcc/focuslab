@@ -1,14 +1,24 @@
 import { MetaFunction } from '@remix-run/node';
 import { ContactForm } from '~/components/ContactForm';
+import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: 'Contact Us | Focus Lab' },
-    {
-      name: 'description',
-      content: 'Get in touch with Focus Lab for any inquiries or collaborations.',
-    },
-  ];
+  const breadcrumbKeywords = generateBreadcrumbKeywords('/contact');
+  
+  return generateMeta({
+    title: 'Contact Us - Get In Touch',
+    description: 'Get in touch with Focus Lab for neurodivergent developer tools, ADHD development solutions, and accessibility consultations.',
+    keywords: [
+      ...DEFAULT_SEO.keywords,
+      ...breadcrumbKeywords,
+      'collaboration',
+      'consultation',
+      'neurodivergent team',
+      'development services'
+    ],
+    url: generatePageUrl('/contact'),
+    canonical: 'https://focuslab.dev/contact',
+  });
 };
 
 export default function ContactPage() {

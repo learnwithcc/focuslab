@@ -3,17 +3,14 @@ import { json } from "@remix-run/node";
 import { Button, Card, GitHubIcon, NewsletterForm } from "~/components";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
+import { generateMeta, generatePageUrl } from "~/utils/seo";
 import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: "FocusLab - Neurodivergent-Friendly Development Tools" },
-    {
-      name: "description",
-      content:
-        "Building accessible development tools and solutions for neurodivergent developers and teams.",
-    },
-  ];
+  return generateMeta({
+    url: generatePageUrl('/'),
+    canonical: 'https://focuslab.dev/',
+  });
 };
 
 export async function action({ request }: ActionFunctionArgs) {

@@ -6,17 +6,27 @@ import { ProjectFilters } from '~/components/ProjectFilters';
 import { projects, filterAndSortProjects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
+import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 export const meta: MetaFunction = () => {
-  return [
-    { title: 'Our Projects | Focus Lab' },
-    {
-      name: 'description',
-      content: 'Explore the projects and tools developed by Focus Lab. From developer tools to business applications, we\'re building solutions that make a difference.',
-    },
-  ];
+  const breadcrumbKeywords = generateBreadcrumbKeywords('/projects');
+  
+  return generateMeta({
+    title: 'Developer Tools & Projects Portfolio',
+    description: 'Explore neurodivergent-friendly developer tools and accessibility projects by Focus Lab. Open source tools, ADHD development solutions, and innovative software.',
+    keywords: [
+      ...DEFAULT_SEO.keywords,
+      ...breadcrumbKeywords,
+      'portfolio',
+      'Task Master AI',
+      'Directus MCP Server',
+      'development tools showcase'
+    ],
+    url: generatePageUrl('/projects'),
+    canonical: 'https://focuslab.dev/projects',
+  });
 };
 
 type LoaderData = {
