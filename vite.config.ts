@@ -1,6 +1,9 @@
+/// <reference types="vitest" />
+
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import react from '@vitejs/plugin-react';
 
 declare module "@remix-run/node" {
   interface Future {
@@ -10,7 +13,7 @@ declare module "@remix-run/node" {
 
 export default defineConfig({
   plugins: [
-    remix({
+    !process.env['VITEST'] && remix({
       future: {
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
@@ -20,5 +23,12 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
+    !process.env['VITEST'] && react(),
   ],
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: './app/test/setup-test-env.tsx',
+    include: ['./app/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
 });
