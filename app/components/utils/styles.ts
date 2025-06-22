@@ -53,6 +53,13 @@ export const buttonVariants = {
     focus: 'focus:ring-2 focus:ring-gray-500 focus:ring-offset-2',
     active: 'active:bg-gray-200',
     disabled: 'disabled:text-gray-300 disabled:cursor-not-allowed'
+  },
+  danger: {
+    base: 'bg-red-600 text-white border-red-600',
+    hover: 'hover:bg-red-700 hover:border-red-700',
+    focus: 'focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+    active: 'active:bg-red-800',
+    disabled: 'disabled:bg-red-300 disabled:border-red-300 disabled:cursor-not-allowed'
   }
 } as const;
 

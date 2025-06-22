@@ -1,7 +1,7 @@
 // Base component prop interfaces for consistent component APIs
 
 export type ComponentSize = 'sm' | 'md' | 'lg';
-export type ComponentVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+export type ComponentVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
 // Base props that most components should support
 export interface BaseComponentProps {
