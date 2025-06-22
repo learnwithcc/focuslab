@@ -15508,7 +15508,554 @@ sleep 5 && curl -s http://localhost:5173/ | head -10
 ```
 
 ```
-❯ sleep 5 && curl -s http://localhost:5173/ | head -10
+Unexpected Server Error
+
+Error: useNonce must be used within a NonceProvider%
+                                  
+
+```
+
+---
+
+Good! The server is running now, but there's an issue with the NonceProvider. Let me check the nonce provider implementation:
+
+---
+
+Read file: app/utils/nonce-provider.tsx
+
+---
+
+The nonce provider looks correct. The issue is likely that `useNonce` is being called somewhere outside of the NonceProvider. Let me check where it's being used:
+
+---
+
+<details>
+            <summary>Grep search for "useNonce" • **4** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/cryophobic/dev/projects/focuslab/app/root.tsx` | L13 | `import { NonceProvider, useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/app/root.tsx` | L41 | `const nonce = useNonce();` |
+| `file:///Users/cryophobic/dev/projects/focuslab/app/utils/nonce-provider.tsx` | L14 | `export function useNonce() {` |
+| `file:///Users/cryophobic/dev/projects/focuslab/app/utils/nonce-provider.tsx` | L17 | `throw new Error('useNonce must be used within a NonceProvider');` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6701 | `+ import { useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6710 | `+   const nonce = useNonce();` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6735 | `The `security.ts` file lacks nonce generation, and the `useNonce` linter error confirms this. My CSP setup is incomplete. I'll need to generate a nonce on the server, create a `NonceProvider`, and update my CSP to use it. This detour is necessary for secur` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6747 | `⟪ 128 characters skipped ⟫a`. Then, create a `NonceProvider` and `useNonce` hook, wrapping `Outlet` in it. Finally, I'll update the CSP in `security.ts` and re-add the `useAxe` hook. Starting with the `loader` now.` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6762 | `- import { useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6763 | `+ import { NonceProvider, useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6783 | `+   const nonce = useNonce();` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6802 | `-   const nonce = useNonce();` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6858 | `Okay, `nonce-generator.ts` is done. Next, `nonce-provider.ts`: I'll create the `NonceProvider` component and `useNonce` hook there.` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6878 | `+ export function useNonce() {` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6881 | `+     throw new Error('useNonce must be used within a NonceProvider');` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L6963 | `⟪ 219 characters skipped ⟫und. The original linter error was for `useNonce`, which is solved. `useAxe` doesn't need a nonce. I'll remove the unnecessary `useNonce()` call from the `App` component in `app/root.tsx`, keeping `useAxe()`, and re-apply the edit. The nonce in `Layout` for `Scripts` and `ScrollRestoration` is correct and will remain.` |
+| `file:///Users/cryophobic/dev/projects/focuslab/.specstory/history/2025-06-22_01-59-commencing-task-10-with-subtasks.md` | L14309 | `import { NonceProvider, useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/app/root.tsx` | L13 | `import { NonceProvider, useNonce } from '~/utils/nonce-provider';` |
+| `file:///Users/cryophobic/dev/projects/focuslab/app/root.tsx` | L41 | `const nonce = useNonce();` |
+
+</details>
+
+---
+
+The issue is in `app/root.tsx` where `useNonce` is being called in the `App` component, but it's outside of the `NonceProvider`. Let me check the structure:
+
+---
+
+Read file: app/root.tsx
+
+---
+
+I see the issue! The `Layout` component is calling `useNonce()` but it's defined outside of the `App` component where the `NonceProvider` is. I need to move the nonce usage inside the provider or restructure this. Let me fix it:
+
+---
+
+```diff
+  export const headers = createSecurityHeaders;
+  
+- export function Layout({ children }: { children: React.ReactNode }) {
+-   const nonce = useNonce();
++ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: string }) {
+    return (
+      <html lang="en">
+```
+
+```diff
+    return (
+      <NonceProvider nonce={nonce}>
+-       <Layout>
++       <Layout nonce={nonce}>
+          <Outlet />
+        </Layout>
+```
+
+---
+
+Now let me test the homepage again:
+
+---
+
+```bash
+curl -s http://localhost:5173/ | head -10
+```
+
+```
+❯ curl -s http://localhost:5173/ | head -10
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, ini
+tial-scale=1"/><title>FocusLab - Neurodivergent-Friendly Development Tools</title><meta name="description" content
+="Building accessible development tools and solutions for neurodivergent developers and teams."/><style>
+/* /app/styles/tailwind.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap'
+);
+
+*, ::before, ::after{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+
+
+╭─     ~/dev/projects/focuslab     main ⇡11 !9 ?7 ······························· 23|0 ✔  23:50:01   
+╰─
+```
+
+---
+
+Excellent! The homepage is loading properly now. Let me test the projects page:
+
+---
+
+```bash
+curl -s http://localhost:5173/projects | head -10
+```
+
+```
+❯ curl -s http://localhost:5173/projects | head -10
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, ini
+tial-scale=1"/><title>Our Projects | Focus Lab</title><meta name="description" content="Explore the projects and t
+ools developed by Focus Lab."/><style>
+/* /app/styles/tailwind.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap'
+);
+
+*, ::before, ::after{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+
+
+╭─     ~/dev/projects/focuslab     main ⇡11 !9 ?7 ······························· 23|0 ✔  23:50:08   
+╰─
+```
+
+---
+
+Perfect! The projects page is also loading. Now let me commit the current progress and mark subtask 7.2 as complete:
+
+---
+
+```bash
+git add .
+```
+
+```
+❯ git add .
+
+
+╭─     ~/dev/projects/focuslab     main ⇡11 +19 ······································ ✔  23:50:14   
+╰─
+```
+
+---
+
+```bash
+git commit -m "feat(projects): implement projects portfolio section
+
+- Created projects route with responsive grid layout
+- Added project data types and interfaces (Project, ProjectTech, GitHubStats)
+- Implemented ProjectCard component with status badges and tech stack display
+- Created GitHub API service with caching and rate limiting
+- Added Header component with navigation links
+- Created sample project data including Directus MCP Server
+- Fixed Vitest configuration issues by moving test files out of routes
+- Resolved nonce provider structure for proper CSP implementation
+- Fixed remix-utils import issues with custom IP detection
+
+Task 7.1 and 7.2 complete - basic portfolio structure and GitHub integration ready"
+```
+
+```
+<basic portfolio structure and GitHub integration ready"
+[main e604a23] feat(projects): implement projects portfolio section
+ 17 files changed, 3329 insertions(+), 51 deletions(-)
+ create mode 100644 app/components/Header.tsx
+ create mode 100644 app/components/ProjectCard.tsx
+ create mode 100644 app/data/projects.ts
+ delete mode 100644 app/routes/contact.test.tsx
+ delete mode 100644 app/routes/index.test.tsx
+ create mode 100644 app/routes/projects.tsx
+ create mode 100644 app/services/github.server.ts
+ rename app/{ => test}/routes/_index.test.tsx (69%)
+ create mode 100644 app/test/routes/contact.test.tsx
+ create mode 100644 app/test/routes/index.test.tsx
+ rename app/{ => test}/routes/terms-of-service.test.tsx (51%)
+ create mode 100644 app/types/project.ts
+
+
+╭─     ~/dev/projects/focuslab     main ⇡12 ·········································· ✔  23:50:24   
+╰─
+```
+
+---
+
+Now let me mark subtask 7.2 as complete:
+
+---
+
+
+
+---
+
+Excellent! Now I can see the next subtask is 7.3: "Build Project Cards with Live Data Integration". Let me start working on that by setting its status to in-progress:
+
+---
+
+
+
+---
+
+Let me get the details of subtask 7.3 to understand what needs to be implemented:
+
+---
+
+
+
+---
+
+Perfect! Now I understand what needs to be done for subtask 7.3. I need to:
+
+1. Integrate the GitHub service into ProjectCard components
+2. Implement loading states for async GitHub data fetching
+3. Create interactive project cards with hover effects
+4. Implement lazy loading for project images
+5. Add proper error handling
+
+Let me start by updating the projects page to actually use the GitHub service I created:
+
+---
+
+Read file: app/routes/projects.tsx
+
+---
+
+Good! I can see the GitHub service is already integrated in the loader. Now let me check the current ProjectCard component to see what needs to be updated:
+
+---
+
+Read file: app/components/ProjectCard.tsx
+
+---
+
+I can see the ProjectCard component already has good structure with GitHub stats display and loading states. However, I need to improve several aspects for subtask 7.3:
+
+1. **Better hover effects and interactions**
+2. **Enhanced loading states**
+3. **Lazy loading for images** (already implemented but can be improved)
+4. **Better GitHub data integration**
+
+Let me also check the GitHub service to see if it has the `getMultipleRepositoryStats` method:
+
+---
+
+Read file: app/services/github.server.ts
+
+---
+
+Great! The GitHub service looks good and has the `getMultipleRepositoryStats` method. Now let me enhance the ProjectCard component with better interactive features and loading states. I'll also create a client-side version that can handle progressive enhancement:
+
+---
+
+```diff
+  import { Link } from '@remix-run/react';
+- import { ExternalLink, Github, Star, GitFork, Clock } from 'lucide-react';
++ import { ExternalLink, Github, Star, GitFork, Clock, AlertCircle, Loader2 } from 'lucide-react';
+  import { Project } from '~/types/project';
++ import { useState, useEffect } from 'react';
+  
+  interface ProjectCardProps {
+```
+
+```diff
+  
+  export function ProjectCard({ project, loading = false }: ProjectCardProps) {
++   const [imageLoaded, setImageLoaded] = useState(false);
++   const [imageError, setImageError] = useState(false);
++   const [isHovered, setIsHovered] = useState(false);
++ 
+    const statusColors = {
+      active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+```
+
+```diff
+      service: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
+    };
++ 
++   // Format the last updated date more nicely
++   const formatLastUpdated = (dateString: string) => {
++     const date = new Date(dateString);
++     const now = new Date();
++     const diffTime = Math.abs(now.getTime() - date.getTime());
++     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
++ 
++     if (diffDays === 1) return 'Updated yesterday';
++     if (diffDays < 7) return `Updated ${diffDays} days ago`;
++     if (diffDays < 30) return `Updated ${Math.ceil(diffDays / 7)} weeks ago`;
++     if (diffDays < 365) return `Updated ${Math.ceil(diffDays / 30)} months ago`;
++     return `Updated ${Math.ceil(diffDays / 365)} years ago`;
++   };
+  
+    return (
+-     <div className="group relative overflow-hidden rounded-lg border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md motion-safe:hover:scale-[1.02] motion-reduce:hover:scale-100">
++     <div 
++       className="group relative overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 motion-safe:hover:scale-[1.02] motion-reduce:hover:scale-100"
++       onMouseEnter={() => setIsHovered(true)}
++       onMouseLeave={() => setIsHovered(false)}
++     >
++       {/* Loading overlay for the entire card */}
++       {loading && (
++         <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm">
++           <div className="flex items-center gap-2 text-muted-foreground">
++             <Loader2 className="h-5 w-5 animate-spin" />
++             <span className="text-sm">Loading project data...</span>
++           </div>
++         </div>
++       )}
++ 
++       <div className="p-6">
+          {/* Status and Category Badges */}
+          <div className="mb-4 flex flex-wrap gap-2">
+-         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[project.status]}`}>
++           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all duration-200 ${statusColors[project.status]} ${isHovered ? 'scale-105' : ''}`}>
+              {project.status === 'coming-soon' ? 'Coming Soon' : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+            </span>
+-         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${categoryColors[project.category]}`}>
++           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all duration-200 ${categoryColors[project.category]} ${isHovered ? 'scale-105' : ''}`}>
+              {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
+            </span>
+          </div>
+  
+-       {/* Project Image */}
++         {/* Project Image with Enhanced Loading */}
+          {project.imageUrl && (
+-         <div className="mb-4 aspect-video overflow-hidden rounded-md bg-muted">
++           <div className="mb-4 aspect-video overflow-hidden rounded-md bg-muted relative">
++             {!imageLoaded && !imageError && (
++               <div className="absolute inset-0 flex items-center justify-center bg-muted">
++                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
++               </div>
++             )}
++             {imageError && (
++               <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted text-muted-foreground">
++                 <AlertCircle className="h-6 w-6 mb-2" />
++                 <span className="text-sm">Image failed to load</span>
++               </div>
++             )}
+              <img
+                src={project.imageUrl}
+                alt={`${project.title} preview`}
+-             className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
++               className={`h-full w-full object-cover transition-all duration-300 ${
++                 imageLoaded ? 'opacity-100' : 'opacity-0'
++               } ${isHovered ? 'scale-110' : 'scale-100'}`}
+                loading="lazy"
++               onLoad={() => setImageLoaded(true)}
++               onError={() => setImageError(true)}
+              />
+            </div>
+```
+
+```diff
+          {/* Project Title and Description */}
+          <div className="mb-4">
+-         <h3 className="mb-2 text-xl font-semibold text-foreground">{project.title}</h3>
+-         <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
++           <h3 className="mb-2 text-xl font-semibold text-foreground transition-colors duration-200 group-hover:text-primary">
++             {project.title}
++           </h3>
++           <p className="text-sm text-muted-foreground line-clamp-3 transition-colors duration-200 group-hover:text-foreground/80">
++             {project.description}
++           </p>
+          </div>
+  
+-       {/* Technologies */}
++         {/* Technologies with hover effect */}
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-1">
+-           {project.technologies.slice(0, 4).map((tech) => (
++             {project.technologies.slice(0, 4).map((tech, index) => (
+                <span
+                  key={tech.name}
+-               className="inline-flex items-center rounded px-2 py-1 text-xs bg-muted text-muted-foreground"
++                 className={`inline-flex items-center rounded px-2 py-1 text-xs bg-muted text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
++                   isHovered ? 'translate-y-[-1px]' : ''
++                 }`}
++                 style={{ transitionDelay: `${index * 50}ms` }}
+                >
+                  {tech.name}
+                </span>
+              ))}
+              {project.technologies.length > 4 && (
+-             <span className="inline-flex items-center rounded px-2 py-1 text-xs bg-muted text-muted-foreground">
++               <span className={`inline-flex items-center rounded px-2 py-1 text-xs bg-muted text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
++                 isHovered ? 'translate-y-[-1px]' : ''
++               }`}>
+                  +{project.technologies.length - 4} more
+                </span>
+```
+
+```diff
+          </div>
+  
+-       {/* GitHub Stats */}
++         {/* GitHub Stats with Enhanced Display */}
+          {project.githubStats && !loading && (
+-         <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
+-           <div className="flex items-center gap-1">
++           <div className="mb-4 rounded-md bg-muted/30 p-3 transition-all duration-200 hover:bg-muted/50">
++             <div className="flex items-center gap-4 text-sm text-muted-foreground">
++               <div className="flex items-center gap-1 transition-colors duration-200 hover:text-yellow-600">
+                  <Star className="h-4 w-4" />
+-             <span>{project.githubStats.stars.toLocaleString()}</span>
++                 <span className="font-medium">{project.githubStats.stars.toLocaleString()}</span>
+                </div>
+-           <div className="flex items-center gap-1">
++               <div className="flex items-center gap-1 transition-colors duration-200 hover:text-blue-600">
+                  <GitFork className="h-4 w-4" />
+-             <span>{project.githubStats.forks.toLocaleString()}</span>
++                 <span className="font-medium">{project.githubStats.forks.toLocaleString()}</span>
+                </div>
+-           <div className="flex items-center gap-1">
++               <div className="flex items-center gap-1 transition-colors duration-200 hover:text-green-600">
+                  <Clock className="h-4 w-4" />
+-             <span>{new Date(project.githubStats.lastUpdated).toLocaleDateString()}</span>
+-           </div>
++                 <span className="font-medium text-xs">
++                   {formatLastUpdated(project.githubStats.lastUpdated)}
++                 </span>
++               </div>
++             </div>
++             {project.githubStats.language && (
++               <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
++                 <div className="h-2 w-2 rounded-full bg-primary"></div>
++                 <span>{project.githubStats.language}</span>
++                 {project.githubStats.openIssues !== undefined && (
++                   <>
++                     <span className="mx-1">•</span>
++                     <span>{project.githubStats.openIssues} open issues</span>
++                   </>
++                 )}
++               </div>
++             )}
+            </div>
+          )}
+  
+-       {/* Loading State for GitHub Stats */}
++         {/* Enhanced Loading State for GitHub Stats */}
+          {loading && project.githubUrl && (
+-         <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
++           <div className="mb-4 rounded-md bg-muted/30 p-3">
++             <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4" />
+```
+
+```diff
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+-             <div className="h-4 w-16 animate-pulse bg-muted rounded"></div>
++                 <div className="h-4 w-20 animate-pulse bg-muted rounded"></div>
++               </div>
++             </div>
++             <div className="mt-2 flex items-center gap-1">
++               <div className="h-2 w-2 animate-pulse bg-muted rounded-full"></div>
++               <div className="h-3 w-16 animate-pulse bg-muted rounded"></div>
+              </div>
+            </div>
+          )}
+  
+-       {/* Action Links */}
++         {/* Action Links with Enhanced Interactions */}
+          <div className="flex flex-wrap gap-2">
+            {project.githubUrl && (
+```
+
+```diff
+                target="_blank"
+                rel="noopener noreferrer"
+-             className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
++               className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                <Github className="h-4 w-4" />
+```
+
+```diff
+                target="_blank"
+                rel="noopener noreferrer"
+-             className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
++               className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+```
+
+```diff
+                target="_blank"
+                rel="noopener noreferrer"
+-             className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
++               className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+```
+
+```diff
+            <Link
+              to={`/projects/${project.id}`}
+-           className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
++             className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              Learn More
+            </Link>
++         </div>
+        </div>
+      </div>
+```
+
+---
+
+Now let me test the server to make sure everything works correctly:
+
+---
+
+```bash
+npm run dev
+```
+
+---
+
+Let me wait a moment for the server to start and then check if it's running:
+
+---
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/ || echo "Server not ready"
+```
+
+```
+200%
+
+
 ```
 
 ---
