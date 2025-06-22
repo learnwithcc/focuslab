@@ -1,11 +1,13 @@
 import { MetaFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useNavigation } from '@remix-run/react';
+import { useLoaderData, useNavigation, useSearchParams } from '@remix-run/react';
 import { ProjectCard } from '~/components/ProjectCard';
-import { projects } from '~/data/projects';
+import { ProjectFilters } from '~/components/ProjectFilters';
+import { projects, filterAndSortProjects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
-import { Project } from '~/types/project';
+import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,10 +21,16 @@ export const meta: MetaFunction = () => {
 
 type LoaderData = {
   projects: Project[];
+  allProjects: Project[];
+  filters: ProjectFiltersType;
+  sort: ProjectSortOption;
   success: true;
   timestamp: string;
 } | {
   projects: Project[];
+  allProjects: Project[];
+  filters: ProjectFiltersType;
+  sort: ProjectSortOption;
   success: false;
   error: string;
   timestamp: string;
@@ -30,6 +38,26 @@ type LoaderData = {
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<Response> {
   try {
+    // Parse URL parameters for filtering
+    const url = new URL(request.url);
+    const searchParams = url.searchParams;
+    
+    const filters: ProjectFiltersType = {};
+    const search = searchParams.get('search');
+    const category = searchParams.get('category');
+    const status = searchParams.get('status');
+    const technology = searchParams.get('technology');
+    
+    if (search) filters.search = search;
+    if (category) filters.category = category;
+    if (status) filters.status = status;
+    if (technology) filters.technology = technology;
+    
+    const sort: ProjectSortOption = {
+      field: (searchParams.get('sortField') as 'title' | 'lastUpdated' | 'stars') || 'title',
+      direction: (searchParams.get('sortDirection') as 'asc' | 'desc') || 'asc',
+    };
+
     // Get all GitHub URLs from projects
     const githubUrls = projects
       .filter(project => project.githubUrl)
@@ -49,8 +77,14 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<Response>
       return project;
     });
 
+    // Apply filtering and sorting
+    const filteredAndSortedProjects = filterAndSortProjects(projectsWithStats, filters, sort);
+
     return json<LoaderData>({ 
-      projects: projectsWithStats,
+      projects: filteredAndSortedProjects,
+      allProjects: projectsWithStats, // Keep all projects for filter options
+      filters,
+      sort,
       success: true,
       timestamp: new Date().toISOString()
     });
@@ -60,6 +94,9 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<Response>
     // Return projects without GitHub stats if there's an error
     return json<LoaderData>({ 
       projects: projects,
+      allProjects: projects,
+      filters: {},
+      sort: { field: 'title', direction: 'asc' },
       success: false,
       error: error instanceof Error ? error.message : 'Failed to load GitHub data',
       timestamp: new Date().toISOString()
@@ -144,12 +181,24 @@ export default function ProjectsPage() {
         )}
       </div>
 
+      {/* Project Filters */}
+      <ProjectFilters projects={data.allProjects} />
+
       {/* Loading State */}
       {isLoading && (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />
           ))}
+        </div>
+      )}
+
+      {/* Results Summary */}
+      {!isLoading && (
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Showing {data.projects.length} of {data.allProjects.length} projects
+          </p>
         </div>
       )}
 
@@ -171,7 +220,10 @@ export default function ProjectsPage() {
         <div className="flex flex-col items-center justify-center py-12">
           <h3 className="mb-2 text-lg font-semibold">No projects found</h3>
           <p className="text-muted-foreground">
-            We're working on some exciting projects. Check back soon!
+            {data.allProjects.length > 0 
+              ? "Try adjusting your filters to see more projects."
+              : "We're working on some exciting projects. Check back soon!"
+            }
           </p>
         </div>
       )}

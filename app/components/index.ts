@@ -23,5 +23,7 @@ export { CookieBanner } from './CookieBanner';
 export { CookieConsentModal } from './CookieConsentModal';
 export { CookieManager } from './CookieManager';
 export { Header } from './Header';
+export { ProjectCard } from './ProjectCard';
+export { ProjectFilters } from './ProjectFilters';
 
 // Add component exports here as they are created 
