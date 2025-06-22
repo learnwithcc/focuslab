@@ -281,60 +281,60 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
-            "title": "Create Newsletter Signup Form Component",
-            "description": "Build a React form component with email input, GDPR compliance checkbox, and privacy policy link",
+            "title": "Implement Server-Side Email Validation and GDPR Compliance",
+            "description": "Add server-side logic to validate the submitted email address using custom regex and ensure the GDPR consent checkbox is checked.",
             "dependencies": [],
-            "details": "Create a form component with email input field using HTML5 email validation and custom regex pattern. Add required GDPR compliance checkbox with clear consent text. Include privacy policy link. Implement controlled form state management with proper TypeScript types. Add form styling with loading, error, and success states.",
-            "status": "pending",
-            "testStrategy": "Unit tests for form rendering, input validation, and state management. Test accessibility with screen readers."
+            "details": "Ensure that the server receives and validates the email address format and checks for GDPR consent before proceeding with any further processing.",
+            "status": "done",
+            "testStrategy": "Submit various valid and invalid email addresses and GDPR consent states; verify server rejects invalid submissions with appropriate error messages."
           },
           {
             "id": 2,
-            "title": "Implement Client-Side Validation",
-            "description": "Add comprehensive client-side email validation with real-time feedback and error messaging",
+            "title": "Integrate Rate Limiting for Form Submissions",
+            "description": "Implement rate limiting to prevent spam and abuse of the newsletter signup endpoint.",
             "dependencies": [
               1
             ],
-            "details": "Implement email format validation using regex pattern and HTML5 validation API. Add real-time validation feedback as user types. Create clear error messages for invalid email formats, missing GDPR consent, and empty fields. Implement debounced validation to avoid excessive re-renders. Add visual indicators for validation states.",
-            "status": "pending",
-            "testStrategy": "Test various email formats, edge cases, and user interaction patterns. Verify error messages display correctly."
+            "details": "Add logic to track and limit the number of submissions per IP or user within a defined time window.",
+            "status": "done",
+            "testStrategy": "Attempt multiple rapid submissions from the same source; verify that excess attempts are blocked with a clear error message."
           },
           {
             "id": 3,
-            "title": "Create Remix Action for Form Submission",
-            "description": "Build server-side form handler with validation, rate limiting, and email service integration",
+            "title": "Handle Error and Success Feedback States",
+            "description": "Develop mechanisms to provide clear feedback to users on submission success or failure, including specific error messages for validation and rate limiting.",
             "dependencies": [
               2
             ],
-            "details": "Create Remix action function to handle form submissions. Implement server-side email validation and GDPR consent verification. Add rate limiting using session-based tracking to prevent spam (max 3 submissions per hour). Integrate with email service API (ConvertKit or Mailchimp) for storing subscriber data. Handle API errors gracefully with proper error responses.",
-            "status": "pending",
-            "testStrategy": "Test form submission with valid/invalid data, rate limiting behavior, and email service integration. Mock external API calls for testing."
+            "details": "Display server-side validation errors, rate limiting errors, and success confirmations in the UI, ensuring a seamless user experience.",
+            "status": "done",
+            "testStrategy": "Trigger different error and success scenarios; confirm that the UI displays the correct feedback for each case."
           },
           {
             "id": 4,
-            "title": "Implement Success and Error Feedback System",
-            "description": "Create user feedback mechanisms for successful subscriptions and error handling",
+            "title": "Integrate with Email Service Provider",
+            "description": "Connect the backend to an email service provider (e.g., ConvertKit, Mailchimp, or Resend) to securely store email addresses and manage subscriptions.",
             "dependencies": [
               3
             ],
-            "details": "Implement success state with confirmation message and optional redirect. Create error handling for various failure scenarios (network errors, duplicate emails, service unavailable). Add toast notifications or inline feedback messages. Implement proper loading states during form submission. Ensure feedback is accessible and user-friendly.",
-            "status": "pending",
-            "testStrategy": "Test all feedback scenarios including success, various error types, and loading states. Verify accessibility of feedback messages."
+            "details": "Implement the logic to send validated and consented email addresses to the chosen provider, handling API responses and errors.",
+            "status": "done",
+            "testStrategy": "Submit valid signups and verify that emails are correctly added to the provider; simulate provider errors and confirm proper error handling."
           },
           {
             "id": 5,
-            "title": "Add Security and Data Protection Features",
-            "description": "Implement security measures including CSRF protection, data sanitization, and privacy compliance",
+            "title": "Securely Store and Manage Newsletter Subscriptions",
+            "description": "Ensure that all email addresses are securely stored and managed, complying with privacy and security best practices.",
             "dependencies": [
               4
             ],
-            "details": "Add CSRF token validation to prevent cross-site request forgery. Implement input sanitization to prevent XSS attacks. Ensure secure transmission of data using HTTPS. Add proper error logging without exposing sensitive information. Implement data retention policies and provide unsubscribe mechanism. Add honeypot field for additional spam protection.",
-            "status": "pending",
-            "testStrategy": "Security testing for CSRF, XSS prevention, and data protection. Test unsubscribe functionality and verify no sensitive data exposure in logs."
+            "details": "Implement secure storage mechanisms, ensure data is not exposed, and provide a way to audit or remove subscriptions as required by GDPR.",
+            "status": "done",
+            "testStrategy": "Review storage implementation for security, attempt unauthorized access, and verify GDPR-compliant data management (e.g., deletion on request)."
           }
         ]
       },
@@ -825,7 +825,7 @@
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-21T22:52:00.206Z",
+      "updated": "2025-06-22T00:24:09.097Z",
       "description": "Tasks for master context"
     }
   }
