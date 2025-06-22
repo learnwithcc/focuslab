@@ -3,10 +3,13 @@ import {
   generateOrganizationSchema, 
   generateWebsiteSchema, 
   generateFounderSchema,
+  generateBreadcrumbSchema,
+  getBreadcrumbItems,
   generateStructuredDataMeta,
   type OrganizationSchema,
   type WebsiteSchema,
-  type PersonSchema
+  type PersonSchema,
+  type BreadcrumbListSchema
 } from './structured-data';
 
 export interface SEOMetaOptions {
@@ -23,7 +26,9 @@ export interface SEOMetaOptions {
   includeOrganizationSchema?: boolean;
   includeWebsiteSchema?: boolean;
   includePersonSchema?: boolean;
-  customSchemas?: Array<OrganizationSchema | WebsiteSchema | PersonSchema>;
+  includeBreadcrumbSchema?: boolean;
+  pathname?: string; // For breadcrumb generation
+  customSchemas?: Array<OrganizationSchema | WebsiteSchema | PersonSchema | BreadcrumbListSchema>;
 }
 
 export const DEFAULT_SEO = {
@@ -60,6 +65,8 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
     includeOrganizationSchema = false,
     includeWebsiteSchema = false,
     includePersonSchema = false,
+    includeBreadcrumbSchema = false,
+    pathname,
     customSchemas = [],
   } = options;
 
@@ -108,7 +115,7 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
   }
 
   // Add structured data schemas
-  const schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema> = [];
+  const schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema | BreadcrumbListSchema> = [];
   
   if (includeOrganizationSchema) {
     schemas.push(generateOrganizationSchema());
@@ -120,6 +127,11 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
   
   if (includePersonSchema) {
     schemas.push(generateFounderSchema());
+  }
+  
+  if (includeBreadcrumbSchema && pathname) {
+    const breadcrumbItems = getBreadcrumbItems(pathname);
+    schemas.push(generateBreadcrumbSchema(breadcrumbItems));
   }
   
   // Add any custom schemas

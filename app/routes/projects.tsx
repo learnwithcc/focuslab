@@ -1,12 +1,14 @@
 import { MetaFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useNavigation, useSearchParams } from '@remix-run/react';
+import { useLoaderData, useNavigation, useSearchParams, useLocation } from '@remix-run/react';
 import { ProjectCard } from '~/components/ProjectCard';
 import { ProjectFilters } from '~/components/ProjectFilters';
+import { Breadcrumb } from '~/components';
 import { projects, filterAndSortProjects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
+import { getBreadcrumbItems } from '~/utils/structured-data';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
@@ -27,6 +29,8 @@ export const meta: MetaFunction = () => {
     url: generatePageUrl('/projects'),
     canonical: 'https://focuslab.dev/projects',
     includeOrganizationSchema: true,
+    includeBreadcrumbSchema: true,
+    pathname: '/projects',
   });
 };
 
@@ -166,13 +170,16 @@ function ProjectCardSkeleton() {
 export default function ProjectsPage() {
   const data = useLoaderData<LoaderData>();
   const navigation = useNavigation();
+  const location = useLocation();
   const isLoading = navigation.state === 'loading';
+  const breadcrumbItems = getBreadcrumbItems(location.pathname);
 
   // Show error state if GitHub data failed to load
   const hasGitHubError = !data.success && 'error' in data;
 
   return (
     <main className="container mx-auto px-4 py-8">
+      <Breadcrumb items={breadcrumbItems} className="mb-6" />
       <div className="mb-8">
         <h1 className="mb-4 text-4xl font-bold">Our Projects</h1>
         <p className="text-lg text-muted-foreground">

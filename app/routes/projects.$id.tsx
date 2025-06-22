@@ -1,10 +1,12 @@
 import { MetaFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { useLoaderData, Link, useLocation } from '@remix-run/react';
 import { projects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project } from '~/types/project';
 import { generateMeta, generatePageUrl, DEFAULT_SEO } from '~/utils/seo';
+import { getBreadcrumbItems } from '~/utils/structured-data';
+import { Breadcrumb } from '~/components';
 import { ArrowLeft, ExternalLink, Github, Star, GitFork, Clock, AlertCircle } from 'lucide-react';
 
 type LoaderData = {
@@ -13,7 +15,7 @@ type LoaderData = {
   error?: string;
 };
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   if (!data?.project) {
     return generateMeta({
       title: 'Project Not Found',
@@ -40,6 +42,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     canonical: `https://focuslab.dev/projects/${project.id}`,
     image: project.imageUrl || DEFAULT_SEO.image,
     type: 'article',
+    includeBreadcrumbSchema: true,
+    pathname: `/projects/${params['id']}`,
   });
 };
 
@@ -83,6 +87,8 @@ export async function loader({ params }: LoaderFunctionArgs): Promise<Response> 
 
 export default function ProjectPage() {
   const { project, success, error } = useLoaderData<LoaderData>();
+  const location = useLocation();
+  const breadcrumbItems = getBreadcrumbItems(location.pathname);
 
   const statusColors = {
     active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -112,6 +118,8 @@ export default function ProjectPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
+      <Breadcrumb items={breadcrumbItems} className="mb-6" />
+      
       {/* Back Navigation */}
       <Link 
         to="/projects" 

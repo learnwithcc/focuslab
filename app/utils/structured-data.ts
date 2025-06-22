@@ -68,6 +68,17 @@ export interface PersonSchema {
   sameAs?: string[] | undefined;
 }
 
+export interface BreadcrumbListSchema {
+  '@context': string;
+  '@type': string;
+  itemListElement: Array<{
+    '@type': string;
+    position: number;
+    name: string;
+    item?: string;
+  }>;
+}
+
 export function generateOrganizationSchema(): OrganizationSchema {
   return {
     '@context': 'https://schema.org',
@@ -223,14 +234,83 @@ export function generateFounderSchema(): PersonSchema {
   });
 }
 
-export function injectStructuredData(schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema>): string {
+export interface BreadcrumbItem {
+  name: string;
+  path: string;
+  isCurrentPage?: boolean;
+}
+
+export function generateBreadcrumbSchema(items: BreadcrumbItem[]): BreadcrumbListSchema {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      ...(item.isCurrentPage ? {} : { item: `https://focuslab.dev${item.path}` })
+    }))
+  };
+}
+
+export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
+  const segments = pathname.split('/').filter(Boolean);
+  const items: BreadcrumbItem[] = [
+    { name: 'Home', path: '/' }
+  ];
+
+  let currentPath = '';
+  
+  for (let i = 0; i < segments.length; i++) {
+    currentPath += `/${segments[i]}`;
+    const isCurrentPage = i === segments.length - 1;
+    
+    // Generate human-readable names for common routes
+    let name = segments[i];
+    switch (segments[i]) {
+      case 'about':
+        name = 'About Us';
+        break;
+      case 'contact':
+        name = 'Contact';
+        break;
+      case 'projects':
+        name = 'Projects';
+        break;
+      case 'privacy-policy':
+        name = 'Privacy Policy';
+        break;
+      case 'terms-of-service':
+        name = 'Terms of Service';
+        break;
+      case 'accessibility-statement':
+        name = 'Accessibility Statement';
+        break;
+      default:
+        // For dynamic segments like project IDs, capitalize and format
+        name = segments[i].split('-').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
+    
+    items.push({
+      name,
+      path: currentPath,
+      isCurrentPage
+    });
+  }
+
+  return items;
+}
+
+export function injectStructuredData(schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema | BreadcrumbListSchema>): string {
   return schemas.map(schema => 
     `<script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>`
   ).join('\n');
 }
 
 // Utility function to generate JSON-LD script tags for Remix meta
-export function generateStructuredDataMeta(schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema>) {
+export function generateStructuredDataMeta(schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema | BreadcrumbListSchema>) {
   return schemas.map((schema, index) => ({
     tagName: 'script',
     type: 'application/ld+json',

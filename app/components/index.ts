@@ -25,5 +25,6 @@ export { CookieManager } from './CookieManager';
 export { Header } from './Header';
 export { ProjectCard } from './ProjectCard';
 export { ProjectFilters } from './ProjectFilters';
+export { Breadcrumb } from './Breadcrumb';
 
 // Add component exports here as they are created 

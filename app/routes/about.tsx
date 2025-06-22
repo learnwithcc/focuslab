@@ -1,7 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
+import { useLocation } from "@remix-run/react";
 import { Section, Container } from "~/components/Layout";
-import { ContactForm, ContactInfo } from "~/components";
+import { ContactForm, ContactInfo, Breadcrumb } from "~/components";
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from "~/utils/seo";
+import { getBreadcrumbItems } from "~/utils/structured-data";
 
 export const meta: MetaFunction = () => {
   const breadcrumbKeywords = generateBreadcrumbKeywords('/about');
@@ -22,16 +24,22 @@ export const meta: MetaFunction = () => {
     type: 'profile',
     includeOrganizationSchema: true,
     includePersonSchema: true,
+    includeBreadcrumbSchema: true,
+    pathname: '/about',
   });
 };
 
 export default function About() {
+  const location = useLocation();
+  const breadcrumbItems = getBreadcrumbItems(location.pathname);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <main className="w-full">
         {/* Hero Section */}
         <Section spacing="lg" className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Container maxWidth="7xl">
+            <Breadcrumb items={breadcrumbItems} className="mb-8" />
             <div className="text-center">
               <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Building Tools for{" "}
