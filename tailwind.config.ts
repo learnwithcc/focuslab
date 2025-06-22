@@ -7,18 +7,18 @@ export default {
     extend: {
       colors: {
         'primary-purple': {
-          light: '#4a0e4e',
-          dark: '#7b2cbf',
+          light: '#5A1A6D',
+          dark: '#9D4EDD',
           DEFAULT: 'var(--primary-purple)',
         },
         'teal-primary': {
-          light: '#00b2a9',
-          dark: '#20c997',
+          light: '#007A73',
+          dark: '#00E0C7',
           DEFAULT: 'var(--teal-primary)',
         },
         'orange-accent': {
-          light: '#ff6b35',
-          dark: '#fd7e14',
+          light: '#D95F02',
+          dark: '#FD9E14',
           DEFAULT: 'var(--orange-accent)',
         },
       },
@@ -34,6 +34,11 @@ export default {
           "Noto Color Emoji",
         ],
       },
+    },
+  },
+  variants: {
+    extend: {
+      animation: ['motion-safe'],
     },
   },
   plugins: [

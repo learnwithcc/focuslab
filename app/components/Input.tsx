@@ -89,26 +89,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     
     const ariaAttributes = getFormAriaAttributes(ariaAttributesConfig);
 
+    const errorStyles = error
+    ? 'border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500'
+    : 'border-gray-300 dark:border-gray-700 focus:border-primary focus:ring-primary';
+
     const inputClasses = buildComponentClasses(
-      // Base styles
-      'block w-full px-3 py-2 border rounded-md shadow-sm',
-      'focus:outline-none focus:ring-2 focus:ring-offset-0',
-      'transition-colors duration-200',
-      
-      // Size styles
-      sizeStyles.padding,
-      sizeStyles.text,
-      sizeStyles.height,
-      
-      // State styles
-      error
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500',
-      
-      disabled
-        ? 'bg-gray-50 text-gray-500 cursor-not-allowed'
-        : 'bg-white text-gray-900',
-      
+      'block w-full rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 duration-200 px-4 py-2 text-base h-10 border-gray-300 focus:border-primary-purple dark:border-gray-700 dark:bg-gray-800 dark:text-white motion-safe:transition-colors motion-reduce:transition-none',
+      errorStyles,
+      disabled ? 'bg-gray-100 dark:bg-gray-900 cursor-not-allowed' : '',
       className
     );
 

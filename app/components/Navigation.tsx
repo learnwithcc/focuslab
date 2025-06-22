@@ -126,25 +126,26 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
       }, []);
     };
 
-    const renderNavigationItem = (item: NavigationItem, index: number, level: number = 0) => {
+    const renderNavigationItem = (item: NavigationItem, index: number, level: number = 0, isMobile: boolean = false) => {
       const isButton = !item.href && item.onClick;
       const Element = isButton ? 'button' : 'a';
       
-             const itemClasses = buildComponentClasses(
-         'block px-3 py-2 text-sm font-medium transition-colors duration-200',
-         'focus:outline-none focus:ring-2 focus:ring-offset-2',
-         
-         // Variant styles
-         variant === 'primary' ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100' : 'text-gray-300 hover:text-white hover:bg-gray-700',
-         variant === 'primary' ? 'focus:ring-blue-500' : 'focus:ring-gray-500',
-         item.isActive && (variant === 'primary' ? 'text-blue-600 bg-blue-50' : 'text-white bg-gray-900'),
-         
-         // Disabled styles
-         item.disabled && 'opacity-50 cursor-not-allowed',
-         
-         // Level indentation
-         level > 0 && `ml-${level * 4}`
-       );
+      const itemClasses = isMobile 
+        ? mobileLinkClasses(item.isActive || false)
+        : buildComponentClasses(
+            'flex items-center',
+            'group',
+            'relative',
+            'px-3 py-2 text-sm font-medium',
+            'motion-safe:transition-colors motion-reduce:transition-none duration-200',
+            isButton
+              ? 'focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+              : item.isActive
+                ? 'text-gray-900 dark:text-white'
+                : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white',
+            item.disabled && 'opacity-50 cursor-not-allowed',
+            level > 0 && `ml-${level * 4}`
+          );
 
       const handleClick = (event: React.MouseEvent) => {
         if (item.disabled) {
@@ -163,11 +164,11 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
       };
 
       return (
-                 <Element
-           key={item.id}
-           ref={(el: HTMLAnchorElement | HTMLButtonElement | null) => {
-             itemRefs.current[index] = el;
-           }}
+        <Element
+          key={item.id}
+          ref={(el: HTMLAnchorElement | HTMLButtonElement | null) => {
+            itemRefs.current[index] = el;
+          }}
           href={!isButton ? item.href : undefined}
           className={itemClasses}
           role="menuitem"
@@ -183,11 +184,11 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
       );
     };
 
-    const renderNavigationItems = (items: NavigationItem[], level: number = 0) => {
+    const renderNavigationItems = (items: NavigationItem[], level: number = 0, isMobile: boolean = false) => {
       const flatItems = flattenItems(items);
       
       return flatItems.map((item, index) => (
-        renderNavigationItem(item, index, level)
+        renderNavigationItem(item, index, level, isMobile)
       ));
     };
 
@@ -201,101 +202,95 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
       className
     );
 
-         const menuClasses = buildComponentClasses(
-       // Base menu styles
-       orientation === 'horizontal' ? 'flex space-x-1' : 'space-y-1',
-       
-       // Mobile responsive
-       mobileMenuButton && 'md:flex',
-       mobileMenuButton && (isMobileMenuOpen ? 'block' : 'hidden md:block')
-     );
+    const menuClasses = buildComponentClasses(
+      // Base menu styles
+      orientation === 'horizontal' ? 'flex space-x-1' : 'space-y-1',
+      
+      // Mobile responsive
+      mobileMenuButton && 'md:flex',
+      mobileMenuButton && (isMobileMenuOpen ? 'block' : 'hidden md:block')
+    );
 
     const mobileToggleClasses = buildComponentClasses(
-      'md:hidden p-2 rounded-md transition-colors',
+      'md:hidden p-2 rounded-md',
+      'motion-safe:transition-colors motion-reduce:transition-none duration-200',
       variant === 'primary' ? 
         'text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:ring-blue-500' :
         'text-gray-300 hover:text-white hover:bg-gray-700 focus:ring-gray-500',
       'focus:outline-none focus:ring-2 focus:ring-offset-2'
     );
+    
+    const mobileLinkClasses = (isActive: boolean) => buildComponentClasses(
+      'block px-3 py-2 text-base font-medium motion-safe:transition-colors motion-reduce:transition-none duration-200',
+      isActive
+        ? 'bg-gray-900 text-white'
+        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+    );
 
     return (
-      <nav
-        ref={combinedRef}
-        className={navClasses}
-        role="navigation"
-        aria-label={ariaLabel}
-        data-testid={testId}
-        {...rest}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                {/* Logo or brand area */}
-              </div>
-              
-              <div className="hidden md:ml-6 md:flex md:space-x-8">
-                <div
-                  className={menuClasses}
-                  role="menubar"
-                  aria-orientation={orientation}
-                >
-                  {renderNavigationItems(items)}
+      <header role="banner">
+        <nav
+          ref={combinedRef}
+          className={navClasses}
+          role="navigation"
+          aria-label={ariaLabel}
+          data-testid={testId}
+          {...rest}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex">
+                <div className="flex-shrink-0 flex items-center">
+                  {/* Logo or brand area */}
+                </div>
+                
+                <div className="hidden md:ml-6 md:flex md:space-x-8">
+                  <div
+                    className={menuClasses}
+                    role="menubar"
+                    aria-orientation={orientation}
+                  >
+                    {renderNavigationItems(items)}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Mobile menu button */}
-            {mobileMenuButton && (
-              <div className="md:hidden">
-                <button
-                  type="button"
-                  className={mobileToggleClasses}
-                  aria-controls="mobile-menu"
-                  aria-expanded={isMobileMenuOpen}
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                  <span className="sr-only">Open main menu</span>
-                  {/* Hamburger icon */}
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
+              {/* Mobile menu button */}
+              {mobileMenuButton && (
+                <div className="md:hidden">
+                  <button
+                    type="button"
+                    className={mobileToggleClasses}
+                    aria-controls="mobile-menu"
+                    aria-expanded={isMobileMenuOpen}
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d={isMobileMenuOpen 
-                        ? "M6 18L18 6M6 6l12 12"
-                        : "M4 6h16M4 12h16M4 18h16"
-                      }
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileMenuButton && (
-          <div
-            className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
-            id="mobile-menu"
-          >
-            <div
-              className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200"
-              role="menubar"
-              aria-orientation="vertical"
-            >
-              {renderNavigationItems(items)}
+                    <span className="sr-only">Open main menu</span>
+                    {isMobileMenuOpen ? (
+                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    ) : (
+                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </nav>
+
+          {/* Mobile menu, show/hide based on menu state. */}
+          {mobileMenuButton && isMobileMenuOpen && (
+            <div className="md:hidden" id="mobile-menu">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                {renderNavigationItems(items, 0, true)}
+              </div>
+            </div>
+          )}
+        </nav>
+      </header>
     );
   }
 );

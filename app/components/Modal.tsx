@@ -4,6 +4,7 @@ import type { BaseComponentProps } from './types';
 import { buildComponentClasses } from './utils/styles';
 import { useFocusTrap, Keys, generateId } from './utils/accessibility';
 import { Button } from './Button';
+import { clsx } from 'clsx';
 
 export interface ModalProps extends BaseComponentProps {
   isOpen: boolean;
@@ -110,85 +111,99 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
     if (!isOpen) return null;
 
     const modalContent = (
-      <div
-        className={backdropClasses}
-        onClick={handleBackdropClick}
-        role="presentation"
-      >
+      <>
         <div
-          ref={(node) => {
-            // Combine refs
-            if (focusTrapRef.current !== node) {
-              (focusTrapRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-            }
-            if (typeof ref === 'function') {
-              ref(node);
-            } else if (ref) {
-              (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
-            }
-          }}
-          className={modalClasses}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={title ? titleId : undefined}
-          aria-describedby={description ? descriptionId : undefined}
-          data-testid={testId}
-          {...rest}
+          className={clsx(
+            'fixed inset-0 z-40 bg-black bg-opacity-50',
+            'motion-safe:transition-opacity motion-reduce:transition-none duration-300 ease-out',
+            isOpen ? 'opacity-100' : 'opacity-0'
+          )}
+          onClick={handleBackdropClick}
+          role="presentation"
+          aria-hidden="true"
+        />
+        <div
+          className={clsx(
+            'fixed inset-0 z-50 flex items-center justify-center p-4',
+            'motion-safe:transition-all motion-reduce:transition-none duration-300 ease-out transform',
+            isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          )}
         >
-          {/* Modal Header */}
-          {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              {title && (
-                <h2
-                  id={titleId}
-                  className="text-lg font-semibold text-gray-900"
-                >
-                  {title}
-                </h2>
-              )}
-              
-              {showCloseButton && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  aria-label="Close modal"
-                  className="ml-auto -mr-2"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
+          <div
+            ref={(node) => {
+              // Combine refs
+              if (focusTrapRef.current !== node) {
+                (focusTrapRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+              }
+              if (typeof ref === 'function') {
+                ref(node);
+              } else if (ref) {
+                (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+              }
+            }}
+            className={modalClasses}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
+            aria-describedby={description ? descriptionId : undefined}
+            data-testid={testId}
+            {...rest}
+          >
+            {/* Modal Header */}
+            {(title || showCloseButton) && (
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                {title && (
+                  <h2
+                    id={titleId}
+                    className="text-lg font-semibold text-gray-900"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </Button>
-              )}
-            </div>
-          )}
+                    {title}
+                  </h2>
+                )}
+                
+                {showCloseButton && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onClose}
+                    aria-label="Close modal"
+                    className="ml-auto -mr-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </Button>
+                )}
+              </div>
+            )}
 
-          {/* Modal Description */}
-          {description && (
-            <div className="px-6 pt-4">
-              <p id={descriptionId} className="text-sm text-gray-600">
-                {description}
-              </p>
-            </div>
-          )}
+            {/* Modal Description */}
+            {description && (
+              <div className="px-6 pt-4">
+                <p id={descriptionId} className="text-sm text-gray-600">
+                  {description}
+                </p>
+              </div>
+            )}
 
-          {/* Modal Content */}
-          <div className="p-6">
-            {children}
+            {/* Modal Content */}
+            <div className="p-6">
+              {children}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
 
     // Render modal in a portal to avoid z-index issues

@@ -25,7 +25,7 @@
 
   html,
   body {
-    @apply bg-white dark:bg-gray-950 transition-colors duration-200;
+    @apply bg-white dark:bg-gray-950 motion-safe:transition-colors motion-reduce:transition-none duration-200;
 
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;

@@ -709,7 +709,7 @@
               1
             ],
             "details": "Implement skip-to-content links at the top of each page. Ensure all interactive elements (buttons, links, form controls) are keyboard accessible with Tab/Shift+Tab navigation. Add focus indicators with sufficient contrast ratios. Implement focus trapping for modals and dropdowns. Create custom focus management hooks for complex components. Ensure logical tab order matches visual layout.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Manual testing using only keyboard navigation. Automated tests to verify tab order and focus management. Test skip links functionality and focus trapping in modals."
           },
           {
@@ -720,7 +720,7 @@
               1
             ],
             "details": "Add ARIA landmarks (main, navigation, banner, contentinfo, complementary). Implement proper heading hierarchy (h1-h6) with no skipped levels. Add ARIA labels and descriptions for complex UI components. Use semantic HTML elements (nav, main, section, article, aside). Implement live regions for dynamic content updates. Add role attributes where semantic HTML is insufficient.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test with screen readers (NVDA, JAWS, VoiceOver) to verify proper content announcement. Automated tests to check ARIA attributes and heading hierarchy. Validate HTML semantics with accessibility validators."
           },
           {
@@ -731,7 +731,7 @@
               1
             ],
             "details": "Audit and fix color contrast ratios to meet WCAG 2.1 AA standards (4.5:1 for normal text, 3:1 for large text). Implement high contrast mode using CSS custom properties and prefers-contrast media query. Add support for prefers-reduced-motion to disable animations and transitions. Create color-blind friendly color schemes. Ensure focus indicators have sufficient contrast. Add visual indicators for required form fields beyond color alone.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Use automated color contrast checking tools. Test high contrast mode across different browsers. Verify reduced motion preferences work correctly. Manual testing with color blindness simulators."
           },
           {
@@ -825,7 +825,7 @@
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-22T02:50:27.537Z",
+      "updated": "2025-06-22T03:01:48.905Z",
       "description": "Tasks for master context"
     }
   }

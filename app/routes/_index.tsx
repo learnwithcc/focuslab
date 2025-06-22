@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { Button, Card, GitHubIcon, NewsletterForm } from "~/components";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -127,21 +128,22 @@ export default function Index() {
                 with your brain, not against it. Empowering neurodivergent
                 developers to build amazing things.
               </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="w-full px-8 py-4 text-lg font-semibold sm:w-auto transition-transform duration-200 hover:scale-105"
-                >
-                  Explore Our Tools
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full px-8 py-4 text-lg sm:w-auto transition-transform duration-200 hover:scale-105"
-                >
-                  Learn More
-                </Button>
+              <div className="relative isolate">
+                <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                  <Link to="/contact" prefetch="intent">
+                    <Button className="w-full px-8 py-4 text-lg font-semibold sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105">
+                      Get in Touch
+                    </Button>
+                  </Link>
+                  <Link to="/#featured-projects">
+                    <Button
+                      variant="secondary"
+                      className="w-full px-8 py-4 text-lg sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105"
+                    >
+                      View Our Work
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -234,7 +236,7 @@ export default function Index() {
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-lg transition-transform duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="block rounded-lg motion-safe:transition-transform motion-reduce:transform-none duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     aria-label={`${project.title} - view on GitHub`}
                   >
                     <Card className="flex h-full flex-col text-left">

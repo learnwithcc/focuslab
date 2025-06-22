@@ -18,8 +18,11 @@ export default function TermsOfService() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <header className="py-4 px-4 sm:px-6 lg:px-8 border-b border-border">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-          <ArrowLeft size={16} />
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-primary-purple dark:text-gray-400 dark:hover:text-primary-purple motion-safe:transition-colors motion-reduce:transition-none"
+        >
+          <ArrowLeft className="h-4 w-4" />
           Back to Home
         </Link>
       </header>
