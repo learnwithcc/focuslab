@@ -13,6 +13,14 @@ export {
   setThemeProperty,
 } from './theme';
 
+// Security utilities
+export {
+  securityHeaders,
+  getSecurityHeaders,
+  mergeWithSecurityHeaders,
+  createSecurityHeaders,
+} from './security';
+
 /**
  * Debounces a function call, ensuring it only executes after a delay
  * @param fn - The function to debounce
