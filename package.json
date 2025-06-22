@@ -19,6 +19,7 @@
     "@remix-run/node": "^2.16.8",
     "@remix-run/react": "^2.16.8",
     "@remix-run/serve": "^2.16.8",
+    "@testing-library/dom": "^10.4.0",
     "@types/express-rate-limit": "^6.0.2",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.35.0",
@@ -29,6 +30,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-utils": "^8.7.0",
+    "vitest-axe": "^0.1.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {
