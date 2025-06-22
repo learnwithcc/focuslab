@@ -11,6 +11,12 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import * as Sentry from "@sentry/remix";
+
+Sentry.init({
+  dsn: process.env['SENTRY_DSN'] || "YOUR_SENTRY_DSN_GOES_HERE",
+  tracesSampleRate: 1.0,
+});
 
 const ABORT_DELAY = 5_000;
 

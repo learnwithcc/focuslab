@@ -8,15 +8,21 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from '@remix-run/node';
+import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager, Header } from "~/components";
-import { NonceProvider, useNonce } from '~/utils/nonce-provider';
+import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
 import { Analytics } from "@vercel/analytics/react";
 
 import "./styles/tailwind.css";
+
+Sentry.init({
+  dsn: process.env['SENTRY_DSN'] || "YOUR_SENTRY_DSN_GOES_HERE",
+  tracesSampleRate: 1.0,
+});
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -68,7 +74,7 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
   );
 }
 
-export default function App() {
+const App = () => {
   const { nonce } = useLoaderData<typeof loader>();
   useAxe();
 
@@ -79,4 +85,6 @@ export default function App() {
       </Layout>
     </NonceProvider>
   );
-}
+};
+
+export default Sentry.withSentry(App);
