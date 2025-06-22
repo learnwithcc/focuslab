@@ -1,146 +1,37 @@
-import { useCallback, useState } from 'react';
-import { debounce } from './index';
+import { json } from '@remix-run/node';
+import { ZodSchema, z } from 'zod';
 
-// Email validation regex pattern
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+type FormErrors<T> = { [K in keyof T]?: string };
 
-/**
- * Validates if a string is a valid email address
- * @param email - The email string to validate
- * @returns true if the email is valid, false otherwise
- */
-export const isValidEmail = (email: string): boolean => {
-  if (!email) return false;
-  return EMAIL_REGEX.test(email.trim());
-};
+export async function validateForm<T>(
+  formData: FormData,
+  schema: ZodSchema<T>,
+  callback: (data: T) => Promise<Response>
+): Promise<Response> {
+  const data = Object.fromEntries(formData);
+  const result = schema.safeParse(data);
 
-export interface ValidationErrors {
-  email?: string;
-  gdprConsent?: string;
-  [key: string]: string | undefined;
-}
-
-interface ValidationRules {
-  [key: string]: (value: any) => string | undefined;
-}
-
-/**
- * Custom hook for form validation with debouncing
- * @param initialValues - Initial form values
- * @param validationRules - Object containing validation rules for each field
- * @param debounceMs - Debounce delay in milliseconds
- * @returns Object containing validation state and handlers
- */
-export const useFormValidation = <T extends Record<string, any>>(
-  initialValues: T,
-  validationRules: ValidationRules,
-  debounceMs = 300
-) => {
-  const [values, setValues] = useState<T>(initialValues);
-  const [errors, setErrors] = useState<ValidationErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  // Validate a single field
-  const validateField = (name: keyof T, value: any): string | undefined => {
-    const validateRule = validationRules[name as string];
-    return validateRule ? validateRule(value) : undefined;
-  };
-
-  // Validate all fields
-  const validateForm = useCallback((formValues: T): ValidationErrors => {
-    const newErrors: ValidationErrors = {};
-    Object.keys(validationRules).forEach((fieldName) => {
-      const error = validateField(fieldName as keyof T, formValues[fieldName]);
-      if (error) {
-        newErrors[fieldName] = error;
-      }
+  if (!result.success) {
+    const errors: FormErrors<T> = {};
+    result.error.issues.forEach((issue) => {
+      const path = issue.path[0] as keyof T;
+      errors[path] = issue.message;
     });
-    return newErrors;
-  }, [validationRules]);
+    return json({ errors }, { status: 400 });
+  }
 
-  // Debounced validation to prevent excessive re-renders
-  const debouncedValidation = useCallback(
-    debounce((name: keyof T, value: any) => {
-      const error = validateField(name, value);
-      if (error) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: error
-        }));
-      } else {
-        setErrors((prev) => {
-          const newErrors = { ...prev };
-          delete newErrors[name as string];
-          return newErrors;
-        });
-      }
-    }, debounceMs),
-    [validationRules]
-  );
-
-  // Handle field change
-  const handleChange = (name: keyof T, value: any) => {
-    setValues((prev) => ({ ...prev, [name]: value }));
-    if (touched[name as string]) {
-      debouncedValidation(name, value);
-    }
-  };
-
-  // Handle field blur
-  const handleBlur = (name: keyof T) => {
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    const error = validateField(name, values[name]);
-    if (error) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: error
-      }));
-    } else {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name as string];
-        return newErrors;
-      });
-    }
-  };
-
-  return {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    validateForm,
-    setValues,
-    setErrors,
-    setTouched,
-  };
-};
-
-export interface NewsletterFormValues {
-  email: string;
-  gdprConsent: boolean;
+  return callback(result.data);
 }
 
-/**
- * Validates the newsletter form data
- * @param data - The form data to validate
- * @returns Object containing validation errors, if any
- */
-export const validateNewsletterForm = (data: NewsletterFormValues): ValidationErrors => {
-  const errors: ValidationErrors = {};
+export const newsletterSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  name: z.string().optional(), // Honeypot
+});
 
-  // Validate email
-  if (!data['email']) {
-    errors['email'] = 'Email is required';
-  } else if (!isValidEmail(data['email'])) {
-    errors['email'] = 'Please enter a valid email address';
-  }
-
-  // Validate GDPR consent
-  if (!data['gdprConsent']) {
-    errors['gdprConsent'] = 'You must accept the privacy policy to subscribe';
-  }
-
-  return errors;
-}; 
+export const contactSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  subject: z.string().min(5, 'Subject must be at least 5 characters'),
+  message: z.string().min(20, 'Message must be at least 20 characters'),
+  website: z.string().optional(), // Honeypot
+}); 
