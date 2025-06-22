@@ -35,6 +35,9 @@ export {
   useCSRFToken,
 } from './csrf';
 
+// Cookie utilities
+export * from './cookies';
+
 /**
  * Debounces a function call, ensuring it only executes after a delay
  * @param fn - The function to debounce

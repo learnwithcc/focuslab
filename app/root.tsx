@@ -7,6 +7,8 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import { createSecurityHeaders } from "~/utils/security";
+import { CookieConsentProvider } from "~/contexts";
+import { CookieManager } from "~/components";
 
 import "./styles/tailwind.css";
 
@@ -36,7 +38,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <CookieConsentProvider>
+          {children}
+          <CookieManager />
+        </CookieConsentProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

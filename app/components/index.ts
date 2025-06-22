@@ -18,5 +18,9 @@ export * from './icons';
 export * from './NewsletterForm';
 export * from './ContactForm';
 export * from './ContactInfo';
+export { SubscriberManagement } from './SubscriberManagement';
+export { CookieBanner } from './CookieBanner';
+export { CookieConsentModal } from './CookieConsentModal';
+export { CookieManager } from './CookieManager';
 
 // Add component exports here as they are created 
