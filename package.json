@@ -11,6 +11,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@axe-core/react": "^4.10.2",
     "@mailerlite/mailerlite-nodejs": "^1.4.0",
     "@remix-run/node": "^2.16.8",
     "@remix-run/react": "^2.16.8",

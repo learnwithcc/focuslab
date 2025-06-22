@@ -4,11 +4,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from '@remix-run/node';
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager } from "~/components";
+import { NonceProvider, useNonce } from '~/utils/nonce-provider';
+import { useAxe } from '~/utils/axe';
+import { generateNonce } from '~/utils/nonce-generator';
 
 import "./styles/tailwind.css";
 
@@ -25,10 +30,16 @@ export const links: LinksFunction = () => [
   },
 ];
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const nonce = generateNonce();
+  return json({ nonce });
+}
+
 // Apply security headers to all routes
 export const headers = createSecurityHeaders;
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const nonce = useNonce();
   return (
     <html lang="en">
       <head>
@@ -42,13 +53,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
           <CookieManager />
         </CookieConsentProvider>
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
 }
 
 export default function App() {
-  return <Outlet />;
+  const { nonce } = useLoaderData<typeof loader>();
+  useAxe();
+
+  return (
+    <NonceProvider nonce={nonce}>
+      <Layout>
+        <Outlet />
+      </Layout>
+    </NonceProvider>
+  );
 }
