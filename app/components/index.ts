@@ -15,5 +15,6 @@ export * from './Card';
 export * from './Modal';
 export * from './ErrorBoundary';
 export * from './icons';
+export * from './NewsletterForm';
 
 // Add component exports here as they are created 

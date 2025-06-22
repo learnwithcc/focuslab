@@ -1,5 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Button, Card, GitHubIcon } from "~/components";
+import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Button, Card, GitHubIcon, NewsletterForm } from "~/components";
+import { validateNewsletterForm, type NewsletterFormValues } from "~/utils/validation";
+import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,6 +14,79 @@ export const meta: MetaFunction = () => {
     },
   ];
 };
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const email = formData.get('email')?.toString() || '';
+  const gdprConsent = formData.get('gdprConsent') === 'true';
+
+  // Server-side validation
+  const validationErrors = validateNewsletterForm({ email, gdprConsent });
+  if (Object.keys(validationErrors).length > 0) {
+    return json(
+      { success: false, errors: validationErrors },
+      { status: 400 }
+    );
+  }
+
+  // Get client IP for rate limiting
+  const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+                  request.headers.get('x-real-ip') || 
+                  '127.0.0.1';
+
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit(clientIp);
+  if (!rateLimitResult.success || !rateLimitResult.isAllowed) {
+    return json(
+      {
+        success: false,
+        error: 'Too many subscription attempts. Please try again later.',
+        reset: rateLimitResult.reset,
+        remaining: rateLimitResult.remaining,
+      },
+      { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
+          'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
+          'X-RateLimit-Reset': rateLimitResult.reset?.toString() || '',
+          'Retry-After': rateLimitResult.reset ? 
+            Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString() : 
+            '3600'
+        }
+      }
+    );
+  }
+
+  // Subscribe to newsletter with GDPR consent
+  const subscriptionResult = await subscribeToNewsletter({ email, gdprConsent });
+  if (!subscriptionResult.success) {
+    return json(
+      {
+        success: false,
+        error: subscriptionResult.error || 'Failed to subscribe to newsletter',
+      },
+      { status: subscriptionResult.error?.includes('already subscribed') ? 409 : 500 }
+    );
+  }
+
+  return json(
+    {
+      success: true,
+      message: 'Successfully subscribed to newsletter!',
+      remaining: rateLimitResult.remaining,
+      subscriber: subscriptionResult.data,
+    },
+    { 
+      status: 200,
+      headers: {
+        'X-RateLimit-Limit': rateLimitResult.limit?.toString() || '3',
+        'X-RateLimit-Remaining': rateLimitResult.remaining?.toString() || '0',
+        'X-RateLimit-Reset': rateLimitResult.reset?.toString() || ''
+      }
+    }
+  );
+}
 
 const featuredProjects = [
   {

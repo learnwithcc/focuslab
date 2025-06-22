@@ -2,6 +2,37 @@
 
 A Remix.js application built with TypeScript and Tailwind CSS, designed to create neurodivergent-friendly tools and workflows.
 
+## Features
+
+### Newsletter Subscription
+- Server-side email validation
+- GDPR compliance with consent checkbox
+- Rate limiting (3 attempts per hour per IP)
+- Clear error feedback with remaining attempts
+- Integration with ConvertKit for email management
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+# Upstash Redis Configuration (for rate limiting)
+UPSTASH_REDIS_REST_URL=your_redis_url_here
+UPSTASH_REDIS_REST_TOKEN=your_redis_token_here
+
+# ConvertKit Configuration (for newsletter service)
+CONVERTKIT_API_KEY=your_convertkit_api_key_here
+CONVERTKIT_DEFAULT_FORM_ID=your_default_form_id_here
+```
+
+## Rate Limiting
+
+The newsletter subscription form is protected by rate limiting:
+- 3 attempts per hour per IP address
+- Clear feedback on remaining attempts
+- Reset time information when limit is reached
+- Standard rate limit headers (X-RateLimit-*) included in responses
+
 ## 🚀 Quick Start
 
 ### Prerequisites

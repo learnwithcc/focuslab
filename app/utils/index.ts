@@ -13,4 +13,22 @@ export {
   setThemeProperty,
 } from './theme';
 
+/**
+ * Debounces a function call, ensuring it only executes after a delay
+ * @param fn - The function to debounce
+ * @param delay - The delay in milliseconds
+ * @returns A debounced version of the function
+ */
+export const debounce = <T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number
+): ((...args: Parameters<T>) => void) => {
+  let timeoutId: NodeJS.Timeout;
+
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
 // Add utility exports here as they are created 
