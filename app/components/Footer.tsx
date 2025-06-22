@@ -22,9 +22,6 @@ export function Footer() {
           <Link to="/contact" className="hover:underline text-sm">
             Contact
           </Link>
-          <Link to="/blog" className="hover:underline text-sm">
-            Blog
-          </Link>
         </div>
         <div className="flex flex-col space-y-2">
           <h3 className="text-lg font-semibold">Legal</h3>

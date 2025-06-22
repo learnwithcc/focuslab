@@ -1,6 +1,10 @@
 import { json, type ActionFunctionArgs } from '@remix-run/node';
 import { mailerLiteService, type MailerLiteSubscriber } from '~/services/mailerlite';
 import { rateLimiter } from '~/utils/server';
+import { createAPIHeaders } from '~/utils/security';
+
+// Apply API-specific headers (includes X-Robots-Tag: noindex)
+export const headers = createAPIHeaders;
 
 interface ActionResponse {
   success: boolean;

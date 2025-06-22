@@ -21,6 +21,12 @@ export function Header() {
               Home
             </Link>
             <Link
+              to="/about"
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+            >
+              About
+            </Link>
+            <Link
               to="/projects"
               className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-3 py-2 text-sm font-medium transition-colors"
             >

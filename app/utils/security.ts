@@ -43,12 +43,46 @@ export const securityHeaders = {
 };
 
 /**
+ * SEO-specific headers for different route types
+ */
+export const seoHeaders = {
+  // Standard pages - allow indexing
+  pages: {
+    "X-Robots-Tag": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+  },
+  
+  // API routes - prevent indexing
+  api: {
+    "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet, noimageindex",
+  },
+  
+  // Sitemap and robots.txt - special handling
+  seo: {
+    "X-Robots-Tag": "noindex", // Don't index the sitemap itself
+  },
+};
+
+/**
  * Get security headers as a Headers object
  */
 export function getSecurityHeaders(): Headers {
   const headers = new Headers();
   
   Object.entries(securityHeaders).forEach(([name, value]) => {
+    headers.set(name, value);
+  });
+  
+  return headers;
+}
+
+/**
+ * Get security headers with SEO headers for specific route types
+ */
+export function getSecurityHeadersWithSEO(routeType: 'pages' | 'api' | 'seo' = 'pages'): Headers {
+  const headers = getSecurityHeaders();
+  
+  // Add SEO-specific headers
+  Object.entries(seoHeaders[routeType]).forEach(([name, value]) => {
     headers.set(name, value);
   });
   
@@ -83,8 +117,52 @@ export function mergeWithSecurityHeaders(existingHeaders?: HeadersInit): Headers
 }
 
 /**
- * Headers function for Remix routes
+ * Merge security and SEO headers with existing headers
+ */
+export function mergeWithSecurityAndSEOHeaders(
+  routeType: 'pages' | 'api' | 'seo' = 'pages',
+  existingHeaders?: HeadersInit
+): Headers {
+  const headers = getSecurityHeadersWithSEO(routeType);
+  
+  if (existingHeaders) {
+    if (existingHeaders instanceof Headers) {
+      existingHeaders.forEach((value, name) => {
+        headers.set(name, value);
+      });
+    } else if (Array.isArray(existingHeaders)) {
+      existingHeaders.forEach(([name, value]) => {
+        headers.set(name, value);
+      });
+    } else {
+      Object.entries(existingHeaders).forEach(([name, value]) => {
+        if (value !== undefined) {
+          headers.set(name, value);
+        }
+      });
+    }
+  }
+  
+  return headers;
+}
+
+/**
+ * Headers function for Remix routes (default to pages)
  */
 export const createSecurityHeaders: HeadersFunction = ({ parentHeaders }) => {
-  return mergeWithSecurityHeaders(parentHeaders);
+  return mergeWithSecurityAndSEOHeaders('pages', parentHeaders);
+};
+
+/**
+ * Headers function for API routes
+ */
+export const createAPIHeaders: HeadersFunction = ({ parentHeaders }) => {
+  return mergeWithSecurityAndSEOHeaders('api', parentHeaders);
+};
+
+/**
+ * Headers function for SEO utility routes (sitemap, robots.txt)
+ */
+export const createSEOHeaders: HeadersFunction = ({ parentHeaders }) => {
+  return mergeWithSecurityAndSEOHeaders('seo', parentHeaders);
 }; 

@@ -2757,3 +2757,2534 @@ _**Assistant**_
 
 ---
 
+Perfect! Now let me continue with the next subtask. Let me check what Task 8.3 involves:
+
+---
+
+
+
+---
+
+Excellent! Now I'll start implementing Task 8.3 - "Implement Breadcrumb Navigation with Structured Data". Let me set it to in-progress and begin implementation:
+
+---
+
+
+
+---
+
+
+
+---
+
+Perfect! Now let me start by adding the BreadcrumbList schema to our structured data utility:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now let me add the breadcrumb schema generator function:
+
+---
+
+
+
+---
+
+
+
+---
+
+Let me read the structured data file to see the current structure:
+
+---
+
+Read file: app/utils/structured-data.ts
+
+---
+
+
+
+---
+
+Now let me add the breadcrumb schema generator and utility functions:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the generateStructuredDataMeta function to support BreadcrumbListSchema as well:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now let me create a Breadcrumb component that can be used throughout the site:
+
+---
+
+```diff
+- 
++ import { Link } from '@remix-run/react';
++ import { ChevronRightIcon } from '@heroicons/react/20/solid';
++ import type { BreadcrumbItem } from '~/utils/structured-data';
++ 
++ export interface BreadcrumbProps {
++   items: BreadcrumbItem[];
++   className?: string;
++ }
++ 
++ export function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
++   // Don't render breadcrumbs if there's only the home item (homepage)
++   if (items.length <= 1) {
++     return null;
++   }
++ 
++   return (
++     <nav 
++       aria-label="Breadcrumb navigation" 
++       className={`flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400 ${className}`}
++     >
++       <ol className="flex items-center space-x-2" itemScope itemType="https://schema.org/BreadcrumbList">
++         {items.map((item, index) => {
++           const isLast = index === items.length - 1;
++           
++           return (
++             <li 
++               key={item.path}
++               className="flex items-center"
++               itemProp="itemListElement"
++               itemScope
++               itemType="https://schema.org/ListItem"
++             >
++               {index > 0 && (
++                 <ChevronRightIcon 
++                   className="h-4 w-4 mx-2 flex-shrink-0 text-neutral-400 dark:text-neutral-500" 
++                   aria-hidden="true"
++                 />
++               )}
++               
++               {isLast ? (
++                 <span 
++                   className="font-medium text-neutral-900 dark:text-neutral-100"
++                   aria-current="page"
++                   itemProp="name"
++                 >
++                   {item.name}
++                 </span>
++               ) : (
++                 <Link
++                   to={item.path}
++                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
++                   itemProp="item"
++                 >
++                   <span itemProp="name">{item.name}</span>
++                 </Link>
++               )}
++               
++               <meta itemProp="position" content={String(index + 1)} />
++             </li>
++           );
++         })}
++       </ol>
++     </nav>
++   );
++ }
++ 
++ export default Breadcrumb; 
+```
+
+---
+
+
+
+---
+
+I need to fix the Heroicons import. Let me check what's available in the project:
+
+---
+
+Read file: package.json
+
+---
+
+
+
+---
+
+Perfect! I can see the project uses `lucide-react`. Let me update the Breadcrumb component to use Lucide React instead:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the icon component name in the JSX:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now let me add the Breadcrumb component to the components index file:
+
+---
+
+
+
+---
+
+
+
+---
+
+Let me read the components index file to see the current structure:
+
+---
+
+Read file: app/components/index.ts
+
+---
+
+
+
+---
+
+I can see the file uses a different export pattern. Let me add the Breadcrumb export:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the SEO utility to support breadcrumb schemas. Let me update the imports and interface:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the SEOMetaOptions interface to include breadcrumb support:
+
+---
+
+
+
+---
+
+
+
+---
+
+I need to update the generateMeta function to handle the breadcrumb schema. Let me update the function signature and logic:
+
+---
+
+
+
+---
+
+
+
+---
+
+I need to fix the schema type issue. Let me update the schemas array logic to properly handle the breadcrumb schema:
+
+---
+
+
+
+---
+
+
+
+---
+
+Great! Now let me update the routes to include breadcrumb navigation. Let me start with the about page:
+
+---
+
+Read file: app/routes/about.tsx
+
+---
+
+
+
+---
+
+Now I need to add breadcrumb navigation to the about page. Let me update it to include breadcrumb support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the meta function to include breadcrumb schema support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to add the breadcrumb component to the JSX of the about page:
+
+---
+
+
+
+---
+
+
+
+---
+
+Perfect! Now let me also update the contact page to include breadcrumb support:
+
+---
+
+Read file: app/routes/contact.tsx
+
+---
+
+
+
+---
+
+I can see the contact page is much simpler. Let me update it to include breadcrumb support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the meta function and component:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the component to include the breadcrumb navigation:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now let me also update the projects page to include breadcrumb support:
+
+---
+
+Read file: app/routes/projects.tsx
+
+---
+
+
+
+---
+
+I can see the projects page structure. Let me update it to include breadcrumb support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the meta function to include breadcrumb schema support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to add the breadcrumb component to the projects page component:
+
+---
+
+
+
+---
+
+
+
+---
+
+Perfect! Now let me also update the individual project page to include breadcrumb support:
+
+---
+
+Read file: app/routes/projects.$id.tsx
+
+---
+
+
+
+---
+
+I can see the individual project page structure. Let me update it to include breadcrumb support:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to update the meta function to include breadcrumb schema support:
+
+---
+
+
+
+---
+
+
+
+---
+
+I need to fix the TypeScript error by accessing the id property correctly:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to add the breadcrumb component to the individual project page component:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now I need to add the breadcrumb component to the JSX:
+
+---
+
+
+
+---
+
+
+
+---
+
+Perfect! Now let me test that everything builds correctly to make sure our breadcrumb implementation is working:
+
+---
+
+```bash
+pnpm run build
+```
+
+```
+❯ pnpm run build
+
+> focuslab@ build /Users/cryophobic/dev/projects/focuslab
+> remix vite:build
+
+vite v6.3.5 building for production...
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guide/
+troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guide/
+troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/stream.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/stream.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vi
+te.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:os" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vi
+te.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:os" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/index.js". See https://vite.dev/guide/troubleshooting.html#modu
+le-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "crypto" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/cookie-signature/index.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "crypto" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/cookie-signature/index.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/dispatcher.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/dispatcher.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:url" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/proxy-agent.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:url" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/proxy-agent.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:querystring" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:querystring" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-pool.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-pool.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/retry-handler.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/retry-handler.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/data-url.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/data-url.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource.js". See https://vite.dev/guide
+/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource.js". See https://vite.dev/guide
+/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/websocket.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/websocket.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/events.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/events.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/request.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/request.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http2" has been externalized for browser compatibility, imported by "/Users/cry
+ophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http2" has been externalized for browser compatibility, imported by "/Users/cry
+ophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:perf_hooks" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:perf_hooks" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/file.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/file.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cookies/parse.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cookies/parse.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource-stream.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource-stream.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/cache.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/cache.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/connection.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/connection.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:diagnostics_channel" has been externalized for browser compatibility, imported 
+by "/Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/gui
+de/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:diagnostics_channel" has been externalized for browser compatibility, imported 
+by "/Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/gui
+de/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/util.js". See https://vite.dev/guide/troubleshooting.ht
+ml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/util.js". See https://vite.dev/guide/troubleshooting.ht
+ml#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/frame.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/frame.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/permessage-deflate.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/permessage-deflate.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.d
+ev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:console" has been externalized for browser compatibility, imported by "/Users/c
+ryophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.
+dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.d
+ev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:console" has been externalized for browser compatibility, imported by "/Users/c
+ryophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.
+dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h1.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h1.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp-wasm.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp-wasm.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp_simd-wasm.js". See https://vite.dev/guide/tro
+ubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp_simd-wasm.js". See https://vite.dev/guide/tro
+ubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+✓ 1982 modules transformed.
+Generated an empty chunk: "api.subscribers".
+Generated an empty chunk: "api.newsletter".
+Generated an empty chunk: "api.contact".
+build/client/.vite/manifest.json                           7.46 kB │ gzip:  1.03 kB
+build/client/assets/root-Ceb99d3j.css                     64.85 kB │ gzip:  9.81 kB
+build/client/assets/api.subscribers-l0sNRNKZ.js            0.00 kB │ gzip:  0.02 kB
+build/client/assets/api.newsletter-l0sNRNKZ.js             0.00 kB │ gzip:  0.02 kB
+build/client/assets/api.contact-l0sNRNKZ.js                0.00 kB │ gzip:  0.02 kB
+build/client/assets/arrow-left-CNJEu2ez.js                 0.35 kB │ gzip:  0.27 kB
+build/client/assets/index-BJYSoprK.js                      0.58 kB │ gzip:  0.39 kB
+build/client/assets/GitHubIcon-D6DxyTeD.js                 0.60 kB │ gzip:  0.41 kB
+build/client/assets/accessibility-DbC3BHRe.js              1.24 kB │ gzip:  0.66 kB
+build/client/assets/contact-ClfMDQSM.js                    1.26 kB │ gzip:  0.72 kB
+build/client/assets/Breadcrumb-C5233WP8.js                 1.42 kB │ gzip:  0.74 kB
+build/client/assets/Button-CYVEyHvo.js                     1.44 kB │ gzip:  0.74 kB
+build/client/assets/createLucideIcon-Bw5H0cQX.js           1.86 kB │ gzip:  0.80 kB
+build/client/assets/star-DUMd_rGn.js                       2.69 kB │ gzip:  0.91 kB
+build/client/assets/accessibility-statement-BGRqKMwo.js    2.85 kB │ gzip:  1.11 kB
+build/client/assets/entry.client-B0vblw1w.js               3.90 kB │ gzip:  1.49 kB
+build/client/assets/Layout-z1CRu37o.js                     4.45 kB │ gzip:  1.36 kB
+build/client/assets/terms-of-service-Bf5PACiJ.js           5.81 kB │ gzip:  1.98 kB
+build/client/assets/seo-BKMoWCYG.js                        6.88 kB │ gzip:  2.37 kB
+build/client/assets/jsx-runtime-0DLF9kdB.js                7.76 kB │ gzip:  2.96 kB
+build/client/assets/projects._id-CR4OH6Iu.js               7.77 kB │ gzip:  2.41 kB
+build/client/assets/_index-CgkfWl27.js                     9.31 kB │ gzip:  3.26 kB
+build/client/assets/privacy-policy-A2_MuFAO.js            11.15 kB │ gzip:  3.20 kB
+build/client/assets/about-D1YGYHuy.js                     11.39 kB │ gzip:  3.61 kB
+build/client/assets/root-CUfMulRT.js                      15.68 kB │ gzip:  5.45 kB
+build/client/assets/projects-C7tHb2FL.js                  19.93 kB │ gzip:  4.87 kB
+build/client/assets/ContactForm-A0e0uc09.js               62.96 kB │ gzip: 16.09 kB
+build/client/assets/components-DyWbs4Bj.js               250.18 kB │ gzip: 81.00 kB
+✓ built in 2.88s
+vite v6.3.5 building SSR bundle for production...
+✓ 62 modules transformed.
+build/server/.vite/manifest.json                 0.22 kB
+build/server/assets/server-build-Ceb99d3j.css   64.85 kB
+build/server/index.js                          222.57 kB
+✓ built in 204ms
+
+╭─     ~/dev/projects/focuslab     main !9 ?2 ································ ✔  5s    09:33:05   
+╰─
+```
+
+---
+
+
+
+---
+
+Excellent! The build is successful. Now let me mark subtask 8.3 as complete and commit our work:
+
+---
+
+
+
+---
+
+Now let me commit the completed breadcrumb navigation implementation:
+
+---
+
+```bash
+git add .
+```
+
+```
+❯ git add .
+
+╭─     ~/dev/projects/focuslab     main +11 ·········································· ✔  09:33:20   
+╰─
+```
+
+---
+
+```bash
+git commit -m "feat(seo): complete subtask 8.3 - implement comprehensive breadcrumb navigation with structured data
+
+- Created Breadcrumb component with semantic HTML and accessibility features
+- Extended structured-data utility with BreadcrumbList JSON-LD schema generator  
+- Added getBreadcrumbItems() function for dynamic path-based breadcrumb generation
+- Integrated breadcrumb schemas into SEO meta function with pathname support
+- Updated major routes with breadcrumb navigation:
+  - About page: Home > About breadcrumb trail
+  - Contact page: Home > Contact breadcrumb trail  
+  - Projects page: Home > Projects breadcrumb trail
+  - Individual project page: Home > Projects > [Project Name] breadcrumb trail
+- Breadcrumb component features:
+  - Responsive design with Lucide React chevron icons
+  - ARIA labels and semantic markup for accessibility
+  - Proper schema.org microdata integration
+  - Smart hiding on homepage (single item)
+  - Tailwind CSS styling consistent with site theme
+- Enhanced SEO utility to support BreadcrumbListSchema in generateMeta()
+- All breadcrumb implementations focus on improving navigation UX and SEO
+
+Task 8.3 completed and ready for Task 8.4 (XML sitemap generation)"
+```
+
+```
+
+❯ >....                                                                                                           
+- All breadcrumb implementations focus on improving navigation UX and SEO
+
+Task 8.3 completed and ready for Task 8.4 (XML sitemap generation)"
+[main 0680bb1] feat(seo): complete subtask 8.3 - implement comprehensive breadcrumb navigation with structured dat
+a
+ 11 files changed, 2963 insertions(+), 31 deletions(-)
+ create mode 100644 .specstory/history/2025-06-22_04-15-complete-task-7-5-and-start-task-8.md
+ delete mode 100644 .specstory/history/2025-06-22_04-15-untitled.md
+ create mode 100644 app/components/Breadcrumb.tsx
+
+╭─     ~/dev/projects/focuslab     main ⇡1 ··········································· ✔  09:33:31   
+╰─
+```
+
+---
+
+
+
+---
+
+Perfect! I've successfully completed **Task 8.3 - Implement Breadcrumb Navigation with Structured Data**. Here's a summary of what we accomplished:
+
+## Task 8.3 Completion Summary
+
+### ✅ **Key Features Implemented:**
+
+1. **Breadcrumb Component** (`app/components/Breadcrumb.tsx`)
+   - Semantic HTML with proper ARIA labels for accessibility
+   - Responsive design using Lucide React chevron icons
+   - Schema.org microdata integration
+   - Smart hiding when only homepage item exists
+   - Consistent Tailwind CSS styling
+
+2. **BreadcrumbList JSON-LD Schema**
+   - Extended structured data utility with comprehensive breadcrumb schema generator
+   - Dynamic breadcrumb item generation based on pathname
+   - Proper JSON-LD structure with position-based navigation
+
+3. **Route Integration**
+   - **About page**: Home > About breadcrumb trail
+   - **Contact page**: Home > Contact breadcrumb trail  
+   - **Projects page**: Home > Projects breadcrumb trail
+   - **Individual project page**: Home > Projects > [Project Name] breadcrumb trail
+
+4. **SEO Enhancement**
+   - Enhanced SEO utility to support BreadcrumbListSchema in meta generation
+   - Automatic breadcrumb structured data injection via pathname parameter
+
+### ✅ **Technical Benefits:**
+- **Improved Navigation UX**: Clear hierarchical navigation for users
+- **Enhanced SEO**: Structured data helps search engines understand site hierarchy
+- **Accessibility**: ARIA labels and semantic markup for screen readers
+- **Performance**: Lightweight component with efficient rendering
+
+Now let me continue with **Task 8.4 - Generate Dynamic XML Sitemap**. Let me check the requirements and start implementation:
+
+---
+
+
+
+---
+
+
+
+---
+
+Excellent! Now I can see the requirements for Task 8.4. Let me set it to in-progress and start implementing the dynamic XML sitemap generation:
+
+---
+
+
+
+---
+
+
+
+---
+
+Now let me create the sitemap utility first to handle URL management and metadata:
+
+---
+
+```diff
+- 
++ // Sitemap generation utilities for Focus Lab
++ import { projects } from '~/data/projects';
++ 
++ export interface SitemapUrl {
++   loc: string;
++   lastmod: string;
++   changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
++   priority: number;
++ }
++ 
++ export interface SitemapOptions {
++   baseUrl?: string;
++   currentDate?: Date;
++ }
++ 
++ const DEFAULT_BASE_URL = 'https://focuslab.dev';
++ 
++ // Static route configuration
++ const STATIC_ROUTES: Omit<SitemapUrl, 'loc' | 'lastmod'>[] = [
++   {
++     changefreq: 'daily',
++     priority: 1.0
++   }, // Homepage
++   {
++     changefreq: 'monthly', 
++     priority: 0.8
++   }, // About
++   {
++     changefreq: 'monthly',
++     priority: 0.7
++   }, // Contact
++   {
++     changefreq: 'weekly',
++     priority: 0.9
++   }, // Projects
++   {
++     changefreq: 'yearly',
++     priority: 0.3
++   }, // Privacy Policy
++   {
++     changefreq: 'yearly',
++     priority: 0.3
++   }, // Terms of Service
++   {
++     changefreq: 'yearly',
++     priority: 0.4
++   }, // Accessibility Statement
++ ];
++ 
++ const STATIC_PATHS = [
++   '/',
++   '/about',
++   '/contact', 
++   '/projects',
++   '/privacy-policy',
++   '/terms-of-service',
++   '/accessibility-statement'
++ ];
++ 
++ /**
++  * Generate sitemap URLs for all static routes
++  */
++ export function generateStaticUrls(options: SitemapOptions = {}): SitemapUrl[] {
++   const { baseUrl = DEFAULT_BASE_URL, currentDate = new Date() } = options;
++   const lastmod = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD format
++ 
++   return STATIC_PATHS.map((path, index) => ({
++     loc: `${baseUrl}${path}`,
++     lastmod,
++     ...STATIC_ROUTES[index]
++   }));
++ }
++ 
++ /**
++  * Generate sitemap URLs for dynamic project pages
++  */
++ export function generateProjectUrls(options: SitemapOptions = {}): SitemapUrl[] {
++   const { baseUrl = DEFAULT_BASE_URL, currentDate = new Date() } = options;
++   const defaultLastmod = currentDate.toISOString().split('T')[0];
++ 
++   return projects.map((project) => {
++     // Use project's last updated date if available, otherwise current date
++     let lastmod = defaultLastmod;
++     if (project.lastUpdated) {
++       try {
++         const projectDate = new Date(project.lastUpdated);
++         lastmod = projectDate.toISOString().split('T')[0];
++       } catch {
++         // If date parsing fails, use default
++         lastmod = defaultLastmod;
++       }
++     }
++ 
++     return {
++       loc: `${baseUrl}/projects/${project.id}`,
++       lastmod,
++       changefreq: 'monthly' as const,
++       priority: 0.8
++     };
++   });
++ }
++ 
++ /**
++  * Generate complete sitemap URLs including static and dynamic content
++  */
++ export function generateAllSitemapUrls(options: SitemapOptions = {}): SitemapUrl[] {
++   const staticUrls = generateStaticUrls(options);
++   const projectUrls = generateProjectUrls(options);
++   
++   return [...staticUrls, ...projectUrls];
++ }
++ 
++ /**
++  * Generate XML sitemap string
++  */
++ export function generateSitemapXml(urls: SitemapUrl[]): string {
++   const urlEntries = urls.map(url => `
++   <url>
++     <loc>${escapeXml(url.loc)}</loc>
++     <lastmod>${url.lastmod}</lastmod>
++     <changefreq>${url.changefreq}</changefreq>
++     <priority>${url.priority.toFixed(1)}</priority>
++   </url>`).join('');
++ 
++   return `<?xml version="1.0" encoding="UTF-8"?>
++ <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
++ ${urlEntries}
++ </urlset>`;
++ }
++ 
++ /**
++  * Escape XML special characters
++  */
++ function escapeXml(unsafe: string): string {
++   return unsafe
++     .replace(/&/g, '&amp;')
++     .replace(/</g, '&lt;')
++     .replace(/>/g, '&gt;')
++     .replace(/"/g, '&quot;')
++     .replace(/'/g, '&#39;');
++ }
++ 
++ /**
++  * Get sitemap index for large sites (future expansion)
++  */
++ export function generateSitemapIndex(sitemapUrls: string[], baseUrl: string = DEFAULT_BASE_URL): string {
++   const currentDate = new Date().toISOString();
++   
++   const sitemapEntries = sitemapUrls.map(url => `
++   <sitemap>
++     <loc>${escapeXml(url)}</loc>
++     <lastmod>${currentDate}</lastmod>
++   </sitemap>`).join('');
++ 
++   return `<?xml version="1.0" encoding="UTF-8"?>
++ <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
++ ${sitemapEntries}
++ </sitemapindex>`;
++ }
++ 
++ /**
++  * Validate sitemap URL count (search engines typically limit to 50,000 URLs)
++  */
++ export function validateSitemapSize(urls: SitemapUrl[]): { isValid: boolean; count: number; maxCount: number } {
++   const maxCount = 50000;
++   return {
++     isValid: urls.length <= maxCount,
++     count: urls.length,
++     maxCount
++   };
++ } 
+```
+
+---
+
+
+
+---
+
+I need to check the Project type to see what properties are available. Let me look at the project data structure:
+
+---
+
+Read file: app/types/project.ts
+
+---
+
+
+
+---
+
+I can see that the Project type doesn't have a `lastUpdated` property directly. The `lastUpdated` is nested within the `githubStats` property. Let me fix the sitemap utility to use the correct property path:
+
+---
+
+
+
+---
+
+
+
+---
+
+Great! Now let me create the sitemap.xml route to serve the dynamic XML sitemap:
+
+---
+
+```diff
+- 
++  
+```
+
+---
+
+
+
+---
+
+There seems to be an issue with the file name. Let me create the route with the proper file name format for Remix:
+
+---
+
+```diff
+- 
++ // Dynamic XML Sitemap Route for Focus Lab
++ import type { LoaderFunctionArgs } from '@remix-run/node';
++ import { generateAllSitemapUrls, generateSitemapXml, validateSitemapSize } from '~/utils/sitemap';
++ 
++ export async function loader({ request }: LoaderFunctionArgs) {
++   try {
++     // Get the base URL from the request
++     const url = new URL(request.url);
++     const baseUrl = `${url.protocol}//${url.host}`;
++     
++     // Generate all sitemap URLs
++     const sitemapUrls = generateAllSitemapUrls({ 
++       baseUrl,
++       currentDate: new Date()
++     });
++     
++     // Validate sitemap size
++     const validation = validateSitemapSize(sitemapUrls);
++     if (!validation.isValid) {
++       console.warn(`Sitemap contains ${validation.count} URLs, exceeding limit of ${validation.maxCount}`);
++     }
++     
++     // Generate XML sitemap
++     const sitemapXml = generateSitemapXml(sitemapUrls);
++     
++     // Return XML response with proper headers
++     return new Response(sitemapXml, {
++       status: 200,
++       headers: {
++         'Content-Type': 'application/xml',
++         'X-Robots-Tag': 'noindex',
++         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
++       },
++     });
++   } catch (error) {
++     console.error('Error generating sitemap:', error);
++     
++     // Return a minimal sitemap if there's an error
++     const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>
++ <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
++   <url>
++     <loc>https://focuslab.dev/</loc>
++     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
++     <changefreq>daily</changefreq>
++     <priority>1.0</priority>
++   </url>
++ </urlset>`;
++     
++     return new Response(fallbackSitemap, {
++       status: 200,
++       headers: {
++         'Content-Type': 'application/xml',
++         'X-Robots-Tag': 'noindex',
++         'Cache-Control': 'public, max-age=300', // Cache for 5 minutes on error
++       },
++     });
++   }
++ }
++ 
++ // This route should not be rendered as a React component
++ export default function SitemapXml() {
++   return null;
++ } 
+```
+
+---
+
+
+
+---
+
+Great! Now let me also create or update a robots.txt file to reference the sitemap. Let me check if there's already a robots.txt route:
+
+---
+
+<details>
+            <summary>Searched codebase "robots.txt" • **0** results</summary>
+        
+No results found
+</details>
+
+---
+
+Let me look for a robots.txt route:
+
+---
+
+<details>
+            <summary>Listed directory app/routes • **13** results</summary>
+        
+| Name |
+|-------|
+| 📄 `sitemap.xml.tsx` |
+| 📄 `sitemap[.]xml.tsx` |
+| 📄 `projects.$id.tsx` |
+| 📄 `projects.tsx` |
+| 📄 `contact.tsx` |
+| 📄 `about.tsx` |
+| 📄 `privacy-policy.tsx` |
+| 📄 `_index.tsx` |
+| 📄 `terms-of-service.tsx` |
+| 📄 `accessibility-statement.tsx` |
+| 📄 `api.newsletter.tsx` |
+| 📄 `api.contact.tsx` |
+| 📄 `api.subscribers.ts` |
+
+</details>
+
+---
+
+
+
+---
+
+I don't see a robots.txt route. Let me create one that references our new sitemap:
+
+---
+
+```diff
+- 
++  
+```
+
+---
+
+
+
+---
+
+Let me try again to create the robots.txt route file:
+
+---
+
+```diff
+- 
++ // Dynamic robots.txt Route for Focus Lab
++ import type { LoaderFunctionArgs } from '@remix-run/node';
++ 
++ export async function loader({ request }: LoaderFunctionArgs) {
++   // Get the base URL from the request
++   const url = new URL(request.url);
++   const baseUrl = `${url.protocol}//${url.host}`;
++   
++   // Generate robots.txt content
++   const robotsTxt = `User-agent: *
++ Allow: /
++ 
++ # Sitemaps
++ Sitemap: ${baseUrl}/sitemap.xml
++ 
++ # Disallow crawling of API routes
++ Disallow: /api/
++ 
++ # Disallow crawling of admin or private areas (if any in future)
++ Disallow: /admin/
++ Disallow: /_/
++ 
++ # Crawl delay (optional - helps prevent overwhelming the server)
++ Crawl-delay: 1
++ 
++ # Specific instructions for common bots
++ User-agent: Googlebot
++ Allow: /
++ 
++ User-agent: Bingbot
++ Allow: /
++ 
++ User-agent: facebookexternalhit
++ Allow: /
++ 
++ User-agent: Twitterbot
++ Allow: /
++ 
++ User-agent: LinkedInBot
++ Allow: /
++ `;
++ 
++   return new Response(robotsTxt, {
++     status: 200,
++     headers: {
++       'Content-Type': 'text/plain',
++       'Cache-Control': 'public, max-age=86400', // Cache for 24 hours
++     },
++   });
++ } 
+```
+
+---
+
+
+
+---
+
+Perfect! Now let me test that everything builds correctly with our new sitemap implementation:
+
+---
+
+```bash
+pnpm run build
+```
+
+```
+❯ pnpm run build
+
+> focuslab@ build /Users/cryophobic/dev/projects/focuslab
+> remix vite:build
+
+⚠️ Route ID Collision: "routes/robots.txt"
+
+The following routes all define the same Route ID, only the first one will be used
+
+🟢 routes/robots.txt.ts
+⭕️️ routes/robots.txt.tsx
+
+⚠️ Route ID Collision: "routes/robots.txt"
+
+The following routes all define the same Route ID, only the first one will be used
+
+🟢 routes/robots.txt.ts
+⭕️️ routes/robots.txt.tsx
+
+vite v6.3.5 building for production...
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guide/
+troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guide/
+troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/sessions/fileStorage.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vi
+te.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:os" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vi
+te.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:os" has been externalized for browser compatibility, imported by "/Users/cryoph
+obic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/upload/fileUploadHandler.js". See https://vite.dev/
+guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/stream.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/@remix-run/node/dist/stream.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/index.js". See https://vite.dev/guide/troubleshooting.html#modu
+le-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/index.js". See https://vite.dev/guide/troubleshooting.html#modu
+le-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "stream" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/stream-slice/index.js". See https://vite.dev/guide/troubleshooting.html#mod
+ule-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "stream" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/stream-slice/index.js". See https://vite.dev/guide/troubleshooting.html#mod
+ule-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/dispatcher.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/dispatcher.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:url" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/proxy-agent.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:url" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/proxy-agent.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-client.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:querystring" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.htm
+l#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:querystring" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/util.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-pool.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-pool.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/retry-handler.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/retry-handler.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/handler/redirect-handler.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:dns" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/interceptor/dns.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/index.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:events" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/request.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/response.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/headers.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/websocket.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/websocket.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/events.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/events.js". See https://vite.dev/guid
+e/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource.js". See https://vite.dev/guide
+/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource.js". See https://vite.dev/guide
+/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/data-url.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/data-url.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "crypto" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/cookie-signature/index.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "crypto" has been externalized for browser compatibility, imported by "/Users/cryopho
+bic/dev/projects/focuslab/node_modules/cookie-signature/index.js". See https://vite.dev/guide/troubleshooting.html
+#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:net" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:tls" has been externalized for browser compatibility, imported by "/Users/cryop
+hobic/dev/projects/focuslab/node_modules/undici/lib/core/connect.js". See https://vite.dev/guide/troubleshooting.h
+tml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http2" has been externalized for browser compatibility, imported by "/Users/cry
+ophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http2" has been externalized for browser compatibility, imported by "/Users/cry
+ophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h2.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/request.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/core/request.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:diagnostics_channel" has been externalized for browser compatibility, imported 
+by "/Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/gui
+de/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:diagnostics_channel" has been externalized for browser compatibility, imported 
+by "/Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/gui
+de/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/core/diagnostics.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/mock/mock-utils.js". See https://vite.dev/guide/troubleshooti
+ng.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-stream.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troub
+leshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-pipeline.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-request.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-upgrade.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:async_hooks" has been externalized for browser compatibility, imported by "/Use
+rs/cryophobic/dev/projects/focuslab/node_modules/undici/lib/api/api-connect.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:perf_hooks" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:perf_hooks" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util/types" has been externalized for browser compatibility, imported by "/User
+s/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/body.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:worker_threads" has been externalized for browser compatibility, imported by "/
+Users/cryophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/webidl.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/file.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/file.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/cache.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/cache.js". See https://vite.dev/guide/troubleshoo
+ting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:util" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fileapi/util.js". See https://vite.dev/guide/troublesho
+oting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cookies/parse.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cookies/parse.js". See https://vite.dev/guide/troublesh
+ooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/util.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/connection.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/connection.js". See https://vite.dev/guide/tr
+oubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/receiver.js". See https://vite.dev/guide/trou
+bleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource-stream.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/eventsource/eventsource-stream.js". See https://vite.de
+v/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/util.js". See https://vite.dev/guide/troubleshooting.ht
+ml#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/util.js". See https://vite.dev/guide/troubleshooting.ht
+ml#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/api/readable.js". See https://vite.dev/guide/troubleshootin
+g.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/fetch/formdata-parser.js". See https://vite.dev/guide/t
+roubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/cache/util.js". See https://vite.dev/guide/troubleshoot
+ing.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/frame.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/frame.js". See https://vite.dev/guide/trouble
+shooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/permessage-deflate.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:zlib" has been externalized for browser compatibility, imported by "/Users/cryo
+phobic/dev/projects/focuslab/node_modules/undici/lib/web/websocket/permessage-deflate.js". See https://vite.dev/gu
+ide/troubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.d
+ev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:console" has been externalized for browser compatibility, imported by "/Users/c
+ryophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.
+dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:stream" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.d
+ev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:console" has been externalized for browser compatibility, imported by "/Users/c
+ryophobic/dev/projects/focuslab/node_modules/undici/lib/mock/pending-interceptors-formatter.js". See https://vite.
+dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h1.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:assert" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/dispatcher/client-h1.js". See https://vite.dev/guide/troubl
+eshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp_simd-wasm.js". See https://vite.dev/guide/tro
+ubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp_simd-wasm.js". See https://vite.dev/guide/tro
+ubleshooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp-wasm.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:buffer" has been externalized for browser compatibility, imported by "/Users/cr
+yophobic/dev/projects/focuslab/node_modules/undici/lib/llhttp/llhttp-wasm.js". See https://vite.dev/guide/troubles
+hooting.html#module-externalized-for-browser-compatibility for more details. (x2)
+✓ 1988 modules transformed.
+Generated an empty chunk: "api.subscribers".
+Generated an empty chunk: "api.newsletter".
+Generated an empty chunk: "sitemap_._xml".
+Generated an empty chunk: "api.contact".
+Generated an empty chunk: "robots.txt".
+build/client/.vite/manifest.json                           8.14 kB │ gzip:  1.10 kB
+build/client/assets/root-Ceb99d3j.css                     64.85 kB │ gzip:  9.81 kB
+build/client/assets/api.subscribers-l0sNRNKZ.js            0.00 kB │ gzip:  0.02 kB
+build/client/assets/api.newsletter-l0sNRNKZ.js             0.00 kB │ gzip:  0.02 kB
+build/client/assets/sitemap_._xml-l0sNRNKZ.js              0.00 kB │ gzip:  0.02 kB
+build/client/assets/api.contact-l0sNRNKZ.js                0.00 kB │ gzip:  0.02 kB
+build/client/assets/robots.txt-l0sNRNKZ.js                 0.00 kB │ gzip:  0.02 kB
+build/client/assets/sitemap.xml-CSxRPO1x.js                0.05 kB │ gzip:  0.07 kB
+build/client/assets/arrow-left-CNJEu2ez.js                 0.35 kB │ gzip:  0.27 kB
+build/client/assets/index-BJYSoprK.js                      0.58 kB │ gzip:  0.39 kB
+build/client/assets/GitHubIcon-D6DxyTeD.js                 0.60 kB │ gzip:  0.41 kB
+build/client/assets/accessibility-DbC3BHRe.js              1.24 kB │ gzip:  0.66 kB
+build/client/assets/contact-ps7pdLUg.js                    1.26 kB │ gzip:  0.72 kB
+build/client/assets/Breadcrumb-C5233WP8.js                 1.42 kB │ gzip:  0.74 kB
+build/client/assets/Button-CYVEyHvo.js                     1.44 kB │ gzip:  0.74 kB
+build/client/assets/createLucideIcon-Bw5H0cQX.js           1.86 kB │ gzip:  0.80 kB
+build/client/assets/star-DUMd_rGn.js                       2.69 kB │ gzip:  0.91 kB
+build/client/assets/accessibility-statement-BGRqKMwo.js    2.85 kB │ gzip:  1.11 kB
+build/client/assets/entry.client-B0vblw1w.js               3.90 kB │ gzip:  1.49 kB
+build/client/assets/Layout-z1CRu37o.js                     4.45 kB │ gzip:  1.36 kB
+build/client/assets/terms-of-service-Bf5PACiJ.js           5.81 kB │ gzip:  1.98 kB
+build/client/assets/seo-BKMoWCYG.js                        6.88 kB │ gzip:  2.37 kB
+build/client/assets/jsx-runtime-0DLF9kdB.js                7.76 kB │ gzip:  2.96 kB
+build/client/assets/projects._id-D3JdNvAg.js               7.77 kB │ gzip:  2.41 kB
+build/client/assets/_index-CgkfWl27.js                     9.31 kB │ gzip:  3.26 kB
+build/client/assets/privacy-policy-A2_MuFAO.js            11.15 kB │ gzip:  3.20 kB
+build/client/assets/about-ChWwPgyr.js                     11.39 kB │ gzip:  3.61 kB
+build/client/assets/root-CUfMulRT.js                      15.68 kB │ gzip:  5.45 kB
+build/client/assets/projects-C7tHb2FL.js                  19.93 kB │ gzip:  4.87 kB
+build/client/assets/ContactForm-A0e0uc09.js               62.96 kB │ gzip: 16.09 kB
+build/client/assets/components-DyWbs4Bj.js               250.18 kB │ gzip: 81.00 kB
+✓ built in 2.92s
+⚠️ Route ID Collision: "routes/robots.txt"
+
+The following routes all define the same Route ID, only the first one will be used
+
+🟢 routes/robots.txt.ts
+⭕️️ routes/robots.txt.tsx
+
+vite v6.3.5 building SSR bundle for production...
+✓ 66 modules transformed.
+build/server/.vite/manifest.json                 0.22 kB
+build/server/assets/server-build-Ceb99d3j.css   64.85 kB
+build/server/index.js                          229.59 kB
+✓ built in 215ms
+
+╭─     ~/dev/projects/focuslab     main ⇡1 !1 ?5 ····························· ✔  5s    09:36:19   
+╰─
+```
+
+---
+
+
+
+---
+

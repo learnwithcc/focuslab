@@ -3,8 +3,12 @@ import { z } from 'zod';
 import { formLimiter } from '~/utils/rate-limiter';
 import { newsletterSchema, validateForm } from '~/utils/validation';
 import { sendNewsletterConfirmationEmail } from '~/utils/email.server';
+import { createAPIHeaders } from '~/utils/security';
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
+
+// Apply API-specific headers (includes X-Robots-Tag: noindex)
+export const headers = createAPIHeaders;
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== 'POST') {

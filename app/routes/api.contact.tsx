@@ -3,8 +3,12 @@ import { z } from 'zod';
 import { formLimiter } from '~/utils/rate-limiter';
 import { contactSchema, validateForm } from '~/utils/validation';
 import { sendContactEmail } from '~/utils/email.server';
+import { createAPIHeaders } from '~/utils/security';
 
 type ContactFormData = z.infer<typeof contactSchema>;
+
+// Apply API-specific headers (includes X-Robots-Tag: noindex)
+export const headers = createAPIHeaders;
 
 export async function action({ request }: ActionFunctionArgs) {
   try {
