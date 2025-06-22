@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Section, Container } from "~/components/Layout";
-import { ContactForm } from "~/components/ContactForm";
+import { ContactForm, ContactInfo } from "~/components";
 
 export const meta: MetaFunction = () => {
   return [
@@ -117,18 +117,54 @@ export default function About() {
           </Container>
         </Section>
 
-        {/* Contact Form Section */}
+        {/* Contact Section */}
         <Section spacing="lg" className="bg-gray-50 dark:bg-gray-800">
-          <Container maxWidth="2xl">
-            <div className="text-center">
+          <Container maxWidth="7xl">
+            <div className="text-center mb-12">
               <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
                 Get in Touch
               </h2>
-              <p className="mb-12 text-lg text-gray-600 dark:text-gray-300">
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 Have questions about our tools or want to discuss how we can help your team? We'd love to hear from you.
               </p>
             </div>
-            <ContactForm className="mx-auto max-w-2xl" />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Contact Information */}
+              <div className="space-y-8">
+                <ContactInfo />
+                
+                {/* Additional Information */}
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Why Work With Us?
+                  </h3>
+                  <ul className="space-y-3 text-gray-600 dark:text-gray-300">
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                      <span>Neurodivergent-friendly development approach</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                      <span>Focus on accessibility and inclusive design</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                      <span>Expertise in modern web technologies</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3"></span>
+                      <span>Collaborative and transparent process</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Contact Form */}
+              <div>
+                <ContactForm />
+              </div>
+            </div>
           </Container>
         </Section>
       </main>

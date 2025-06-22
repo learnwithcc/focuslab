@@ -16,5 +16,7 @@ export * from './Modal';
 export * from './ErrorBoundary';
 export * from './icons';
 export * from './NewsletterForm';
+export * from './ContactForm';
+export * from './ContactInfo';
 
 // Add component exports here as they are created 
