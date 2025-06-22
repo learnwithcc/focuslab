@@ -1,5 +1,6 @@
 import { json, type ActionFunctionArgs } from "@remix-run/node";
 import { rateLimiter } from "~/utils/server";
+import { validateCSRFToken } from "~/utils/csrf";
 
 interface ContactFormData {
   name: string;
@@ -10,6 +11,20 @@ interface ContactFormData {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  // Validate CSRF token first
+  try {
+    await validateCSRFToken(request);
+  } catch (error) {
+    console.error('CSRF validation failed for contact form:', error);
+    return json(
+      {
+        success: false,
+        message: 'Security validation failed. Please refresh the page and try again.'
+      },
+      { status: 403 }
+    );
+  }
+
   // Get client IP for rate limiting
   const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
                   request.headers.get('x-real-ip') || 

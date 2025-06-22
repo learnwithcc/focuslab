@@ -21,6 +21,20 @@ export {
   createSecurityHeaders,
 } from './security';
 
+// CSRF protection utilities
+export {
+  csrfCookie,
+  generateRandomToken,
+  getCSRFToken,
+  generateCSRFToken,
+  validateCSRFToken,
+  validateCSRFTokenFromFormData,
+  withCSRFProtection,
+  handleCSRFError,
+  needsCSRFProtection,
+  useCSRFToken,
+} from './csrf';
+
 /**
  * Debounces a function call, ensuring it only executes after a delay
  * @param fn - The function to debounce

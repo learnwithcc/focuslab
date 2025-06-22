@@ -1,6 +1,7 @@
 import { json, type ActionFunctionArgs } from '@remix-run/node';
 import { validateNewsletterFormServer, sanitizeNewsletterFormData } from '~/utils/server/validation';
 import { rateLimiter, subscribeToNewsletter } from '~/utils/server';
+import { validateCSRFToken } from '~/utils/csrf';
 import type { ValidationErrors } from '~/utils/validation';
 
 interface ActionResponse {
@@ -17,6 +18,20 @@ export async function action({ request }: ActionFunctionArgs) {
     return json<ActionResponse>(
       { success: false, message: 'Method not allowed' },
       { status: 405 }
+    );
+  }
+
+  // Validate CSRF token first
+  try {
+    await validateCSRFToken(request);
+  } catch (error) {
+    console.error('CSRF validation failed for newsletter subscription:', error);
+    return json<ActionResponse>(
+      {
+        success: false,
+        message: 'Security validation failed. Please refresh the page and try again.'
+      },
+      { status: 403 }
     );
   }
 
