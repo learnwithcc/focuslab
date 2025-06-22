@@ -115,20 +115,33 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         onSubmit={handleSubmit}
         className={`space-y-6 ${className}`}
         noValidate // Disable browser validation to use our custom validation
+        aria-label="Contact form"
       >
         {actionData?.success && (
-          <div className="rounded-md bg-green-50 p-4 text-green-700" role="alert">
+          <div 
+            className="rounded-md bg-green-50 p-4 text-green-700" 
+            role="alert"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {actionData.message || 'Message sent successfully! We will get back to you soon.'}
           </div>
         )}
 
         {actionData?.message && !actionData.success && (
-          <div className="rounded-md bg-red-50 p-4 text-red-700" role="alert">
+          <div 
+            className="rounded-md bg-red-50 p-4 text-red-700" 
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
             <p>{actionData.message}</p>
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <fieldset className="space-y-6">
+          <legend className="sr-only">Contact Information</legend>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <Input
             type="text"
             name="name"
@@ -195,25 +208,28 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             required
             disabled={isSubmitting}
             aria-label="Your message"
+            aria-describedby={touched['message'] && errors['message'] ? 'message-error' : 'message-counter'}
+            aria-invalid={touched['message'] && errors['message'] ? 'true' : 'false'}
           />
           {touched['message'] && errors['message'] && (
-            <p className="mt-1 text-sm text-red-600" role="alert">
+            <p id="message-error" className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">
               {errors['message']}
             </p>
           )}
-          <div className="mt-1 text-right text-sm text-gray-500">
+          <div id="message-counter" className="mt-1 text-right text-sm text-gray-500" aria-live="polite">
             {values['message'].length}/1000 characters
           </div>
         </div>
 
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={isSubmitting || Object.keys(errors).length > 0}
-          className="w-full sm:w-auto"
-        >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
-        </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting || Object.keys(errors).length > 0}
+            className="w-full sm:w-auto"
+          >
+            {isSubmitting ? 'Sending...' : 'Send Message'}
+          </Button>
+        </fieldset>
       </Form>
     </ComponentErrorBoundary>
   );
