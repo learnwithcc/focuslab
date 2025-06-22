@@ -61,6 +61,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   const navigation = useNavigation();
   const actionData = useActionData<ActionData>();
   const isSubmitting = navigation.state === 'submitting';
+  const [formStartTime] = React.useState(Date.now());
   
   const initialValues: ContactFormValues = {
     name: '',
@@ -183,6 +184,31 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           aria-label="Message subject"
           placeholder="Enter message subject"
           disabled={isSubmitting}
+        />
+
+        {/* Honeypot field for spam protection - hidden from users */}
+        <input
+          type="text"
+          name="website"
+          value=""
+          onChange={() => {}} // Prevent any changes
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            top: '-9999px',
+            opacity: 0,
+            pointerEvents: 'none'
+          }}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+        />
+
+        {/* Hidden timestamp field for spam protection */}
+        <input
+          type="hidden"
+          name="submissionTime"
+          value={formStartTime.toString()}
         />
 
         <div className="relative">
