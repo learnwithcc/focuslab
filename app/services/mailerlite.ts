@@ -63,15 +63,44 @@ export interface ListSubscribersResponse {
 }
 
 export class MailerLiteService {
-  private client: MailerLite;
-  private static instance: MailerLiteService;
+  private client: MailerLite | null = null;
+  private static instance: MailerLiteService | null = null;
+  private initializationError: string | null = null;
 
   private constructor() {
+    // Don't initialize immediately - wait for first method call
+  }
+
+  private initializeClient(): void {
+    if (this.client || this.initializationError) {
+      return; // Already initialized or failed
+    }
+
     const apiKey = process.env['MAILERLITE_API_KEY'];
     if (!apiKey) {
-      throw new Error('MAILERLITE_API_KEY environment variable is not set');
+      this.initializationError = 'MailerLite API key not configured. Please set MAILERLITE_API_KEY environment variable.';
+      return;
     }
-    this.client = new MailerLite({ api_key: apiKey });
+
+    try {
+      this.client = new MailerLite({ api_key: apiKey });
+    } catch (error) {
+      this.initializationError = `Failed to initialize MailerLite client: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    }
+  }
+
+  private ensureInitialized(): MailerLite {
+    this.initializeClient();
+    
+    if (this.initializationError) {
+      throw new Error(this.initializationError);
+    }
+    
+    if (!this.client) {
+      throw new Error('MailerLite client not properly initialized');
+    }
+    
+    return this.client;
   }
 
   public static getInstance(): MailerLiteService {
@@ -79,6 +108,11 @@ export class MailerLiteService {
       MailerLiteService.instance = new MailerLiteService();
     }
     return MailerLiteService.instance;
+  }
+
+  public isConfigured(): boolean {
+    this.initializeClient();
+    return this.client !== null && this.initializationError === null;
   }
 
   private mapApiResponseToSubscriber(response: MailerLiteApiResponse): MailerLiteSubscriber {
@@ -97,7 +131,8 @@ export class MailerLiteService {
 
   public async addSubscriber(email: string, gdprConsent: boolean): Promise<MailerLiteSubscriber> {
     try {
-      const response = await this.client.subscribers.createOrUpdate({
+      const client = this.ensureInitialized();
+      const response = await client.subscribers.createOrUpdate({
         email,
         status: 'active',
         fields: {
@@ -120,7 +155,8 @@ export class MailerLiteService {
 
   public async checkSubscriberExists(email: string): Promise<boolean> {
     try {
-      const response = await this.client.subscribers.find(email);
+      const client = this.ensureInitialized();
+      const response = await client.subscribers.find(email);
       return !!response.data;
     } catch (error) {
       const mailerLiteError = error as MailerLiteErrorResponse;
@@ -138,7 +174,8 @@ export class MailerLiteService {
    */
   public async getSubscriber(email: string): Promise<MailerLiteSubscriber | null> {
     try {
-      const response = await this.client.subscribers.find(email);
+      const client = this.ensureInitialized();
+      const response = await client.subscribers.find(email);
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
       const mailerLiteError = error as MailerLiteErrorResponse;
@@ -160,7 +197,8 @@ export class MailerLiteService {
     status: MailerLiteSubscriber['status']
   ): Promise<MailerLiteSubscriber> {
     try {
-      const response = await this.client.subscribers.update(email, { status });
+      const client = this.ensureInitialized();
+      const response = await client.subscribers.update(email, { status });
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
       const mailerLiteError = error as MailerLiteErrorResponse;
@@ -178,7 +216,8 @@ export class MailerLiteService {
    */
   public async deleteSubscriber(email: string): Promise<boolean> {
     try {
-      await this.client.subscribers.delete(email);
+      const client = this.ensureInitialized();
+      await client.subscribers.delete(email);
       return true;
     } catch (error) {
       const mailerLiteError = error as MailerLiteErrorResponse;
@@ -199,6 +238,7 @@ export class MailerLiteService {
    */
   public async listSubscribers(options: ListSubscribersOptions = {}): Promise<ListSubscribersResponse> {
     try {
+      const client = this.ensureInitialized();
       const { limit = 25, cursor, filterBy } = options;
       const params: Record<string, any> = {
         limit,
@@ -207,7 +247,7 @@ export class MailerLiteService {
       };
 
       // Use get instead of getAll/list
-      const response = await this.client.subscribers.get(params);
+      const response = await client.subscribers.get(params);
       const data = response as unknown as { 
         data: MailerLiteApiResponse['data'][];
         meta: { total: number; next_cursor?: string; }
@@ -242,6 +282,7 @@ export class MailerLiteService {
     }
   ): Promise<MailerLiteSubscriber> {
     try {
+      const client = this.ensureInitialized();
       const updateData: Record<string, any> = {
         fields: {
           ...(data.gdprConsent !== undefined && {
@@ -252,7 +293,7 @@ export class MailerLiteService {
         },
       };
 
-      const response = await this.client.subscribers.update(email, updateData);
+      const response = await client.subscribers.update(email, updateData);
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
       const mailerLiteError = error as MailerLiteErrorResponse;
@@ -264,5 +305,69 @@ export class MailerLiteService {
   }
 }
 
-// Export a singleton instance
-export const mailerLiteService = MailerLiteService.getInstance(); 
+// Safe wrapper that handles configuration gracefully
+export const mailerLiteService = {
+  // Lazy getter for the actual service
+  get service() {
+    return MailerLiteService.getInstance();
+  },
+
+  // Check if the service is properly configured
+  isConfigured(): boolean {
+    try {
+      return this.service.isConfigured();
+    } catch {
+      return false;
+    }
+  },
+
+  // Safe wrapper methods that provide helpful error messages
+  async addSubscriber(email: string, gdprConsent: boolean): Promise<MailerLiteSubscriber> {
+    if (!this.isConfigured()) {
+      throw new Error('MailerLite is not configured. Newsletter functionality is currently unavailable.');
+    }
+    return this.service.addSubscriber(email, gdprConsent);
+  },
+
+  async checkSubscriberExists(email: string): Promise<boolean> {
+    if (!this.isConfigured()) {
+      return false; // Safe default when not configured
+    }
+    return this.service.checkSubscriberExists(email);
+  },
+
+  async getSubscriber(email: string): Promise<MailerLiteSubscriber | null> {
+    if (!this.isConfigured()) {
+      return null; // Safe default when not configured
+    }
+    return this.service.getSubscriber(email);
+  },
+
+  async updateSubscriberStatus(email: string, status: MailerLiteSubscriber['status']): Promise<MailerLiteSubscriber> {
+    if (!this.isConfigured()) {
+      throw new Error('MailerLite is not configured. Newsletter functionality is currently unavailable.');
+    }
+    return this.service.updateSubscriberStatus(email, status);
+  },
+
+  async deleteSubscriber(email: string): Promise<boolean> {
+    if (!this.isConfigured()) {
+      return true; // Safe default - assume already deleted when not configured
+    }
+    return this.service.deleteSubscriber(email);
+  },
+
+  async listSubscribers(options: ListSubscribersOptions = {}): Promise<ListSubscribersResponse> {
+    if (!this.isConfigured()) {
+      throw new Error('MailerLite is not configured. Newsletter functionality is currently unavailable.');
+    }
+    return this.service.listSubscribers(options);
+  },
+
+  async updateSubscriberData(email: string, data: { fields?: Record<string, unknown>; gdprConsent?: boolean; }): Promise<MailerLiteSubscriber> {
+    if (!this.isConfigured()) {
+      throw new Error('MailerLite is not configured. Newsletter functionality is currently unavailable.');
+    }
+    return this.service.updateSubscriberData(email, data);
+  }
+}; 
