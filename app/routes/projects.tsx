@@ -26,6 +26,7 @@ export const meta: MetaFunction = () => {
     ],
     url: generatePageUrl('/projects'),
     canonical: 'https://focuslab.dev/projects',
+    includeOrganizationSchema: true,
   });
 };
 

@@ -1,4 +1,13 @@
 import type { MetaDescriptor } from '@remix-run/node';
+import { 
+  generateOrganizationSchema, 
+  generateWebsiteSchema, 
+  generateFounderSchema,
+  generateStructuredDataMeta,
+  type OrganizationSchema,
+  type WebsiteSchema,
+  type PersonSchema
+} from './structured-data';
 
 export interface SEOMetaOptions {
   title?: string;
@@ -11,6 +20,10 @@ export interface SEOMetaOptions {
   locale?: string;
   noIndex?: boolean;
   canonical?: string;
+  includeOrganizationSchema?: boolean;
+  includeWebsiteSchema?: boolean;
+  includePersonSchema?: boolean;
+  customSchemas?: Array<OrganizationSchema | WebsiteSchema | PersonSchema>;
 }
 
 export const DEFAULT_SEO = {
@@ -44,6 +57,10 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
     locale = DEFAULT_SEO.locale,
     noIndex = false,
     canonical,
+    includeOrganizationSchema = false,
+    includeWebsiteSchema = false,
+    includePersonSchema = false,
+    customSchemas = [],
   } = options;
 
   const fullTitle = title === DEFAULT_SEO.title ? title : `${title} | ${siteName}`;
@@ -88,6 +105,31 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
   // Add robots meta if noIndex is true
   if (noIndex) {
     meta.push({ name: 'robots', content: 'noindex, nofollow' });
+  }
+
+  // Add structured data schemas
+  const schemas: Array<OrganizationSchema | WebsiteSchema | PersonSchema> = [];
+  
+  if (includeOrganizationSchema) {
+    schemas.push(generateOrganizationSchema());
+  }
+  
+  if (includeWebsiteSchema) {
+    schemas.push(generateWebsiteSchema());
+  }
+  
+  if (includePersonSchema) {
+    schemas.push(generateFounderSchema());
+  }
+  
+  // Add any custom schemas
+  if (customSchemas.length > 0) {
+    schemas.push(...customSchemas);
+  }
+  
+  // Generate structured data meta tags
+  if (schemas.length > 0) {
+    meta.push(...generateStructuredDataMeta(schemas));
   }
 
   return meta;

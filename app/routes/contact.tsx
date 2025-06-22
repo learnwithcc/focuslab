@@ -18,6 +18,7 @@ export const meta: MetaFunction = () => {
     ],
     url: generatePageUrl('/contact'),
     canonical: 'https://focuslab.dev/contact',
+    includeOrganizationSchema: true,
   });
 };
 

@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Layout } from "~/components/Layout";
+import { PageLayout } from "~/components/Layout";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 
 export default function PrivacyPolicy() {
   return (
-    <Layout>
+    <PageLayout>
       <div className="min-h-screen bg-white dark:bg-gray-900 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none dark:prose-invert">
@@ -195,6 +195,6 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 } 

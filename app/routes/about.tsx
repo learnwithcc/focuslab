@@ -20,6 +20,8 @@ export const meta: MetaFunction = () => {
     url: generatePageUrl('/about'),
     canonical: 'https://focuslab.dev/about',
     type: 'profile',
+    includeOrganizationSchema: true,
+    includePersonSchema: true,
   });
 };
 
