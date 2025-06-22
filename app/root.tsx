@@ -53,6 +53,7 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script defer data-domain="YOUR_PLAUSIBLE_DOMAIN" src="https://plausible.io/js/script.js"></script>
       </head>
       <body>
         <a
