@@ -11,20 +11,23 @@ import { json } from '@remix-run/node';
 import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
-import { CookieManager, Header, ErrorBoundary } from "~/components";
+import { CookieManager, Header } from "~/components";
+import { ThemeToggle, ThemeScript } from "~/components/ThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
 import { Analytics } from "@vercel/analytics/react";
 import { PHProvider } from '~/utils/posthog';
-import { useEffect, useState } from 'react';
 
 import "./styles/tailwind.css";
 
-Sentry.init({
-  dsn: process.env['SENTRY_DSN'] || "YOUR_SENTRY_DSN_GOES_HERE",
-  tracesSampleRate: 1.0,
-});
+// Only initialize Sentry if DSN is provided
+if (process.env['SENTRY_DSN'] && process.env['SENTRY_DSN'] !== 'YOUR_SENTRY_DSN_GOES_HERE') {
+  Sentry.init({
+    dsn: process.env['SENTRY_DSN'],
+    tracesSampleRate: 1.0,
+  });
+}
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -39,7 +42,7 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export async function loader({}: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const nonce = generateNonce();
   return json({ nonce });
 }
@@ -47,55 +50,7 @@ export async function loader({}: LoaderFunctionArgs) {
 // Apply security headers to all routes
 export const headers = createSecurityHeaders;
 
-/**
- * Layout component props interface for better type safety
- * Ensures proper typing for all layout-related props
- */
-interface LayoutProps {
-  children: React.ReactNode;
-  nonce: string;
-}
-
-/**
- * ClientOnlyWrapper component to prevent hydration mismatches
- * Renders children only after client-side hydration is complete
- */
-function ClientOnlyWrapper({ children }: { children: React.ReactNode }) {
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  if (!hasMounted) {
-    return null;
-  }
-
-  return <>{children}</>;
-}
-
-/**
- * Main Layout component that wraps all routes with consistent structure
- * 
- * LAYOUT ARCHITECTURE:
- * - Single Header source: Prevents duplication across all routes
- * - ErrorBoundary: Catches and handles layout-level errors gracefully
- * - Main content area: Semantic HTML with proper ARIA roles
- * - Global providers: Cookie consent, analytics, theme management
- * - Hydration-safe rendering: Prevents SSR/client mismatches
- * 
- * COMPOSITION PATTERNS:
- * - Global elements (Header, CookieManager) at layout level
- * - Route-specific content isolated in main element
- * - Provider hierarchy: NonceProvider > CookieConsentProvider > PHProvider
- * - Error boundaries protect against layout crashes
- * 
- * HYDRATION CONSISTENCY:
- * - ClientOnlyWrapper prevents client-server rendering mismatches
- * - Conditional rendering safely handled with hydration checks
- * - Server-side and client-side rendering produce identical DOM structure
- */
-export function Layout({ children, nonce }: LayoutProps) {
+export function Layout({ children, nonce }: { children: React.ReactNode; nonce: string }) {
   return (
     <html lang="en">
       <head>
@@ -103,45 +58,10 @@ export function Layout({ children, nonce }: LayoutProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ThemeScript />
       </head>
       <body className="bg-background text-foreground">
-        <ErrorBoundary fallback={<div>Something went wrong with the layout.</div>}>
-          <PHProvider>
-            <CookieConsentProvider>
-              {/* 
-                GLOBAL HEADER - Single Source of Navigation
-                - Rendered once for all routes to prevent duplication
-                - Contains main navigation, logo, and mobile menu
-                - Consistent across all pages without route-specific headers
-              */}
-              <Header />
-              
-              {/* 
-                MAIN CONTENT AREA - Route-Specific Content
-                - Semantic main element with proper ARIA role
-                - Contains only route-specific content (no global elements)
-                - Outlet renders the current route component
-                - Skip link target for accessibility
-              */}
-              <main id="main-content" role="main" className="flex-1">
-                                 <ErrorBoundary fallback={<div>Something went wrong with this page.</div>}>
-                   {children}
-                 </ErrorBoundary>
-               </main>
-              
-              {/* 
-                GLOBAL COOKIE MANAGER - Hydration-Safe
-                - Wrapped in ClientOnlyWrapper to prevent hydration mismatches
-                - Only renders after client-side hydration is complete
-                - Manages cookie consent banner and modal
-              */}
-              <ClientOnlyWrapper>
-                <CookieManager />
-              </ClientOnlyWrapper>
-            </CookieConsentProvider>
-          </PHProvider>
-        </ErrorBoundary>
-        
+        {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <Analytics />
@@ -150,12 +70,6 @@ export function Layout({ children, nonce }: LayoutProps) {
   );
 }
 
-/**
- * Main App component with enhanced hydration handling
- * - Uses NonceProvider for CSP security
- * - Integrates accessibility checking in development
- * - Wraps everything in Layout component for consistent structure
- */
 const App = () => {
   const { nonce } = useLoaderData<typeof loader>();
   useAxe();
@@ -163,7 +77,16 @@ const App = () => {
   return (
     <NonceProvider nonce={nonce}>
       <Layout nonce={nonce}>
-        <Outlet />
+        <PHProvider>
+          <CookieConsentProvider>
+            <Header />
+            <main id="main-content">
+              <Outlet />
+            </main>
+            <CookieManager />
+            <ThemeToggle />
+          </CookieConsentProvider>
+        </PHProvider>
       </Layout>
     </NonceProvider>
   );

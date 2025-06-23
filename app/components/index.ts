@@ -26,5 +26,6 @@ export { Header } from './Header';
 export { ProjectCard } from './ProjectCard';
 export { ProjectFilters } from './ProjectFilters';
 export { Breadcrumb } from './Breadcrumb';
+export { ThemeToggle } from './ThemeToggle';
 
 // Add component exports here as they are created 
