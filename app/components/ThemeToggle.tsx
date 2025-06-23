@@ -1,5 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { SunIcon, MoonIcon } from './icons';
+
+// Get current theme from DOM - single source of truth
+function getCurrentTheme(): 'light' | 'dark' {
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+}
+
+// Apply theme to DOM consistently
+function applyTheme(theme: 'light' | 'dark') {
+  if (typeof document === 'undefined') return;
+  
+  const root = document.documentElement;
+  root.classList.remove('light', 'dark');
+  root.classList.add(theme);
+  root.setAttribute('data-theme', theme);
+  root.style.colorScheme = theme;
+  
+  // Store preference
+  try {
+    localStorage.setItem('focuslab-theme-preference', theme);
+  } catch (error) {
+    console.warn('ThemeToggle: Could not save to localStorage:', error);
+  }
+}
 
 // Client-side theme toggle that uses proper React patterns
 export function ThemeToggle() {
@@ -7,40 +31,37 @@ export function ThemeToggle() {
   const [isHovered, setIsHovered] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light');
 
-  // Mount on client side
+  // Initialize on mount and sync with DOM changes
   useEffect(() => {
     setMounted(true);
     
-    // Initialize theme
-    const isDark = document.documentElement.classList.contains('dark');
-    const initialTheme = isDark ? 'dark' : 'light';
+    // Get initial theme from DOM (set by ThemeScript)
+    const initialTheme = getCurrentTheme();
     setCurrentTheme(initialTheme);
     
-    console.log('ThemeToggle: Mounted with theme:', initialTheme);
+    // Watch for theme changes (from other sources)
+    const observer = new MutationObserver(() => {
+      const domTheme = getCurrentTheme();
+      setCurrentTheme(domTheme);
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    console.log('ThemeToggle: Initialized with theme:', initialTheme);
+    
+    return () => observer.disconnect();
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     console.log('ThemeToggle: Switching from', currentTheme, 'to', newTheme);
     
-    // Update DOM
-    const root = document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(newTheme);
-    root.setAttribute('data-theme', newTheme);
-    root.style.colorScheme = newTheme;
-    
-    // Update state
-    setCurrentTheme(newTheme);
-    
-    // Store in localStorage
-    try {
-      localStorage.setItem('focuslab-theme-preference', newTheme);
-      console.log('ThemeToggle: Saved theme to localStorage:', newTheme);
-    } catch (error) {
-      console.warn('ThemeToggle: Could not save to localStorage:', error);
-    }
-  };
+    // Apply theme to DOM (this will trigger the MutationObserver to update state)
+    applyTheme(newTheme);
+  }, [currentTheme]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     // Prevent focus on mouse click to avoid distracting highlight
