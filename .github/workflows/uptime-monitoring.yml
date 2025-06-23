@@ -10,7 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check website status
-        uses: lissy93/uptime-kuma@v1
-        with:
-          url: 'https://focuslab.io'
-          push-url: '${{ secrets.UPTIME_KUMA_PUSH_URL }}' 
+        run: |
+          echo "Checking website uptime..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://focuslab.io)
+          if [ $response -eq 200 ]; then
+            echo "✅ Website is up (HTTP $response)"
+          else
+            echo "❌ Website is down (HTTP $response)"
+            exit 1
+          fi 
