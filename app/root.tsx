@@ -16,6 +16,7 @@ import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
 import { Analytics } from "@vercel/analytics/react";
+import { PHProvider } from '~/utils/posthog';
 
 import "./styles/tailwind.css";
 
@@ -53,20 +54,15 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <script defer data-domain="YOUR_PLAUSIBLE_DOMAIN" src="https://plausible.io/js/script.js"></script>
       </head>
-      <body>
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-gray-900 focus:shadow-lg"
-        >
-          Skip to main content
-        </a>
-        <CookieConsentProvider>
-          <Header />
-          <main id="main-content">{children}</main>
-          <CookieManager />
-        </CookieConsentProvider>
+      <body className="bg-background text-foreground">
+        <PHProvider>
+          <CookieConsentProvider>
+            <Header />
+            <main id="main-content">{children}</main>
+            <CookieManager />
+          </CookieConsentProvider>
+        </PHProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
         <Analytics />

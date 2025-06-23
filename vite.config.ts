@@ -31,4 +31,10 @@ export default defineConfig({
     setupFiles: './app/test/setup-test-env.tsx',
     include: ['./app/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   },
+  server: {
+    port: 3000,
+  },
+  ssr: {
+    noExternal: ['remix-themes', 'posthog-js', 'posthog-js/react'],
+  },
 });
