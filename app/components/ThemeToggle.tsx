@@ -57,7 +57,7 @@ export function ThemeToggle() {
 
   return (
     <div 
-      className="fixed top-1/3 right-4 z-50 transform -translate-y-1/2"
+      className="fixed top-1/5 right-4 z-50 transform -translate-y-1/2"
       data-testid="theme-toggle-container"
     >
       <button
