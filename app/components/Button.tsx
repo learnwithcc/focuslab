@@ -33,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       rel,
       leftIcon,
       rightIcon,
-      autoFocus,
+      // autoFocus, // Disabled for accessibility compliance
       tabIndex,
       onFocus,
       onBlur,
