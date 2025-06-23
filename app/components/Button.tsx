@@ -1,169 +1,161 @@
-import React, { forwardRef } from 'react';
-import type { 
-  BaseComponentProps, 
-  LoadingProps 
-} from './types';
-import { 
-  getSizeStyles, 
-  getButtonStyles, 
-  baseStyles, 
-  buildComponentClasses 
-} from './utils/styles';
+import { forwardRef } from 'react';
+import type { BaseComponentProps, SizeProps, VariantProps, LoadingProps, FocusableProps } from './types';
+import { buildComponentClasses } from './utils/styles';
 
-export interface ButtonProps 
-  extends BaseComponentProps, 
-          LoadingProps {
+export interface ButtonProps extends 
+  BaseComponentProps, 
+  SizeProps, 
+  VariantProps, 
+  LoadingProps, 
+  FocusableProps,
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'disabled'> {
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  disabled?: boolean;
-  autoFocus?: boolean;
-  tabIndex?: number;
-  onFocus?: (event: React.FocusEvent<HTMLButtonElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLButtonElement>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
-  onKeyUp?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
-  id?: string;
-  'aria-label'?: string;
-  'aria-labelledby'?: string;
-  'aria-describedby'?: string;
-  'data-testid'?: string;
-  loading?: boolean;
-  loadingText?: string;
+  href?: string;
+  target?: string;
+  rel?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (
     {
       children,
       className = '',
-      variant = 'primary',
       size = 'md',
+      variant = 'primary',
       disabled = false,
       loading = false,
       loadingText = 'Loading...',
       type = 'button',
-      autoFocus = false,
+      href,
+      target,
+      rel,
+      leftIcon,
+      rightIcon,
+      autoFocus,
       tabIndex,
-      onClick,
       onFocus,
       onBlur,
-      onKeyDown,
-      onKeyUp,
-      id,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledby,
-      'aria-describedby': ariaDescribedby,
+      onClick,
       'data-testid': testId,
       ...rest
     },
     ref
   ) => {
-    const sizeStyles = getSizeStyles(size);
-    const variantStyles = getButtonStyles(variant);
-    
+    const isLink = !!href;
     const isDisabled = disabled || loading;
     
+    // Base button styles
+    const baseClasses = buildComponentClasses(
+      'inline-flex items-center justify-center',
+      'font-medium rounded-md',
+      'motion-safe:transition-colors motion-reduce:transition-none duration-150',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
+      'active:scale-95 motion-safe:transition-transform motion-reduce:transform-none'
+    );
+
+    // Size classes
+    const sizeClasses = {
+      sm: 'px-3 py-2 text-sm',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-6 py-3 text-base',
+    };
+
+    // Variant classes
+    const variantClasses = {
+      primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 border border-transparent',
+      secondary: 'bg-white text-gray-900 hover:bg-gray-50 focus:ring-blue-500 border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600',
+      outline: 'bg-transparent text-blue-600 hover:bg-blue-50 focus:ring-blue-500 border border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20 dark:border-blue-400',
+      ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 border border-transparent',
+    };
+
     const buttonClasses = buildComponentClasses(
-      // Base styles
-      baseStyles.reset,
-      baseStyles.transition,
-      baseStyles.borderRadius,
-      baseStyles.border,
-      baseStyles.fontWeight,
-      baseStyles.focusVisible,
-      baseStyles.flexCenter,
-      baseStyles.shadow,
-      
-      // Size styles
-      sizeStyles.padding,
-      sizeStyles.text,
-      sizeStyles.minHeight,
-      
-      // Variant styles
-      variantStyles.base,
-      !isDisabled && variantStyles.hover,
-      !isDisabled && variantStyles.focus,
-      !isDisabled && variantStyles.active,
-      !isDisabled && baseStyles.interactive,
-      isDisabled && variantStyles.disabled,
-      isDisabled && baseStyles.disabled,
-      
-      // Custom classes
+      baseClasses,
+      sizeClasses[size],
+      variantClasses[variant],
       className
     );
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if (isDisabled) {
         event.preventDefault();
         return;
       }
-      onClick?.(event);
+      onClick?.(event as React.MouseEvent<HTMLButtonElement>);
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (isDisabled) {
-        event.preventDefault();
-        return;
-      }
-      
-      // Handle space key for button activation
-      if (event.key === ' ') {
-        event.preventDefault();
-      }
-      
-      onKeyDown?.(event);
-    };
+    const buttonContent = (
+      <>
+        {loading && (
+          <svg
+            className="mr-2 h-4 w-4 animate-spin"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        )}
+        {leftIcon && !loading && <span className="mr-2">{leftIcon}</span>}
+        <span>{loading ? loadingText : children}</span>
+        {rightIcon && !loading && <span className="ml-2">{rightIcon}</span>}
+      </>
+    );
 
-    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (isDisabled) {
-        event.preventDefault();
-        return;
-      }
-      
-      // Trigger click on space key release
-      if (event.key === ' ') {
-        event.preventDefault();
-        onClick?.(event as any);
-      }
-      
-      onKeyUp?.(event);
-    };
+    if (isLink) {
+      return (
+        <a
+          ref={ref as React.ForwardedRef<HTMLAnchorElement>}
+          href={isDisabled ? undefined : href}
+          target={target}
+          rel={rel}
+          className={buttonClasses}
+          onClick={handleClick}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          tabIndex={isDisabled ? -1 : tabIndex}
+          aria-disabled={isDisabled}
+          data-testid={testId}
+          {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        >
+          {buttonContent}
+        </a>
+      );
+    }
 
     return (
       <button
-        ref={ref}
+        ref={ref as React.ForwardedRef<HTMLButtonElement>}
         type={type}
         className={buttonClasses}
         disabled={isDisabled}
-        autoFocus={autoFocus}
-        tabIndex={tabIndex}
         onClick={handleClick}
         onFocus={onFocus}
         onBlur={onBlur}
-        onKeyDown={handleKeyDown}
-        onKeyUp={handleKeyUp}
-        id={id}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledby}
-        aria-describedby={ariaDescribedby}
-        aria-disabled={isDisabled}
+        autoFocus={autoFocus}
+        tabIndex={tabIndex}
         data-testid={testId}
-        {...rest}
+        {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
       >
-        {loading && (
-          <div 
-            className="animate-spin -ml-1 mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"
-            aria-hidden="true"
-          />
-        )}
-        <span className={loading ? 'opacity-75' : ''}>
-          {loading && loadingText ? loadingText : children}
-        </span>
+        {buttonContent}
       </button>
     );
   }
 );
 
-Button.displayName = 'Button'; 
+Button.displayName = 'Button';
