@@ -17,16 +17,17 @@ export default function TermsOfService() {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <header className="py-4 px-4 sm:px-6 lg:px-8 border-b border-border">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-primary-purple dark:text-gray-400 dark:hover:text-primary-purple motion-safe:transition-colors motion-reduce:transition-none"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
-      </header>
       <main className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <nav className="mb-8">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-primary-purple dark:text-gray-400 dark:hover:text-primary-purple motion-safe:transition-colors motion-reduce:transition-none"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+        </nav>
+        
         <div className="space-y-8">
           <div>
             <h1 className="text-4xl font-bold tracking-tight text-primary">Terms of Service</h1>
