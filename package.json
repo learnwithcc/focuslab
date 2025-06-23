@@ -13,7 +13,9 @@
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.2",
@@ -44,6 +46,9 @@
     "@playwright/test": "^1.53.1",
     "@remix-run/dev": "^2.16.8",
     "@remix-run/testing": "^2.16.8",
+    "@storybook/addon-docs": "^9.0.12",
+    "@storybook/addon-onboarding": "^9.0.12",
+    "@storybook/react-vite": "^9.0.12",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -60,10 +65,12 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^9.0.12",
     "happy-dom": "^18.0.1",
     "playwright": "^1.53.1",
     "postcss": "^8.4.38",
     "puppeteer": "^24.10.2",
+    "storybook": "^9.0.12",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.1.6",
     "vite": "^6.0.0",

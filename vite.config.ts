@@ -13,7 +13,7 @@ declare module "@remix-run/node" {
 
 export default defineConfig({
   plugins: [
-    !process.env['VITEST'] && remix({
+    !process.env['VITEST'] && !process.env['STORYBOOK'] && remix({
       future: {
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
@@ -23,8 +23,9 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
-    !process.env['VITEST'] && react(),
-  ],
+    (!process.env['VITEST'] && !process.env['STORYBOOK']) ? react() : null,
+    process.env['STORYBOOK'] && react(),
+  ].filter(Boolean),
   test: {
     globals: true,
     environment: 'happy-dom',
