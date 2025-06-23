@@ -147,7 +147,8 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
         onClick={handleClick}
         onFocus={onFocus}
         onBlur={onBlur}
-        autoFocus={autoFocus}
+        // autoFocus disabled for accessibility compliance
+        // autoFocus={autoFocus}
         tabIndex={tabIndex}
         data-testid={testId}
         {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}

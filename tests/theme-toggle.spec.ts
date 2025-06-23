@@ -361,7 +361,7 @@ test.describe('Theme Toggle Component', () => {
     // Test localStorage persistence
     await button.click(); // Switch to dark
     await page.waitForTimeout(500);
-    let storedTheme = await page.evaluate(() => 
+    const storedTheme = await page.evaluate(() => 
       localStorage.getItem('focuslab-theme-preference')
     );
     testResults.localStorage = storedTheme === 'dark';

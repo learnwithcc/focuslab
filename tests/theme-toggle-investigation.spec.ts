@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, Page } from '@playwright/test';
 
 test.describe('Theme Toggle Investigation', () => {
   let page: Page;
