@@ -59,7 +59,7 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         <PHProvider>
           <CookieConsentProvider>
             <Header />
-            <main id="main-content">{children}</main>
+            <div id="main-content">{children}</div>
             <CookieManager />
           </CookieConsentProvider>
         </PHProvider>

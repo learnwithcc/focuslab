@@ -12,5 +12,5 @@ jobs:
       - name: Check website status
         uses: lissy93/uptime-kuma@v1
         with:
-          url: 'https://YOUR_PRODUCTION_URL'
+          url: 'https://focuslab.io'
           push-url: '${{ secrets.UPTIME_KUMA_PUSH_URL }}' 
