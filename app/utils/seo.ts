@@ -231,10 +231,8 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
     schemas.push(...customSchemas);
   }
   
-  // Generate structured data meta tags
-  if (schemas.length > 0) {
-    meta.push(...generateStructuredDataMeta(schemas));
-  }
+  // Note: Structured data (JSON-LD) should be added as script tags directly in the HTML,
+  // not through Remix meta function which only supports 'meta' and 'link' tags
 
   return meta;
 }

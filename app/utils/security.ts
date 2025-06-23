@@ -9,9 +9,9 @@ export const securityHeaders = {
   "Content-Security-Policy": [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Allow inline scripts for Remix hydration
-    "style-src 'self' 'unsafe-inline'", // Allow inline styles for CSS-in-JS and Tailwind
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Allow inline styles and Google Fonts
     "img-src 'self' data: https:", // Allow images from self, data URLs, and HTTPS
-    "font-src 'self' data:", // Allow fonts from self and data URLs
+    "font-src 'self' data: https://fonts.gstatic.com", // Allow fonts from self, data URLs, and Google Fonts
     "connect-src 'self'", // Allow AJAX/fetch requests to same origin
     "media-src 'self'", // Allow media from same origin
     "object-src 'none'", // Disable plugins like Flash
