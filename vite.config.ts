@@ -5,6 +5,7 @@ import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import react from '@vitejs/plugin-react';
+import { vercelPreset } from '@vercel/remix/vite';
 
 installGlobals();
 
@@ -17,6 +18,7 @@ declare module "@remix-run/node" {
 export default defineConfig({
   plugins: [
     !process.env['VITEST'] && !process.env['STORYBOOK'] && remix({
+      presets: [vercelPreset()],
       future: {
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
