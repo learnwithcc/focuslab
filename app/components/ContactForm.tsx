@@ -3,7 +3,8 @@ import { Form, useActionData, useNavigation } from '@remix-run/react';
 import { z } from 'zod';
 import { Input } from './Input';
 import { Button } from './Button';
-import { ComponentErrorBoundary } from './ErrorBoundary';
+// Temporarily removed ErrorBoundary to fix RefreshRuntime conflicts
+// import { ErrorBoundary } from './ErrorBoundary';
 import { useFormValidation } from '~/hooks/useFormValidation';
 import { contactSchema } from '~/utils/validation';
 
@@ -82,8 +83,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   }, [actionData, onSuccess, onError, resetForm]);
 
   return (
-    <ComponentErrorBoundary>
-      <Form
+    <div>
+        <Form
         method="post"
         onSubmit={handleSubmit}
         className={`space-y-6 ${className}`}
@@ -245,7 +246,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             {isSubmitting ? 'Sending...' : 'Send message'}
           </Button>
         </fieldset>
-      </Form>
-    </ComponentErrorBoundary>
+        </Form>
+    </div>
   );
 }; 

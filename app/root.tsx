@@ -12,7 +12,8 @@ import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager, Header } from "~/components";
-import { ThemeToggle, ThemeScript } from "~/components/ThemeToggle";
+import { ThemeScript } from "~/components/ThemeToggle";
+import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
@@ -59,6 +60,7 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         <Meta />
         <Links />
         <ThemeScript />
+        <VanillaThemeScript />
       </head>
       <body className="bg-background text-foreground">
         {children}
@@ -84,7 +86,7 @@ const App = () => {
               <Outlet />
             </main>
             <CookieManager />
-            <ThemeToggle />
+            <VanillaThemeToggle />
           </CookieConsentProvider>
         </PHProvider>
       </Layout>

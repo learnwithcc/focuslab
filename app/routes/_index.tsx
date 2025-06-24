@@ -10,8 +10,9 @@ export const meta: MetaFunction = () => {
   return generateMeta({
     url: generatePageUrl('/'),
     canonical: 'https://focuslab.dev/',
-    includeOrganizationSchema: true,
-    includeWebsiteSchema: true,
+    // Temporarily disabled to fix React mounting issues
+    // includeOrganizationSchema: true,
+    // includeWebsiteSchema: true,
   });
 };
 

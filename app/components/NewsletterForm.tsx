@@ -3,7 +3,8 @@ import { Form, useActionData, useNavigation } from '@remix-run/react';
 import { z } from 'zod';
 import { Input } from './Input';
 import { Button } from './Button';
-import { ComponentErrorBoundary } from './ErrorBoundary';
+// Temporarily removed ErrorBoundary to fix RefreshRuntime conflicts
+// import { ErrorBoundary } from './ErrorBoundary';
 import { useFormValidation } from '~/hooks/useFormValidation';
 import { newsletterSchema } from '~/utils/validation';
 
@@ -76,7 +77,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
   }, [actionData, onSuccess, onError, resetForm]);
 
   return (
-    <ComponentErrorBoundary>
+    <div>
       <Form
         method="post"
         onSubmit={handleSubmit}
@@ -132,6 +133,6 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
           {isSubmitting ? 'Subscribing...' : 'Subscribe'}
         </Button>
       </Form>
-    </ComponentErrorBoundary>
+    </div>
   );
 }; 
