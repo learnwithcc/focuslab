@@ -57,9 +57,36 @@ export const VanillaThemeScript = () => (
     dangerouslySetInnerHTML={{
       __html: `
         (function() {
+          // Prevent multiple initialization
+          if (window.vanillaThemeInitialized) {
+            return;
+          }
+          window.vanillaThemeInitialized = true;
+          
           // SVG Icons
           const SUN_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="M4.93 4.93l1.41 1.41" /><path d="M17.66 17.66l1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="M6.34 17.66l-1.41 1.41" /><path d="M19.07 4.93l-1.41 1.41" /></svg>';
           const MOON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>';
+          
+          // Initialize theme based on localStorage or system preference
+          function initializeTheme() {
+            try {
+              const stored = localStorage.getItem('focuslab-theme-preference');
+              const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+              const theme = stored || (systemDark ? 'dark' : 'light');
+              
+              const root = document.documentElement;
+              root.classList.remove('light', 'dark');
+              root.classList.add(theme);
+              root.setAttribute('data-theme', theme);
+              root.style.colorScheme = theme;
+              
+              console.log('VanillaTheme: Initial theme applied:', theme);
+              return theme;
+            } catch (e) {
+              console.warn('VanillaTheme: Error initializing theme:', e);
+              return 'light';
+            }
+          }
           
           function initVanillaThemeToggle() {
             const container = document.getElementById('vanilla-theme-toggle');
@@ -68,9 +95,16 @@ export const VanillaThemeScript = () => (
             const text = document.getElementById('vanilla-theme-text');
             
             if (!container || !button || !icon || !text) {
-              console.warn('VanillaThemeToggle: Elements not found');
+              // Retry if elements not found
+              setTimeout(initVanillaThemeToggle, 100);
               return;
             }
+            
+            // Prevent multiple event listeners
+            if (button.hasAttribute('data-theme-initialized')) {
+              return;
+            }
+            button.setAttribute('data-theme-initialized', 'true');
             
             // Get current theme
             function getCurrentTheme() {
@@ -122,12 +156,14 @@ export const VanillaThemeScript = () => (
                 console.warn('Could not save theme preference:', e);
               }
               
-              updateButton();
+              // Force updateButton after a small delay to ensure DOM changes are applied
+              setTimeout(updateButton, 10);
               console.log('VanillaThemeToggle: Applied theme:', theme);
             }
             
             // Toggle theme
-            function toggleTheme() {
+            function toggleTheme(e) {
+              e.preventDefault();
               const currentTheme = getCurrentTheme();
               const newTheme = currentTheme === 'light' ? 'dark' : 'light';
               applyTheme(newTheme);
@@ -145,15 +181,15 @@ export const VanillaThemeScript = () => (
             console.log('VanillaThemeToggle: Initialized successfully');
           }
           
-          // Try to initialize immediately
+          // Initialize theme first
+          initializeTheme();
+          
+          // Initialize toggle when DOM is ready
           if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initVanillaThemeToggle);
           } else {
             initVanillaThemeToggle();
           }
-          
-          // Also try after a delay in case DOM changes
-          setTimeout(initVanillaThemeToggle, 500);
         })();
       `,
     }}

@@ -12,7 +12,6 @@ import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager, Header } from "~/components";
-import { ThemeScript } from "~/components/ThemeToggle";
 import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
@@ -59,7 +58,6 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <ThemeScript />
         <VanillaThemeScript />
       </head>
       <body className="bg-background text-foreground">

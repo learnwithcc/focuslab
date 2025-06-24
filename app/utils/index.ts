@@ -2,16 +2,7 @@
 // Example: export { formatDate, cn } from './helpers';
 // This allows: import { formatDate, cn } from '~/utils';
 
-// Theme utilities
-export {
-  detectSystemTheme,
-  validateTheme,
-  applyTheme,
-  getCurrentTheme,
-  createThemeListener,
-  getThemeProperty,
-  setThemeProperty,
-} from './theme';
+// Theme utilities removed - now handled by VanillaThemeToggle
 
 // Security utilities
 export {
