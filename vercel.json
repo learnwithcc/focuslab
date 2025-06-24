@@ -1,13 +1,5 @@
 {
   "buildCommand": "npm run build",
   "installCommand": "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps",
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api"
-    }
-  ]
+  "framework": "remix"
 }
