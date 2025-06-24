@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { ResponsiveImage } from './ResponsiveImage';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { useIsMounted, useEventListener, useBodyScrollLock } from '~/utils/ssr';
 
 export interface GalleryImage {
   src: string;
@@ -69,43 +70,31 @@ export function ImageGallery({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const lightboxRef = useRef<HTMLDivElement>(null);
+  const isMounted = useIsMounted();
 
-  // Handle keyboard navigation
-  useEffect(() => {
+  // Handle keyboard navigation (SSR-safe)
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (!lightboxOpen) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case 'Escape':
-          setLightboxOpen(false);
-          break;
-        case 'ArrowLeft':
-          event.preventDefault();
-          goToPrevious();
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          goToNext();
-          break;
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, currentImageIndex]);
-
-  // Prevent body scroll when lightbox is open
-  useEffect(() => {
-    if (lightboxOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    switch (event.key) {
+      case 'Escape':
+        setLightboxOpen(false);
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        goToPrevious();
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        goToNext();
+        break;
     }
+  };
 
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [lightboxOpen]);
+  useEventListener('keydown', handleKeyDown);
+
+  // Prevent body scroll when lightbox is open (SSR-safe)
+  useBodyScrollLock(lightboxOpen);
 
   const openLightbox = (index: number) => {
     if (lightbox) {
@@ -208,7 +197,7 @@ export function ImageGallery({
       </div>
 
       {/* Lightbox Modal */}
-      {lightbox && lightboxOpen && currentImage && (
+      {lightbox && lightboxOpen && currentImage && isMounted && (
         <div
           ref={lightboxRef}
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"

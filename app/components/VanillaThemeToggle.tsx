@@ -1,19 +1,103 @@
-// Vanilla JavaScript theme toggle that works without React hydration
-// This bypasses all RefreshRuntime and React mounting issues
+import { useEffect, useState } from 'react';
+import { 
+  THEMES, 
+  type ThemeValue,
+  applyThemeToDocument,
+  saveThemePreference
+} from '~/utils/theme';
 
-export function VanillaThemeToggle() {
-  // Renders a theme toggle that matches the original ThemeToggle design
+// SVG Icons as components for better SSR
+const SunIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2" />
+    <path d="M12 20v2" />
+    <path d="M4.93 4.93l1.41 1.41" />
+    <path d="M17.66 17.66l1.41 1.41" />
+    <path d="M2 12h2" />
+    <path d="M20 12h2" />
+    <path d="M6.34 17.66l-1.41 1.41" />
+    <path d="M19.07 4.93l-1.41 1.41" />
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+
+interface VanillaThemeToggleProps {
+  initialTheme?: ThemeValue;
+}
+
+export function VanillaThemeToggle({ initialTheme }: VanillaThemeToggleProps) {
+  // Start with undefined to prevent hydration mismatch
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Only run on client after mount
+  useEffect(() => {
+    setMounted(true);
+    
+    // Get the actual theme from DOM or saved preference
+    const currentTheme = document.documentElement.classList.contains(THEMES.DARK) 
+      ? THEMES.DARK 
+      : THEMES.LIGHT;
+    
+    setTheme(currentTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    if (!theme) return;
+    
+    const newTheme = theme === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
+    
+    // Apply theme immediately
+    applyThemeToDocument(newTheme);
+    saveThemePreference(newTheme);
+    setTheme(newTheme);
+  };
+
+  // Don't render interactive elements until mounted to prevent hydration issues
+  if (!mounted) {
+    return (
+      <div 
+        className="fixed right-4 z-50 transform -translate-y-1/2"
+        style={{ top: '20%' }}
+      >
+        <div
+          className="
+            relative flex items-center justify-center overflow-hidden
+            h-10 w-10 rounded-full border transition-all duration-300
+            shadow-lg backdrop-blur-sm
+            bg-white/90 text-gray-700 border-gray-200
+            dark:bg-gray-800/90 dark:text-gray-300 dark:border-gray-700
+          "
+          style={{ 
+            transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+            minWidth: '2.5rem'
+          }}
+        >
+          {/* Empty placeholder during SSR */}
+        </div>
+      </div>
+    );
+  }
+
+  const currentTheme = theme || THEMES.LIGHT;
+  const isLight = currentTheme === THEMES.LIGHT;
+
   return (
     <div 
-      id="vanilla-theme-toggle"
       className="fixed right-4 z-50 transform -translate-y-1/2"
       style={{ top: '20%' }}
     >
       <button
-        id="vanilla-theme-button"
         className="
           relative flex items-center justify-center overflow-hidden
-          h-10 w-10 rounded-full border transition-all duration-300
+          h-10 rounded-full border transition-all duration-300
           shadow-lg backdrop-blur-sm cursor-pointer select-none
           focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
           bg-white/90 hover:bg-white text-gray-700 hover:text-blue-600 border-gray-200
@@ -21,175 +105,67 @@ export function VanillaThemeToggle() {
           dark:focus-visible:ring-offset-gray-900
         "
         type="button"
-        aria-label="Toggle theme"
-        title="Toggle theme"
+        aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+        title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+        onClick={toggleTheme}
+        onMouseEnter={() => setIsExpanded(true)}
+        onMouseLeave={() => setIsExpanded(false)}
         style={{ 
           transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-          minWidth: '2.5rem' // 40px minimum width
+          width: isExpanded ? '7.5rem' : '2.5rem',
+          minWidth: '2.5rem'
         }}
       >
         <span 
-          id="vanilla-theme-icon" 
           className="flex items-center justify-center transition-all duration-300"
           style={{ transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
         >
-          {/* Icon will be injected here by JavaScript */}
+          {isLight ? <SunIcon /> : <MoonIcon />}
         </span>
         <span 
-          id="vanilla-theme-text" 
-          className="ml-2 text-sm font-medium whitespace-nowrap opacity-0 transition-all duration-300"
+          className="ml-2 text-sm font-medium whitespace-nowrap transition-all duration-300"
           style={{ 
-            width: '0px',
+            width: isExpanded ? 'auto' : '0px',
+            opacity: isExpanded ? 1 : 0,
             overflow: 'hidden',
             transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         >
-          {/* Text will be injected here by JavaScript */}
+          {isLight ? 'Light' : 'Dark'}
         </span>
       </button>
     </div>
   );
 }
 
-// Vanilla JS script that works even when React fails
+// Script to prevent FOUC - runs before React hydration
 export const VanillaThemeScript = () => (
   <script
     dangerouslySetInnerHTML={{
       __html: `
         (function() {
-          // Prevent multiple initialization
-          if (window.vanillaThemeInitialized) {
-            return;
-          }
-          window.vanillaThemeInitialized = true;
-          
-          // SVG Icons
-          const SUN_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="M4.93 4.93l1.41 1.41" /><path d="M17.66 17.66l1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="M6.34 17.66l-1.41 1.41" /><path d="M19.07 4.93l-1.41 1.41" /></svg>';
-          const MOON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>';
-          
-          // Initialize theme based on localStorage or system preference
-          function initializeTheme() {
-            try {
-              const stored = localStorage.getItem('focuslab-theme-preference');
-              const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-              const theme = stored || (systemDark ? 'dark' : 'light');
-              
-              const root = document.documentElement;
-              root.classList.remove('light', 'dark');
-              root.classList.add(theme);
-              root.setAttribute('data-theme', theme);
-              root.style.colorScheme = theme;
-              
-              console.log('VanillaTheme: Initial theme applied:', theme);
-              return theme;
-            } catch (e) {
-              console.warn('VanillaTheme: Error initializing theme:', e);
-              return 'light';
-            }
+          function getCookie(name) {
+            const match = document.cookie.match(new RegExp(name + '=([^;]+)'));
+            return match ? match[1] : null;
           }
           
-          function initVanillaThemeToggle() {
-            const container = document.getElementById('vanilla-theme-toggle');
-            const button = document.getElementById('vanilla-theme-button');
-            const icon = document.getElementById('vanilla-theme-icon');
-            const text = document.getElementById('vanilla-theme-text');
-            
-            if (!container || !button || !icon || !text) {
-              // Retry if elements not found
-              setTimeout(initVanillaThemeToggle, 100);
-              return;
-            }
-            
-            // Prevent multiple event listeners
-            if (button.hasAttribute('data-theme-initialized')) {
-              return;
-            }
-            button.setAttribute('data-theme-initialized', 'true');
-            
-            // Get current theme
-            function getCurrentTheme() {
-              return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            }
-            
-            // Update button icon and text based on current theme
-            function updateButton() {
-              const theme = getCurrentTheme();
-              
-              // Show current theme icon (sun for light, moon for dark)
-              if (theme === 'light') {
-                icon.innerHTML = SUN_SVG;
-                text.textContent = 'Light';
-                button.setAttribute('aria-label', 'Switch to dark mode');
-                button.setAttribute('title', 'Switch to dark mode');
-              } else {
-                icon.innerHTML = MOON_SVG;
-                text.textContent = 'Dark';
-                button.setAttribute('aria-label', 'Switch to light mode');
-                button.setAttribute('title', 'Switch to light mode');
-              }
-            }
-            
-            // Handle hover expansion
-            function expandButton() {
-              button.style.width = '7.5rem'; // 120px
-              text.style.width = 'auto';
-              text.style.opacity = '1';
-            }
-            
-            function contractButton() {
-              button.style.width = '2.5rem'; // 40px
-              text.style.width = '0px';
-              text.style.opacity = '0';
-            }
-            
-            // Apply theme to DOM
-            function applyTheme(theme) {
-              const root = document.documentElement;
-              root.classList.remove('light', 'dark');
-              root.classList.add(theme);
-              root.setAttribute('data-theme', theme);
-              root.style.colorScheme = theme;
-              
-              try {
-                localStorage.setItem('focuslab-theme-preference', theme);
-              } catch (e) {
-                console.warn('Could not save theme preference:', e);
-              }
-              
-              // Force updateButton after a small delay to ensure DOM changes are applied
-              setTimeout(updateButton, 10);
-              console.log('VanillaThemeToggle: Applied theme:', theme);
-            }
-            
-            // Toggle theme
-            function toggleTheme(e) {
-              e.preventDefault();
-              const currentTheme = getCurrentTheme();
-              const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-              applyTheme(newTheme);
-            }
-            
-            // Set up event handlers
-            button.addEventListener('click', toggleTheme);
-            button.addEventListener('mouseenter', expandButton);
-            button.addEventListener('mouseleave', contractButton);
-            
-            // Initialize button
-            updateButton();
-            contractButton(); // Start in contracted state
-            
-            console.log('VanillaThemeToggle: Initialized successfully');
+          function getSystemTheme() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches 
+              ? 'dark' 
+              : 'light';
           }
           
-          // Initialize theme first
-          initializeTheme();
+          // Check cookie first, then localStorage, then system preference
+          const cookieTheme = getCookie('focuslab-theme-preference');
+          const localTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('focuslab-theme-preference') : null;
+          const theme = cookieTheme || localTheme || getSystemTheme();
           
-          // Initialize toggle when DOM is ready
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initVanillaThemeToggle);
-          } else {
-            initVanillaThemeToggle();
-          }
+          // Apply theme immediately to prevent flash
+          const root = document.documentElement;
+          root.classList.remove('light', 'dark');
+          root.classList.add(theme);
+          root.setAttribute('data-theme', theme);
+          root.style.colorScheme = theme;
         })();
       `,
     }}

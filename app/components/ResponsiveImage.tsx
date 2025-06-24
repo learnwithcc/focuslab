@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useIsMounted, useIntersectionObserver, isBrowser } from '~/utils/ssr';
 
 // Breakpoint definitions for responsive images
 export const BREAKPOINTS = {
@@ -93,18 +94,20 @@ function generateImageSources(
 }
 
 /**
- * Generate placeholder image data URL
+ * Generate placeholder image data URL (SSR-safe)
  */
 function generatePlaceholder(width: number, height: number): string {
-  if (typeof window === 'undefined') return '';
+  if (!isBrowser) return '';
   
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = width;
-  canvas.height = height;
-  
-  if (ctx) {
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    if (!canvas || !ctx) return '';
+    
+    canvas.width = width;
+    canvas.height = height;
+    
     // Create a subtle gradient placeholder
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#f3f4f6');
@@ -112,9 +115,12 @@ function generatePlaceholder(width: number, height: number): string {
     
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
+    
+    return canvas.toDataURL('image/jpeg', 0.1);
+  } catch (error) {
+    console.warn('Error generating placeholder:', error);
+    return '';
   }
-  
-  return canvas.toDataURL('image/jpeg', 0.1);
 }
 
 /**
@@ -150,42 +156,29 @@ export function ResponsiveImage({
   const [isVisible, setIsVisible] = useState(!lazy || priority);
   const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
   const imgRef = useRef<HTMLImageElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const isMounted = useIsMounted();
 
   // Generate placeholder on client side only
   useEffect(() => {
-    if (placeholder === 'blur' && typeof window !== 'undefined') {
+    if (placeholder === 'blur' && isMounted) {
       setPlaceholderSrc(generatePlaceholder(width, height));
     }
-  }, [width, height, placeholder]);
+  }, [width, height, placeholder, isMounted]);
 
-  // Intersection Observer for lazy loading
+  // Use intersection observer for lazy loading (SSR-safe)
+  const { isIntersecting } = useIntersectionObserver(imgRef, {
+    rootMargin: '50px', // Start loading 50px before entering viewport
+    threshold: 0.01,
+  });
+
+  // Update visibility based on intersection
   useEffect(() => {
-    if (!lazy || priority || isVisible) return;
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observerRef.current?.disconnect();
-          }
-        });
-      },
-      {
-        rootMargin: '50px', // Start loading 50px before entering viewport
-        threshold: 0.01,
-      }
-    );
-
-    if (imgRef.current) {
-      observerRef.current.observe(imgRef.current);
+    if (!lazy || priority) {
+      setIsVisible(true);
+    } else if (isIntersecting) {
+      setIsVisible(true);
     }
-
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, [lazy, priority, isVisible]);
+  }, [lazy, priority, isIntersecting]);
 
   // Merge provided breakpoints with defaults
   const mergedBreakpoints = { ...BREAKPOINTS, ...breakpoints };
@@ -303,13 +296,14 @@ export function ResponsiveImage({
 }
 
 /**
- * Utility hook for responsive image breakpoints
+ * Utility hook for responsive image breakpoints (SSR-safe)
  */
 export function useResponsiveBreakpoint() {
   const [currentBreakpoint, setCurrentBreakpoint] = useState<keyof typeof BREAKPOINTS>('desktop');
+  const isMounted = useIsMounted();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!isMounted) return;
 
     const updateBreakpoint = () => {
       const width = window.innerWidth;
@@ -331,7 +325,7 @@ export function useResponsiveBreakpoint() {
     window.addEventListener('resize', updateBreakpoint);
     
     return () => window.removeEventListener('resize', updateBreakpoint);
-  }, []);
+  }, [isMounted]);
 
   return currentBreakpoint;
 }

@@ -66,6 +66,7 @@ export class MailerLiteService {
   private client: MailerLite | null = null;
   private static instance: MailerLiteService | null = null;
   private initializationError: string | null = null;
+  private readonly timeout = 15000; // 15 seconds timeout for API calls
 
   private constructor() {
     // Don't initialize immediately - wait for first method call
@@ -83,7 +84,11 @@ export class MailerLiteService {
     }
 
     try {
-      this.client = new MailerLite({ api_key: apiKey });
+      this.client = new MailerLite({ 
+        api_key: apiKey,
+        // Add timeout configuration if supported by the client
+        timeout: this.timeout 
+      });
     } catch (error) {
       this.initializationError = `Failed to initialize MailerLite client: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
@@ -129,20 +134,39 @@ export class MailerLiteService {
     };
   }
 
+  /**
+   * Wrapper to add timeout to any promise
+   */
+  private async withTimeout<T>(promise: Promise<T>, operation: string = 'API call'): Promise<T> {
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`MailerLite ${operation} timed out`)), this.timeout);
+    });
+    
+    return Promise.race([promise, timeoutPromise]);
+  }
+
   public async addSubscriber(email: string, gdprConsent: boolean): Promise<MailerLiteSubscriber> {
     try {
       const client = this.ensureInitialized();
-      const response = await client.subscribers.createOrUpdate({
-        email,
-        status: 'active',
-        fields: {
-          gdpr_consent: gdprConsent,
-          consent_timestamp: new Date().toISOString(),
-        },
-      });
+      
+      const response = await this.withTimeout(
+        client.subscribers.createOrUpdate({
+          email,
+          status: 'active',
+          fields: {
+            gdpr_consent: gdprConsent,
+            consent_timestamp: new Date().toISOString(),
+          },
+        }),
+        'add subscriber'
+      );
 
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
+      // Handle timeout errors
+      if (error instanceof Error && error.message.includes('timed out')) {
+        throw new Error('Newsletter signup timed out. Please try again later.');
+      }
       // Handle specific API errors
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.data) {
@@ -156,9 +180,19 @@ export class MailerLiteService {
   public async checkSubscriberExists(email: string): Promise<boolean> {
     try {
       const client = this.ensureInitialized();
-      const response = await client.subscribers.find(email);
+      
+      const response = await this.withTimeout(
+        client.subscribers.find(email),
+        'check subscriber'
+      );
+      
       return !!response.data;
     } catch (error) {
+      // Handle timeout errors gracefully
+      if (error instanceof Error && error.message.includes('timed out')) {
+        console.warn('MailerLite check subscriber timed out');
+        return false; // Assume not subscribed on timeout
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.status === 404) {
         return false;
@@ -175,9 +209,19 @@ export class MailerLiteService {
   public async getSubscriber(email: string): Promise<MailerLiteSubscriber | null> {
     try {
       const client = this.ensureInitialized();
-      const response = await client.subscribers.find(email);
+      
+      const response = await this.withTimeout(
+        client.subscribers.find(email),
+        'get subscriber'
+      );
+      
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
+      // Handle timeout errors gracefully
+      if (error instanceof Error && error.message.includes('timed out')) {
+        console.warn('MailerLite get subscriber timed out');
+        return null; // Return null on timeout
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.status === 404) {
         return null;
@@ -198,9 +242,16 @@ export class MailerLiteService {
   ): Promise<MailerLiteSubscriber> {
     try {
       const client = this.ensureInitialized();
-      const response = await client.subscribers.update(email, { status });
+      const response = await this.withTimeout(
+        client.subscribers.update(email, { status }),
+        'update subscriber status'
+      );
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
+      // Handle timeout errors
+      if (error instanceof Error && error.message.includes('timed out')) {
+        throw new Error('Update request timed out. Please try again later.');
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.data) {
         throw new Error(mailerLiteError.response.data.message || 'Failed to update subscriber status');
@@ -217,9 +268,17 @@ export class MailerLiteService {
   public async deleteSubscriber(email: string): Promise<boolean> {
     try {
       const client = this.ensureInitialized();
-      await client.subscribers.delete(email);
+      await this.withTimeout(
+        client.subscribers.delete(email),
+        'delete subscriber'
+      );
       return true;
     } catch (error) {
+      // Handle timeout errors gracefully
+      if (error instanceof Error && error.message.includes('timed out')) {
+        console.warn('MailerLite delete subscriber timed out');
+        return false; // Return false on timeout to allow retry
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.status === 404) {
         return true; // Already deleted
@@ -246,8 +305,11 @@ export class MailerLiteService {
         ...(filterBy?.status && { filter: { status: filterBy.status } }),
       };
 
-      // Use get instead of getAll/list
-      const response = await client.subscribers.get(params);
+      // Use get instead of getAll/list with timeout
+      const response = await this.withTimeout(
+        client.subscribers.get(params),
+        'list subscribers'
+      );
       const data = response as unknown as { 
         data: MailerLiteApiResponse['data'][];
         meta: { total: number; next_cursor?: string; }
@@ -260,6 +322,10 @@ export class MailerLiteService {
         nextCursor: data.meta.next_cursor,
       };
     } catch (error) {
+      // Handle timeout errors
+      if (error instanceof Error && error.message.includes('timed out')) {
+        throw new Error('Request timed out. Please try again later.');
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.data) {
         throw new Error(mailerLiteError.response.data.message || 'Failed to list subscribers');
@@ -293,9 +359,16 @@ export class MailerLiteService {
         },
       };
 
-      const response = await client.subscribers.update(email, updateData);
+      const response = await this.withTimeout(
+        client.subscribers.update(email, updateData),
+        'update subscriber data'
+      );
       return this.mapApiResponseToSubscriber(response as unknown as MailerLiteApiResponse);
     } catch (error) {
+      // Handle timeout errors
+      if (error instanceof Error && error.message.includes('timed out')) {
+        throw new Error('Update request timed out. Please try again later.');
+      }
       const mailerLiteError = error as MailerLiteErrorResponse;
       if (mailerLiteError.response?.data) {
         throw new Error(mailerLiteError.response.data.message || 'Failed to update subscriber data');

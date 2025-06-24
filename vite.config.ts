@@ -4,6 +4,7 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import react from '@vitejs/plugin-react';
+import { vercelPreset } from '@vercel/remix/vite';
 
 declare module "@remix-run/node" {
   interface Future {
@@ -21,6 +22,7 @@ export default defineConfig({
         v3_singleFetch: true,
         v3_lazyRouteDiscovery: true,
       },
+      presets: [vercelPreset()],
     }),
     tsconfigPaths(),
     (!process.env['VITEST'] && !process.env['STORYBOOK']) ? react() : null,

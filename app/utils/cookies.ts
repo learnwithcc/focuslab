@@ -1,4 +1,5 @@
 import type { CookieConsent, CookieCategory, CookieInfo } from '~/types/cookies';
+import { safeLocalStorage, isBrowser } from '~/utils/ssr';
 
 const CONSENT_VERSION = '1.0.0';
 const CONSENT_STORAGE_KEY = 'cookie-consent';
@@ -57,9 +58,7 @@ export const getDefaultConsent = (): CookieConsent => ({
 
 export const loadConsent = (): CookieConsent | null => {
   try {
-    if (typeof window === 'undefined') return null;
-    
-    const stored = localStorage.getItem(CONSENT_STORAGE_KEY);
+    const stored = safeLocalStorage.getItem(CONSENT_STORAGE_KEY);
     if (!stored) return null;
     
     const consent = JSON.parse(stored) as CookieConsent;
@@ -84,7 +83,7 @@ export const loadConsent = (): CookieConsent | null => {
 
 export const saveConsent = (consent: CookieConsent): void => {
   try {
-    if (typeof window === 'undefined') return;
+    if (!isBrowser) return;
     
     const consentWithMeta = {
       ...consent,
@@ -93,7 +92,7 @@ export const saveConsent = (consent: CookieConsent): void => {
       version: CONSENT_VERSION,
     };
     
-    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentWithMeta));
+    safeLocalStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentWithMeta));
     
     // Trigger custom event for other parts of the app
     window.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
@@ -116,9 +115,9 @@ export const hasConsent = (category: CookieCategory): boolean => {
 
 export const revokeConsent = (): void => {
   try {
-    if (typeof window === 'undefined') return;
+    if (!isBrowser) return;
     
-    localStorage.removeItem(CONSENT_STORAGE_KEY);
+    safeLocalStorage.removeItem(CONSENT_STORAGE_KEY);
     
     // Clear non-essential cookies
     const cookies = document.cookie.split(';');

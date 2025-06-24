@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 import type { CookieConsent } from '~/types/cookies';
 import { 
   loadConsent, 
@@ -7,12 +7,14 @@ import {
   isConsentRequired,
   revokeConsent,
 } from '~/utils/cookies';
+import { useIsMounted, useEventListener } from '~/utils/ssr';
 
 interface CookieConsentContextType {
   consent: CookieConsent;
   isConsentRequired: boolean;
   showBanner: boolean;
   showModal: boolean;
+  isInitialized: boolean;
   acceptAll: () => void;
   rejectAll: () => void;
   updateConsent: (newConsent: Partial<CookieConsent>) => void;
@@ -40,8 +42,13 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
   const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isRequired, setIsRequired] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const isMounted = useIsMounted();
 
+  // Initialize consent state after mounting (client-side only)
   useEffect(() => {
+    if (!isMounted) return;
+
     // Load consent on mount
     const savedConsent = loadConsent();
     const required = isConsentRequired();
@@ -54,30 +61,39 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
     }
     
     setIsRequired(required);
+    setIsInitialized(true);
+  }, [isMounted]);
 
-    // Listen for consent events
-    const handleConsentUpdated = (event: CustomEvent<CookieConsent>) => {
-      setConsent(event.detail);
-      setShowBanner(false);
-      setShowModal(false);
-      setIsRequired(false);
-    };
+  // Handle consent events using SSR-safe event listeners
+  const handleConsentUpdated = useCallback((event: CustomEvent<CookieConsent>) => {
+    setConsent(event.detail);
+    setShowBanner(false);
+    setShowModal(false);
+    setIsRequired(false);
+  }, []);
 
-    const handleConsentRevoked = () => {
-      setConsent(getDefaultConsent());
-      setShowBanner(true);
-      setShowModal(false);
-      setIsRequired(true);
-    };
+  const handleConsentRevoked = useCallback(() => {
+    setConsent(getDefaultConsent());
+    setShowBanner(true);
+    setShowModal(false);
+    setIsRequired(true);
+  }, []);
 
-    window.addEventListener('cookieConsentUpdated', handleConsentUpdated as EventListener);
-    window.addEventListener('cookieConsentRevoked', handleConsentRevoked);
+  // Handle consent events using custom event types
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const handleConsentUpdatedEvent = handleConsentUpdated as EventListener;
+    const handleConsentRevokedEvent = handleConsentRevoked as EventListener;
+
+    window.addEventListener('cookieConsentUpdated', handleConsentUpdatedEvent);
+    window.addEventListener('cookieConsentRevoked', handleConsentRevokedEvent);
 
     return () => {
-      window.removeEventListener('cookieConsentUpdated', handleConsentUpdated as EventListener);
-      window.removeEventListener('cookieConsentRevoked', handleConsentRevoked);
+      window.removeEventListener('cookieConsentUpdated', handleConsentUpdatedEvent);
+      window.removeEventListener('cookieConsentRevoked', handleConsentRevokedEvent);
     };
-  }, []);
+  }, [isMounted, handleConsentUpdated, handleConsentRevoked]);
 
   const acceptAll = () => {
     const fullConsent: CookieConsent = {
@@ -145,8 +161,9 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
   const value: CookieConsentContextType = {
     consent,
     isConsentRequired: isRequired,
-    showBanner,
-    showModal,
+    showBanner: isMounted && showBanner, // Only show banner after mounting
+    showModal: isMounted && showModal, // Only show modal after mounting
+    isInitialized,
     acceptAll,
     rejectAll,
     updateConsent,

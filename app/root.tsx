@@ -18,6 +18,7 @@ import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
 import { Analytics } from "@vercel/analytics/react";
 import { PHProvider } from '~/utils/posthog';
+import { getThemeFromRequest, type ThemeValue } from '~/utils/theme';
 
 import "./styles/tailwind.css";
 
@@ -44,21 +45,40 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const nonce = generateNonce();
-  return json({ nonce });
+  
+  // Get theme preference from cookie
+  const theme = getThemeFromRequest(request);
+  
+  // Pass environment variables to the client safely
+  const env = {
+    POSTHOG_API_KEY: process.env['POSTHOG_API_KEY'] || '',
+    POSTHOG_API_HOST: process.env['POSTHOG_API_HOST'] || 'https://us.i.posthog.com',
+    SENTRY_DSN: process.env['SENTRY_DSN'] || '',
+  };
+  
+  return json({ nonce, env, theme });
 }
 
 // Apply security headers to all routes
 export const headers = createSecurityHeaders;
 
-export function Layout({ children, nonce }: { children: React.ReactNode; nonce: string }) {
+export function Layout({ children, nonce, env, theme }: { children: React.ReactNode; nonce: string; env?: Record<string, string>; theme?: ThemeValue | null }) {
   return (
-    <html lang="en">
+    <html lang="en" className={theme || 'light'} data-theme={theme || 'light'}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
         <VanillaThemeScript />
+        {env && (
+          <script
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify(env)}`,
+            }}
+          />
+        )}
       </head>
       <body className="bg-background text-foreground">
         {children}
@@ -71,20 +91,20 @@ export function Layout({ children, nonce }: { children: React.ReactNode; nonce: 
 }
 
 const App = () => {
-  const { nonce } = useLoaderData<typeof loader>();
+  const { nonce, env, theme } = useLoaderData<typeof loader>();
   useAxe();
 
   return (
     <NonceProvider nonce={nonce}>
-      <Layout nonce={nonce}>
-        <PHProvider>
+      <Layout nonce={nonce} env={env} theme={theme}>
+        <PHProvider env={env}>
           <CookieConsentProvider>
             <Header />
             <main id="main-content">
               <Outlet />
             </main>
             <CookieManager />
-            <VanillaThemeToggle />
+            <VanillaThemeToggle initialTheme={theme || undefined} />
           </CookieConsentProvider>
         </PHProvider>
       </Layout>

@@ -1,0 +1,294 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs-eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "routes/accessibility-statement": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/terms-of-service": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/api.subscribers": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/api.newsletter": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/privacy-policy": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/projects.$id": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/api.contact": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/sitemap.xml": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/api.images": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/robots.txt": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/api.theme": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/projects": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/contact": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/_index": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/about": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "path": "",
+        "id": "root",
+        "file": "app/root.tsx",
+        "config": {}
+      },
+      "routes/accessibility-statement": {
+        "file": "app/routes/accessibility-statement.tsx",
+        "id": "routes/accessibility-statement",
+        "path": "accessibility-statement",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/terms-of-service": {
+        "file": "app/routes/terms-of-service.tsx",
+        "id": "routes/terms-of-service",
+        "path": "terms-of-service",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/api.subscribers": {
+        "file": "app/routes/api.subscribers.ts",
+        "id": "routes/api.subscribers",
+        "path": "api/subscribers",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/api.newsletter": {
+        "file": "app/routes/api.newsletter.tsx",
+        "id": "routes/api.newsletter",
+        "path": "api/newsletter",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/privacy-policy": {
+        "file": "app/routes/privacy-policy.tsx",
+        "id": "routes/privacy-policy",
+        "path": "privacy-policy",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/projects.$id": {
+        "file": "app/routes/projects.$id.tsx",
+        "id": "routes/projects.$id",
+        "path": ":id",
+        "parentId": "routes/projects",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/api.contact": {
+        "file": "app/routes/api.contact.tsx",
+        "id": "routes/api.contact",
+        "path": "api/contact",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/sitemap.xml": {
+        "file": "app/routes/sitemap.xml.tsx",
+        "id": "routes/sitemap.xml",
+        "path": "sitemap/xml",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/api.images": {
+        "file": "app/routes/api.images.tsx",
+        "id": "routes/api.images",
+        "path": "api/images",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/robots.txt": {
+        "file": "app/routes/robots.txt.ts",
+        "id": "routes/robots.txt",
+        "path": "robots/txt",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/api.theme": {
+        "file": "app/routes/api.theme.ts",
+        "id": "routes/api.theme",
+        "path": "api/theme",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/projects": {
+        "file": "app/routes/projects.tsx",
+        "id": "routes/projects",
+        "path": "projects",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/contact": {
+        "file": "app/routes/contact.tsx",
+        "id": "routes/contact",
+        "path": "contact",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/_index": {
+        "file": "app/routes/_index.tsx",
+        "id": "routes/_index",
+        "index": true,
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/about": {
+        "file": "app/routes/about.tsx",
+        "id": "routes/about",
+        "path": "about",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    }
+  },
+  "remixConfig": {
+    "appDirectory": "/Users/cryophobic/dev/projects/focuslab/app",
+    "basename": "/",
+    "buildDirectory": "/Users/cryophobic/dev/projects/focuslab/build",
+    "future": {
+      "v3_fetcherPersist": true,
+      "v3_relativeSplatPath": true,
+      "v3_throwAbortReason": true,
+      "v3_routeConfig": false,
+      "v3_singleFetch": true,
+      "v3_lazyRouteDiscovery": true,
+      "unstable_optimizeDeps": false
+    },
+    "manifest": false,
+    "publicPath": "/",
+    "routes": {
+      "root": {
+        "path": "",
+        "id": "root",
+        "file": "root.tsx"
+      },
+      "routes/accessibility-statement": {
+        "file": "routes/accessibility-statement.tsx",
+        "id": "routes/accessibility-statement",
+        "path": "accessibility-statement",
+        "parentId": "root"
+      },
+      "routes/terms-of-service": {
+        "file": "routes/terms-of-service.tsx",
+        "id": "routes/terms-of-service",
+        "path": "terms-of-service",
+        "parentId": "root"
+      },
+      "routes/api.subscribers": {
+        "file": "routes/api.subscribers.ts",
+        "id": "routes/api.subscribers",
+        "path": "api/subscribers",
+        "parentId": "root"
+      },
+      "routes/api.newsletter": {
+        "file": "routes/api.newsletter.tsx",
+        "id": "routes/api.newsletter",
+        "path": "api/newsletter",
+        "parentId": "root"
+      },
+      "routes/privacy-policy": {
+        "file": "routes/privacy-policy.tsx",
+        "id": "routes/privacy-policy",
+        "path": "privacy-policy",
+        "parentId": "root"
+      },
+      "routes/projects.$id": {
+        "file": "routes/projects.$id.tsx",
+        "id": "routes/projects.$id",
+        "path": ":id",
+        "parentId": "routes/projects"
+      },
+      "routes/api.contact": {
+        "file": "routes/api.contact.tsx",
+        "id": "routes/api.contact",
+        "path": "api/contact",
+        "parentId": "root"
+      },
+      "routes/sitemap.xml": {
+        "file": "routes/sitemap.xml.tsx",
+        "id": "routes/sitemap.xml",
+        "path": "sitemap/xml",
+        "parentId": "root"
+      },
+      "routes/api.images": {
+        "file": "routes/api.images.tsx",
+        "id": "routes/api.images",
+        "path": "api/images",
+        "parentId": "root"
+      },
+      "routes/robots.txt": {
+        "file": "routes/robots.txt.ts",
+        "id": "routes/robots.txt",
+        "path": "robots/txt",
+        "parentId": "root"
+      },
+      "routes/api.theme": {
+        "file": "routes/api.theme.ts",
+        "id": "routes/api.theme",
+        "path": "api/theme",
+        "parentId": "root"
+      },
+      "routes/projects": {
+        "file": "routes/projects.tsx",
+        "id": "routes/projects",
+        "path": "projects",
+        "parentId": "root"
+      },
+      "routes/contact": {
+        "file": "routes/contact.tsx",
+        "id": "routes/contact",
+        "path": "contact",
+        "parentId": "root"
+      },
+      "routes/_index": {
+        "file": "routes/_index.tsx",
+        "id": "routes/_index",
+        "index": true,
+        "parentId": "root"
+      },
+      "routes/about": {
+        "file": "routes/about.tsx",
+        "id": "routes/about",
+        "path": "about",
+        "parentId": "root"
+      }
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}

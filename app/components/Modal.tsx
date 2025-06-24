@@ -1,10 +1,11 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { BaseComponentProps } from './types';
 import { buildComponentClasses } from './utils/styles';
 import { useFocusTrap, Keys, generateId } from './utils/accessibility';
 import { Button } from './Button';
 import { clsx } from 'clsx';
+import { useIsMounted, useBodyScrollLock, getPortalRoot, useEventListener } from '~/utils/ssr';
 
 export interface ModalProps extends BaseComponentProps {
   isOpen: boolean;
@@ -39,38 +40,23 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
   ) => {
     const [titleId] = useState(() => generateId('modal-title'));
     const [descriptionId] = useState(() => generateId('modal-description'));
+    const isMounted = useIsMounted();
     
     // Use focus trap when modal is open
     const focusTrapRef = useFocusTrap(isOpen);
 
-    // Prevent body scroll when modal is open
-    useEffect(() => {
-      if (!preventBodyScroll) return;
+    // Prevent body scroll when modal is open (SSR-safe)
+    useBodyScrollLock(preventBodyScroll && isOpen);
 
-      if (isOpen) {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
-        document.body.style.overflow = 'hidden';
-        
-        return () => {
-          document.body.style.overflow = originalStyle;
-        };
+    // Handle keyboard events (SSR-safe)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === Keys.Escape && closeOnEscape) {
+        event.preventDefault();
+        onClose();
       }
-    }, [isOpen, preventBodyScroll]);
+    };
 
-    // Handle keyboard events
-    useEffect(() => {
-      if (!isOpen || !closeOnEscape) return;
-
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === Keys.Escape) {
-          event.preventDefault();
-          onClose();
-        }
-      };
-
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, closeOnEscape, onClose]);
+    useEventListener('keydown', handleKeyDown);
 
     const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
       if (closeOnBackdropClick && event.target === event.currentTarget) {
@@ -86,14 +72,6 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       full: 'max-w-full mx-4'
     };
 
-    const backdropClasses = buildComponentClasses(
-      'fixed inset-0 z-50 overflow-y-auto',
-      'bg-black bg-opacity-50',
-      'flex items-center justify-center p-4',
-      'transition-opacity duration-300 ease-out',
-      isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-    );
-
     const modalClasses = buildComponentClasses(
       // Base modal styles
       'relative bg-white rounded-lg shadow-xl',
@@ -108,7 +86,8 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       className
     );
 
-    if (!isOpen) return null;
+    // Don't render anything if not mounted (SSR) or not open
+    if (!isMounted || !isOpen) return null;
 
     const modalContent = (
       <>
@@ -206,8 +185,8 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       </>
     );
 
-    // Render modal in a portal to avoid z-index issues
-    return createPortal(modalContent, document.body);
+    // Render modal in a portal to avoid z-index issues (SSR-safe)
+    return createPortal(modalContent, getPortalRoot());
   }
 );
 

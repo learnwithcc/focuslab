@@ -1,4 +1,5 @@
 import { GitHubStats } from '~/types/project';
+import { Redis } from '@upstash/redis';
 
 interface GitHubRepoResponse {
   id: number;
@@ -13,15 +14,34 @@ interface GitHubRepoResponse {
   archived: boolean;
 }
 
-interface GitHubError {
-  message: string;
-  status: number;
+
+interface CachedData {
+  data: GitHubStats;
+  timestamp: number;
 }
 
 class GitHubService {
   private baseUrl = 'https://api.github.com';
-  private cache = new Map<string, { data: GitHubStats; timestamp: number }>();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
+  private kvPrefix = 'github:stats:'; // Prefix for Redis keys
+  private fallbackCache = new Map<string, CachedData>(); // Fallback in-memory cache
+  private readonly apiTimeout = 10000; // 10 seconds timeout for GitHub API calls
+  private redis: Redis | null = null;
+
+  constructor() {
+    // Initialize Redis connection if credentials are available
+    const redisUrl = process.env['UPSTASH_REDIS_REST_URL'];
+    const redisToken = process.env['UPSTASH_REDIS_REST_TOKEN'];
+    
+    if (redisUrl && redisToken) {
+      this.redis = new Redis({
+        url: redisUrl,
+        token: redisToken,
+      });
+    } else {
+      console.warn('Redis credentials not found, using fallback in-memory cache');
+    }
+  }
 
   private getHeaders(): HeadersInit {
     const headers: HeadersInit = {
@@ -43,7 +63,59 @@ class GitHubService {
   }
 
   private getCacheKey(owner: string, repo: string): string {
+    return `${this.kvPrefix}${owner}/${repo}`;
+  }
+
+  private getFallbackCacheKey(owner: string, repo: string): string {
     return `${owner}/${repo}`;
+  }
+
+  private async getCachedData(owner: string, repo: string): Promise<CachedData | null> {
+    const redisKey = this.getCacheKey(owner, repo);
+    const fallbackKey = this.getFallbackCacheKey(owner, repo);
+
+    try {
+      // Try Redis first
+      if (this.redis) {
+        const cached = await this.redis.get<CachedData>(redisKey);
+        if (cached && this.isCacheValid(cached.timestamp)) {
+          return cached;
+        }
+      }
+    } catch (error) {
+      console.warn('Redis cache read failed, falling back to in-memory:', error);
+    }
+
+    // Fallback to in-memory cache
+    const fallbackCached = this.fallbackCache.get(fallbackKey);
+    if (fallbackCached && this.isCacheValid(fallbackCached.timestamp)) {
+      return fallbackCached;
+    }
+
+    return null;
+  }
+
+  private async setCachedData(owner: string, repo: string, data: GitHubStats): Promise<void> {
+    const redisKey = this.getCacheKey(owner, repo);
+    const fallbackKey = this.getFallbackCacheKey(owner, repo);
+    const cachedData: CachedData = {
+      data,
+      timestamp: Date.now(),
+    };
+
+    // Always set fallback cache
+    this.fallbackCache.set(fallbackKey, cachedData);
+
+    try {
+      // Try to set Redis cache with TTL (expire after cache timeout)
+      if (this.redis) {
+        await this.redis.set(redisKey, cachedData, { 
+          ex: Math.ceil(this.cacheTimeout / 1000) // Convert to seconds for Redis TTL
+        });
+      }
+    } catch (error) {
+      console.warn('Redis cache write failed, using fallback cache only:', error);
+    }
   }
 
   async getRepositoryStats(githubUrl: string): Promise<{ success: true; data: GitHubStats } | { success: false; error: string }> {
@@ -55,47 +127,58 @@ class GitHubService {
       }
 
       const [, owner, repo] = urlMatch;
-      const cacheKey = this.getCacheKey(owner, repo);
 
       // Check cache first
-      const cached = this.cache.get(cacheKey);
-      if (cached && this.isCacheValid(cached.timestamp)) {
+      const cached = await this.getCachedData(owner, repo);
+      if (cached) {
         return { success: true, data: cached.data };
       }
 
-      // Fetch from GitHub API
-      const response = await fetch(`${this.baseUrl}/repos/${owner}/${repo}`, {
-        headers: this.getHeaders(),
-      });
+      // Fetch from GitHub API with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.apiTimeout);
+      
+      try {
+        const response = await fetch(`${this.baseUrl}/repos/${owner}/${repo}`, {
+          headers: this.getHeaders(),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          return { success: false, error: 'Repository not found' };
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            return { success: false, error: 'Repository not found' };
+          }
+          if (response.status === 403) {
+            return { success: false, error: 'Rate limit exceeded or access forbidden' };
+          }
+          return { success: false, error: `GitHub API error: ${response.status}` };
         }
-        if (response.status === 403) {
-          return { success: false, error: 'Rate limit exceeded or access forbidden' };
+
+        const repoData: GitHubRepoResponse = await response.json();
+
+        // Transform to our GitHubStats interface
+        const stats: GitHubStats = {
+          stars: repoData.stargazers_count,
+          forks: repoData.forks_count,
+          lastUpdated: repoData.updated_at,
+          ...(repoData.language && { language: repoData.language }),
+          openIssues: repoData.open_issues_count,
+        };
+
+        // Cache the result
+        await this.setCachedData(owner, repo, stats);
+
+        return { success: true, data: stats };
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          console.error('GitHub API timeout:', fetchError);
+          return { success: false, error: 'GitHub API request timed out' };
         }
-        return { success: false, error: `GitHub API error: ${response.status}` };
+        throw fetchError;
       }
-
-      const repoData: GitHubRepoResponse = await response.json();
-
-      // Transform to our GitHubStats interface
-      const stats: GitHubStats = {
-        stars: repoData.stargazers_count,
-        forks: repoData.forks_count,
-        lastUpdated: repoData.updated_at,
-        ...(repoData.language && { language: repoData.language }),
-        openIssues: repoData.open_issues_count,
-      };
-
-      // Cache the result
-      this.cache.set(cacheKey, {
-        data: stats,
-        timestamp: Date.now(),
-      });
-
-      return { success: true, data: stats };
     } catch (error) {
       console.error('GitHub API error:', error);
       return { 
@@ -135,15 +218,25 @@ class GitHubService {
   }
 
   // Clear cache manually if needed
-  clearCache(): void {
-    this.cache.clear();
+  async clearCache(): Promise<void> {
+    // Clear fallback cache
+    this.fallbackCache.clear();
+
+    try {
+      // Clear KV cache by deleting keys with our prefix
+      // Note: This is a simple implementation - in production, you might want to track keys
+      console.warn('KV cache clearing requires manual key management or TTL expiration');
+    } catch (error) {
+      console.warn('KV cache clear failed:', error);
+    }
   }
 
   // Get cache statistics for debugging
-  getCacheStats(): { size: number; keys: string[] } {
+  getCacheStats(): { fallbackSize: number; fallbackKeys: string[]; kvSupported: boolean } {
     return {
-      size: this.cache.size,
-      keys: Array.from(this.cache.keys()),
+      fallbackSize: this.fallbackCache.size,
+      fallbackKeys: Array.from(this.fallbackCache.keys()),
+      kvSupported: typeof kv !== 'undefined',
     };
   }
 }
