@@ -1,5 +1,11 @@
 {
   "framework": "remix",
   "buildCommand": "npm run build",
-  "installCommand": "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps"
+  "outputDirectory": "build/client",
+  "installCommand": "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps",
+  "functions": {
+    "build/server/index.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
