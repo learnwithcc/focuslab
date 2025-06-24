@@ -155,12 +155,21 @@ export function ImageGallery({
         {images.map((image, index) => (
           <div
             key={index}
+            role="button"
+            tabIndex={0}
+            aria-label={`View ${image.alt || `image ${index + 1}`} in lightbox`}
             className={`
               relative group cursor-pointer overflow-hidden rounded-lg
               ${aspectRatio !== 'auto' ? getAspectRatioClass() : ''}
               ${lightbox ? 'hover:opacity-90 transition-opacity duration-200' : ''}
             `}
             onClick={() => openLightbox(index)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(index);
+              }
+            }}
           >
             <ResponsiveImage
               src={image.thumbnail || image.src}
@@ -200,8 +209,12 @@ export function ImageGallery({
       {lightbox && lightboxOpen && currentImage && isMounted && (
         <div
           ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image lightbox"
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={closeLightbox}
+          onKeyDown={(e) => e.key === 'Escape' && closeLightbox()}
         >
           {/* Close button */}
           <button

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import posthog from "posthog-js";
+import * as posthogJs from "posthog-js";
+const posthog = posthogJs.default;
 import { PostHogProvider } from "posthog-js/react";
 import { useLocation, useMatches } from "@remix-run/react";
 import type { ReactNode } from "react";
