@@ -181,3 +181,14 @@ Key test patterns:
 - CSS-in-JS minimization (Tailwind utilities)
 - GitHub API caching (5-minute TTL)
 - Analytics lazy loading patterns
+
+## Vercel Deployment
+
+**IMPORTANT**: This project requires specific Vercel configuration. See `docs/VERCEL_DEPLOYMENT_FIX.md` for details.
+
+Key requirements:
+- Must have `@vercel/remix` package installed (NOT `@remix-run/vercel`)
+- Must use `vercelPreset()` in `vite.config.ts`
+- Keep `vercel.json` simple with just `"framework": "remix"`
+
+The project is configured for zero-config Vercel deployment with proper serverless function support.
