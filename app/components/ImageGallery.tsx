@@ -214,7 +214,11 @@ export function ImageGallery({
           aria-label="Image lightbox"
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={closeLightbox}
-          onKeyDown={(e) => e.key === 'Escape' && closeLightbox()}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              closeLightbox();
+            }
+          }}
         >
           {/* Close button */}
           <button
@@ -253,9 +257,16 @@ export function ImageGallery({
           )}
           
           {/* Main image */}
-          <div
-            className="max-w-full max-h-full flex items-center justify-center"
+          <button
+            type="button"
+            className="max-w-full max-h-full flex items-center justify-center bg-transparent border-0 p-0 cursor-default focus:outline-none"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
+            aria-label="Full size image"
           >
             <ResponsiveImage
               src={currentImage.src}
@@ -273,7 +284,7 @@ export function ImageGallery({
                  large: 1440,
                }}
             />
-          </div>
+          </button>
           
           {/* Caption */}
           {captions && currentImage.caption && (

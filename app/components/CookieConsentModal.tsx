@@ -83,12 +83,16 @@ export function CookieConsentModal({
                     </h3>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
+                    <span className="sr-only">
+                      {isEssential ? `${info.title} (Always active)` : `Toggle ${info.title} cookies`}
+                    </span>
                     <input
                       type="checkbox"
                       checked={isEnabled}
                       onChange={() => handleCategoryToggle(category as keyof CookieConsent)}
                       disabled={isEssential}
                       className="sr-only peer"
+                      aria-label={isEssential ? `${info.title} (Always active)` : `Toggle ${info.title} cookies`}
                     />
                     <div className={`
                       relative w-11 h-6 rounded-full peer transition-colors

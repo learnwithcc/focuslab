@@ -57,7 +57,7 @@ function generateImageSources(
     const srcSet: string[] = [];
 
     // Generate sources for each breakpoint and pixel density
-    Object.entries(breakpoints).forEach(([breakpointName, width]) => {
+    Object.entries(breakpoints).forEach(([, width]) => {
       pixelDensities.forEach(density => {
         const actualWidth = Math.round(width * density);
         const params = new URLSearchParams({
@@ -74,7 +74,7 @@ function generateImageSources(
 
     // Generate sizes attribute based on breakpoints
     const sizes = Object.entries(breakpoints)
-      .map(([breakpointName, width], index, array) => {
+      .map(([, width], index, array) => {
         if (index === array.length - 1) {
           // Last breakpoint doesn't need media query
           return `${width}px`;

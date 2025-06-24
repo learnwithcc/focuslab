@@ -1,6 +1,6 @@
-import { Form, useSearchParams } from '@remix-run/react';
+import { useSearchParams } from '@remix-run/react';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
 
 interface ProjectFiltersProps {

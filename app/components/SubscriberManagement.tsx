@@ -42,7 +42,7 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
       method: 'POST',
       action: '/api/subscribers'
     });
-  }, [cursor, selectedStatus]);
+  }, [cursor, selectedStatus, fetcher]);
 
   const handleStatusChange = (status: string) => {
     setSelectedStatus(status === 'all' ? undefined : status);
@@ -224,7 +224,7 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
         <div className="space-y-4">
           <p>
             Are you sure you want to permanently delete this subscriber? This action cannot be undone
-            and is in accordance with GDPR's right to be forgotten.
+            and is in accordance with GDPR&apos;s right to be forgotten.
           </p>
           <p className="font-medium">{deleteEmail}</p>
           <div className="flex justify-end gap-2">

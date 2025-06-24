@@ -55,7 +55,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     return (
       <Element
-        ref={ref as any}
+        ref={ref as React.Ref<HTMLButtonElement | HTMLDivElement>}
         className={cardClasses}
         onClick={interactive ? onClick : undefined}
         role={interactive ? 'button' : undefined}

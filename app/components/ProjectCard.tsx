@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react';
 import { ExternalLink, Github, Star, GitFork, Clock, AlertCircle, Loader2 } from 'lucide-react';
 import { Project } from '~/types/project';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface ProjectCardProps {
   project: Project;
