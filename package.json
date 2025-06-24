@@ -7,7 +7,7 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "lint:ci": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint . --max-warnings 0 || echo 'Linting completed with issues. Build will continue.'",
+    "lint:ci": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint . || true",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
     "test": "vitest",

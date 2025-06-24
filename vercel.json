@@ -1,4 +1,5 @@
 {
-  "buildCommand": "npm run build", 
-  "installCommand": "npm ci --legacy-peer-deps || (rm -rf node_modules package-lock.json && npm install --legacy-peer-deps)"
+  "framework": "remix",
+  "buildCommand": "npm run build",
+  "installCommand": "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps"
 }
