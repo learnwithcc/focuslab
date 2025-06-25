@@ -53,7 +53,7 @@ export default function AccessibilityStatement() {
         <ul>
           <li>
             E-mail:{' '}
-            <a href="mailto:support@focuslab.com">support@focuslab.com</a>
+            <a href="mailto:hey@focuslab.io">hey@focuslab.io</a>
           </li>
         </ul>
         <h2 className="text-2xl font-bold mt-8 mb-4">Technical specifications</h2>

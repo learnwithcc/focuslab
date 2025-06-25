@@ -27,7 +27,7 @@ export const meta: MetaFunction = () => {
       'development tools showcase'
     ],
     url: generatePageUrl('/projects'),
-    canonical: 'https://focuslab.dev/projects',
+    canonical: 'https://focuslab.io/projects',
     includeOrganizationSchema: true,
     includeBreadcrumbSchema: true,
     pathname: '/projects',

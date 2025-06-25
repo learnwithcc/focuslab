@@ -20,7 +20,7 @@ export const meta: MetaFunction = () => {
       'about focus lab'
     ],
     url: generatePageUrl('/about'),
-    canonical: 'https://focuslab.dev/about',
+    canonical: 'https://focuslab.io/about',
     type: 'profile',
     includeOrganizationSchema: true,
     includePersonSchema: true,

@@ -31,9 +31,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     };
 
     const variantClasses = {
-      default: 'bg-white border border-gray-200',
-      elevated: 'bg-white shadow-md border border-gray-100',
-      outlined: 'bg-white border-2 border-gray-300'
+      default: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
+      elevated: 'bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700',
+      outlined: 'bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600'
     };
 
     const cardClasses = buildComponentClasses(
@@ -45,8 +45,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       
       // Interactive styles
       interactive && baseStyles.interactive,
-      interactive && 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-      interactive && 'hover:shadow-lg hover:border-gray-300',
+      interactive && 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
+      interactive && 'hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600',
       
       className
     );
