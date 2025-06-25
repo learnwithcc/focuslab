@@ -11,7 +11,7 @@ import { json } from '@remix-run/node';
 import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
-import { CookieManager, Header } from "~/components";
+import { CookieManager, Header, Footer } from "~/components";
 import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
@@ -63,8 +63,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export const headers = createSecurityHeaders;
 
 export function Layout({ children, nonce, env, theme }: { children: React.ReactNode; nonce: string; env?: Record<string, string>; theme?: ThemeValue | null }) {
+  // Don't apply theme class on server if following system preference
+  const themeClass = theme || '';
   return (
-    <html lang="en" className={theme || 'light'} data-theme={theme || 'light'}>
+    <html lang="en" className={themeClass} data-theme={themeClass || undefined}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -103,8 +105,9 @@ const App = () => {
             <main id="main-content">
               <Outlet />
             </main>
+            <Footer />
             <CookieManager />
-            <VanillaThemeToggle initialTheme={theme || undefined} />
+            <VanillaThemeToggle />
           </CookieConsentProvider>
         </PHProvider>
       </Layout>

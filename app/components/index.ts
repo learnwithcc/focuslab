@@ -27,5 +27,7 @@ export { Header } from './Header';
 export { ProjectCard } from './ProjectCard';
 export { ProjectFilters } from './ProjectFilters';
 export { Breadcrumb } from './Breadcrumb';
+export { HighlightCards } from './HighlightCards';
+export { Footer } from './Footer';
 
 // Add component exports here as they are created 

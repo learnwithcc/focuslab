@@ -2,36 +2,6 @@ import { Project, ProjectFilters, ProjectSortOption } from '~/types/project';
 
 export const projects: Project[] = [
   {
-    id: 'directus-mcp-server',
-    title: 'Directus MCP Server',
-    description: 'Model Context Protocol server for Directus CMS integration, enabling AI assistants to interact with Directus collections, items, and schema.',
-    longDescription: 'A comprehensive MCP server that provides AI assistants with the ability to interact with Directus CMS instances. Features include collection management, item CRUD operations, schema introspection, and real-time data synchronization.',
-    status: 'active',
-    category: 'tool',
-    githubUrl: 'https://github.com/cryophobic/directus-mcp-server',
-    docsUrl: 'https://github.com/cryophobic/directus-mcp-server#readme',
-    technologies: [
-      { name: 'TypeScript', category: 'frontend' },
-      { name: 'Node.js', category: 'backend' },
-      { name: 'Directus', category: 'backend' },
-      { name: 'MCP', category: 'framework' },
-    ],
-    features: [
-      'Collection management and schema introspection',
-      'CRUD operations for items and collections',
-      'Real-time data synchronization',
-      'Authentication and permission handling',
-      'Comprehensive error handling and logging',
-    ],
-    installCommand: 'npm install @cryophobic/directus-mcp-server',
-    useCases: [
-      'AI-powered content management workflows',
-      'Automated data entry and validation',
-      'Dynamic schema management',
-      'Content migration and synchronization',
-    ],
-  },
-  {
     id: 'formflex',
     title: 'FormFlex',
     description: 'A flexible, type-safe form builder for React applications with built-in validation, accessibility, and theming support.',

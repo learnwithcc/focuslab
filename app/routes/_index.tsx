@@ -1,6 +1,6 @@
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Button, Card, GitHubIcon, NewsletterForm } from "~/components";
+import { Button, Card, GitHubIcon, HighlightCards } from "~/components";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
@@ -87,18 +87,11 @@ export async function action({ request }: ActionFunctionArgs) {
 
 const featuredProjects = [
   {
-    title: "Task Master AI",
+    title: "Tally MCP Server",
     description:
-      "An intelligent, context-aware task management and development automation tool designed to streamline workflows for neurodivergent developers. It simplifies project planning, execution, and tracking, allowing for more focused and productive coding sessions.",
-    href: "https://github.com/focus-lab-ltd/task-master-ai",
-    tags: ["AI", "CLI", "Automation", "Developer Tool"],
-  },
-  {
-    title: "Directus MCP Server",
-    description:
-      "A powerful backend server that seamlessly integrates with Directus and GitHub, providing a robust Mission Control Platform (MCP) for managing complex development projects. It enables real-time data synchronization, automated workflows, and streamlined content management.",
-    href: "https://github.com/focus-lab-ltd/directus-mcp-server",
-    tags: ["Directus", "Node.js", "API", "GitHub Integration"],
+      "A powerful form management integration that connects Tally.so directly to AI assistants through the Model Context Protocol, enabling natural language form creation and management without context switching. It features intelligent bulk operations with safety-first workflows, real-time response analytics, and automated form lifecycle management designed to streamline workflows for content creators and developers.",
+    href: "https://github.com/learnwithcc/tally-mcp",
+    tags: ["MCP", "TypeScript", "API", "Form Management"],
   },
   {
     title: "FocusLab Website",
@@ -217,6 +210,9 @@ export default function Index() {
           </div>
         </section>
 
+        {/* What We're Building Section */}
+        <HighlightCards />
+
         {/* Featured Projects Section */}
         <section className="bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -229,8 +225,9 @@ export default function Index() {
                 developer experience more accessible and productive for
                 everyone.
               </p>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {featuredProjects.map((project) => (
+              <div className="mx-auto max-w-4xl">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                  {featuredProjects.map((project) => (
                   <a
                     key={project.title}
                     href={project.href}
@@ -263,7 +260,8 @@ export default function Index() {
                       </div>
                     </Card>
                   </a>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

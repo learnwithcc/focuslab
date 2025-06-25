@@ -11,12 +11,12 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ error: 'Invalid theme value' }, { status: 400 });
   }
   
-  // Set theme cookie
+  // Set theme override cookie (session-based)
   return json(
     { success: true, theme },
     {
       headers: {
-        'Set-Cookie': createThemeCookie(theme),
+        'Set-Cookie': createThemeCookie(theme, true),
       },
     }
   );

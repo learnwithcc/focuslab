@@ -3,7 +3,8 @@ import {
   THEMES, 
   type ThemeValue,
   applyThemeToDocument,
-  saveThemePreference
+  saveThemePreference,
+  hasThemeOverride
 } from '~/utils/theme';
 
 // SVG Icons as components for better SSR
@@ -27,11 +28,7 @@ const MoonIcon = () => (
   </svg>
 );
 
-interface VanillaThemeToggleProps {
-  initialTheme?: ThemeValue;
-}
-
-export function VanillaThemeToggle({ initialTheme }: VanillaThemeToggleProps) {
+export function VanillaThemeToggle() {
   // Start with undefined to prevent hydration mismatch
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
@@ -41,12 +38,40 @@ export function VanillaThemeToggle({ initialTheme }: VanillaThemeToggleProps) {
   useEffect(() => {
     setMounted(true);
     
-    // Get the actual theme from DOM or saved preference
+    // Get the actual theme from DOM
     const currentTheme = document.documentElement.classList.contains(THEMES.DARK) 
       ? THEMES.DARK 
       : THEMES.LIGHT;
     
     setTheme(currentTheme);
+    
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      // Only update if no manual override exists
+      if (!hasThemeOverride()) {
+        const newTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
+        applyThemeToDocument(newTheme);
+        setTheme(newTheme);
+      }
+    };
+    
+    // Add listener
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    } else {
+      // Fallback for older browsers
+      mediaQuery.addListener(handleSystemThemeChange);
+    }
+    
+    // Cleanup
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      } else {
+        mediaQuery.removeListener(handleSystemThemeChange);
+      }
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -155,10 +180,11 @@ export const VanillaThemeScript = () => (
               : 'light';
           }
           
-          // Check cookie first, then localStorage, then system preference
-          const cookieTheme = getCookie('focuslab-theme-preference');
-          const localTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('focuslab-theme-preference') : null;
-          const theme = cookieTheme || localTheme || getSystemTheme();
+          // Check for manual override first (session-based)
+          const overrideTheme = getCookie('focuslab-theme-override');
+          
+          // Use override if present, otherwise follow system preference
+          const theme = overrideTheme || getSystemTheme();
           
           // Apply theme immediately to prevent flash
           const root = document.documentElement;
@@ -166,6 +192,21 @@ export const VanillaThemeScript = () => (
           root.classList.add(theme);
           root.setAttribute('data-theme', theme);
           root.style.colorScheme = theme;
+          
+          // Listen for system theme changes when no override is set
+          if (!overrideTheme && window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addEventListener('change', (e) => {
+              // Only update if no manual override exists
+              if (!getCookie('focuslab-theme-override')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                root.classList.remove('light', 'dark');
+                root.classList.add(newTheme);
+                root.setAttribute('data-theme', newTheme);
+                root.style.colorScheme = newTheme;
+              }
+            });
+          }
         })();
       `,
     }}

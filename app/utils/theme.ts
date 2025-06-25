@@ -1,5 +1,6 @@
 // Cookie name for theme preference
 export const THEME_COOKIE_NAME = 'focuslab-theme-preference';
+export const THEME_OVERRIDE_COOKIE_NAME = 'focuslab-theme-override';
 
 // Valid theme values
 export const THEMES = {
@@ -12,10 +13,10 @@ export type ThemeValue = typeof THEMES[keyof typeof THEMES];
 /**
  * Parse theme from cookie value
  */
-export function parseThemeCookie(cookieHeader: string | null): ThemeValue | null {
+export function parseThemeCookie(cookieHeader: string | null, cookieName: string = THEME_COOKIE_NAME): ThemeValue | null {
   if (!cookieHeader) return null;
   
-  const match = cookieHeader.match(new RegExp(`${THEME_COOKIE_NAME}=(light|dark)`));
+  const match = cookieHeader.match(new RegExp(`${cookieName}=(light|dark)`));
   return match ? (match[1] as ThemeValue) : null;
 }
 
@@ -24,17 +25,29 @@ export function parseThemeCookie(cookieHeader: string | null): ThemeValue | null
  */
 export function getThemeFromRequest(request: Request): ThemeValue | null {
   const cookieHeader = request.headers.get('Cookie');
-  return parseThemeCookie(cookieHeader);
+  // Check for manual override first (session-based)
+  const override = parseThemeCookie(cookieHeader, THEME_OVERRIDE_COOKIE_NAME);
+  if (override) return override;
+  
+  // Otherwise return null to use system preference
+  return null;
 }
 
 /**
  * Create theme cookie string
  */
-export function createThemeCookie(theme: ThemeValue): string {
-  // Set cookie with 1 year expiry, secure in production
-  const maxAge = 365 * 24 * 60 * 60; // 1 year in seconds
+export function createThemeCookie(theme: ThemeValue, isOverride: boolean = false): string {
+  const cookieName = isOverride ? THEME_OVERRIDE_COOKIE_NAME : THEME_COOKIE_NAME;
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  return `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  
+  if (isOverride) {
+    // Session cookie (no Max-Age = expires when browser closes)
+    return `${cookieName}=${theme}; Path=/; SameSite=Lax${secure}`;
+  } else {
+    // Persistent cookie for backwards compatibility
+    const maxAge = 365 * 24 * 60 * 60; // 1 year in seconds
+    return `${cookieName}=${theme}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  }
 }
 
 /**
@@ -69,15 +82,28 @@ export function applyThemeToDocument(theme: ThemeValue): void {
 export function saveThemePreference(theme: ThemeValue): void {
   if (typeof window === 'undefined') return;
   
-  // Save to localStorage for backwards compatibility
+  // Save as session override cookie
+  document.cookie = createThemeCookie(theme, true);
+  
+  // Clear any old persistent preferences
+  clearPersistentTheme();
+}
+
+/**
+ * Clear persistent theme settings to revert to system preference
+ */
+export function clearPersistentTheme(): void {
+  if (typeof window === 'undefined') return;
+  
+  // Remove from localStorage
   try {
-    localStorage.setItem(THEME_COOKIE_NAME, theme);
+    localStorage.removeItem(THEME_COOKIE_NAME);
   } catch (e) {
-    console.warn('Could not save theme to localStorage:', e);
+    console.warn('Could not clear theme from localStorage:', e);
   }
   
-  // Save to cookie for SSR
-  document.cookie = createThemeCookie(theme);
+  // Expire the persistent cookie
+  document.cookie = `${THEME_COOKIE_NAME}=; Path=/; Max-Age=0`;
 }
 
 /**
@@ -86,28 +112,33 @@ export function saveThemePreference(theme: ThemeValue): void {
 export function getSavedTheme(): ThemeValue | null {
   if (typeof window === 'undefined') return null;
   
-  // Check cookie first
-  const cookieTheme = parseThemeCookie(document.cookie);
-  if (cookieTheme) return cookieTheme;
+  // Check override cookie first (session-based)
+  const overrideTheme = parseThemeCookie(document.cookie, THEME_OVERRIDE_COOKIE_NAME);
+  if (overrideTheme) return overrideTheme;
   
-  // Fall back to localStorage
-  try {
-    const stored = localStorage.getItem(THEME_COOKIE_NAME);
-    return stored === THEMES.DARK || stored === THEMES.LIGHT ? stored : null;
-  } catch {
-    return null;
-  }
+  // Don't check persistent storage - we want to follow system preference
+  return null;
 }
 
 /**
  * Get initial theme with fallback chain
  */
 export function getInitialTheme(cookieTheme?: ThemeValue | null): ThemeValue {
-  // Server-side: use cookie or default to light
+  // Server-side: use override or system preference
   if (typeof window === 'undefined') {
-    return cookieTheme || THEMES.LIGHT;
+    return cookieTheme || THEMES.LIGHT; // Default to light on server
   }
   
-  // Client-side: cookie > localStorage > system > light
-  return cookieTheme || getSavedTheme() || getSystemTheme();
+  // Client-side: override > system preference
+  return getSavedTheme() || getSystemTheme();
+}
+
+/**
+ * Check if theme is manually overridden
+ */
+export function hasThemeOverride(): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  const overrideTheme = parseThemeCookie(document.cookie, THEME_OVERRIDE_COOKIE_NAME);
+  return overrideTheme !== null;
 }
