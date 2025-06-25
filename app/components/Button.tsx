@@ -65,11 +65,11 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
 
     // Variant classes
     const variantClasses = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 border border-transparent',
-      secondary: 'bg-white text-gray-900 hover:bg-gray-50 focus:ring-blue-500 border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600',
-      outline: 'bg-transparent text-blue-600 hover:bg-blue-50 focus:ring-blue-500 border border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20 dark:border-blue-400',
+      primary: 'bg-teal-primary text-white hover:bg-teal-600 focus:ring-teal-primary border border-transparent',
+      secondary: 'bg-white text-primary-purple hover:bg-gray-50 focus:ring-teal-primary border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600',
+      outline: 'bg-transparent text-teal-primary hover:bg-teal-50 focus:ring-teal-primary border border-teal-primary dark:text-teal-primary dark:hover:bg-teal-900/20 dark:border-teal-primary',
       ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
-      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 border border-transparent',
+      danger: 'bg-orange-accent text-white hover:bg-red-700 focus:ring-orange-accent border border-transparent',
     };
 
     const buttonClasses = buildComponentClasses(

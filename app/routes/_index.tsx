@@ -110,9 +110,9 @@ export default function Index() {
         <section className="relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 text-center lg:py-20">
-              <h1 className="leading-tight text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+              <h1 className="leading-tight text-4xl font-bold text-primary-purple dark:text-white sm:text-5xl lg:text-6xl">
                 Development Tools Built for{" "}
-                <span className="text-blue-600 dark:text-blue-400">
+                <span className="text-teal-primary dark:text-teal-primary">
                   Your Beautiful Brain!
                 </span>
               </h1>
@@ -149,7 +149,7 @@ export default function Index() {
               <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                 {/* Mission Statement Content */}
                 <div className="order-2 lg:order-1">
-                  <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+                  <h2 className="mb-6 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                     Our Mission
                   </h2>
                   <div className="space-y-6 leading-relaxed text-lg text-gray-600 dark:text-gray-300">
@@ -174,11 +174,11 @@ export default function Index() {
                 <div className="order-1 lg:order-2">
                   <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-gray-900">
                     <div className="mb-6 flex items-center">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-2xl font-bold text-white">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-teal-primary to-primary-purple text-2xl font-bold text-white">
                         F
                       </div>
                       <div className="ml-4">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-xl font-semibold text-primary-purple dark:text-white">
                           Founder's Story
                         </h3>
                         <p className="text-gray-600 dark:text-gray-400">
@@ -217,7 +217,7 @@ export default function Index() {
         <section className="bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 text-center lg:py-20">
-              <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+              <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                 Our Flagship Projects
               </h2>
               <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
@@ -239,7 +239,7 @@ export default function Index() {
                     <Card variant="elevated" className="flex h-full flex-col text-left">
                       <div className="flex-grow">
                         <div className="mb-4 flex items-start justify-between">
-                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          <h3 className="text-xl font-bold text-primary-purple dark:text-white">
                             {project.title}
                           </h3>
                           <GitHubIcon className="h-6 w-6 text-gray-400" />
