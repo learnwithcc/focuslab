@@ -63,15 +63,15 @@ const colorClasses = {
 
 export function HighlightCards() {
   return (
-    <section className="bg-gray-900 dark:bg-black">
+    <section className="bg-gradient-to-br from-purple-50 via-white to-teal-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16 text-center lg:py-20">
-          <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
             <span className="bg-gradient-to-r from-teal-primary to-primary-purple bg-clip-text text-transparent">
               What We're Building
             </span>
           </h2>
-          <p className="mx-auto mb-12 max-w-4xl text-lg text-gray-200 sm:text-xl">
+          <p className="mx-auto mb-12 max-w-4xl text-lg text-gray-700 dark:text-gray-200 sm:text-xl">
             FocusLab is developing specialized tools that enhance productivity for developers with ADHD, autism, and other 
             neurodivergent traits. Our approach isn't about "fixing" anything—it's about creating technology that works with your 
             brain, not against it:
@@ -89,7 +89,7 @@ export function HighlightCards() {
                 <h3 className={`mb-4 text-xl font-bold ${colorClasses[highlight.color].title}`}>
                   {highlight.title}
                 </h3>
-                <p className="text-gray-300 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-400">
                   {highlight.description}
                 </p>
               </div>
@@ -97,7 +97,7 @@ export function HighlightCards() {
           </div>
           
           <div className="mt-12">
-            <p className="text-gray-300">
+            <p className="text-gray-600 dark:text-gray-300">
               While most of our projects are still in development, we're excited to be launching select tools to the community soon.
             </p>
           </div>
