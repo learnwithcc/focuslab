@@ -182,92 +182,88 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <main className="w-full">
         {/* Hero Section */}
-        <Section spacing="lg" className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
-          <Container maxWidth="7xl">
-            <Breadcrumb items={breadcrumbItems} className="mb-8" />
-            <div className="text-center">
-              <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
-                Our Projects
-              </h1>
-              <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
-                Here are some of the projects we've been working on. From developer tools 
-                to business applications, we're building solutions that make a difference.
-              </p>
-              
-              {/* GitHub API Status */}
-              {hasGitHubError && (
-                <div className="mt-6 flex items-center gap-2 rounded-md bg-yellow-50 p-3 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 max-w-2xl mx-auto">
-                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                  <div className="text-sm">
-                    <p className="font-medium">GitHub data temporarily unavailable</p>
-                    <p className="text-xs opacity-90">Projects are shown without live statistics. {!data.success ? data.error : ''}</p>
+        <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              <Breadcrumb items={breadcrumbItems} className="mb-8" />
+              <div className="text-center">
+                <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+                  Our Projects
+                </h1>
+                <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
+                  Here are some of the projects we've been working on. From developer tools 
+                  to business applications, we're building solutions that make a difference.
+                </p>
+                
+                {/* GitHub API Status */}
+                {hasGitHubError && (
+                  <div className="mt-6 flex items-center gap-2 rounded-md bg-yellow-50 p-3 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 max-w-2xl mx-auto">
+                    <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium">GitHub data temporarily unavailable</p>
+                      <p className="text-xs opacity-90">Projects are shown without live statistics. {!data.success ? data.error : ''}</p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </Container>
-        </Section>
+                )}
+              </div>
+            </Container>
+          </Section>
+        </div>
 
         {/* Projects Content Section */}
-        <Section spacing="lg">
-          <Container maxWidth="7xl">
-            {/* Project Filters */}
-            <div className="mb-8">
-              <ProjectFilters projects={data.allProjects} />
-            </div>
-
-            {/* Loading State */}
-            {isLoading && (
-              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <ProjectCardSkeleton key={index} />
-                ))}
+        <div className="w-full bg-white dark:bg-gray-900">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              {/* Project Filters */}
+              <div className="mb-8">
+                <ProjectFilters projects={data.allProjects} />
               </div>
-            )}
 
-            {/* Results Summary */}
-            {!isLoading && (
-              <div className="mb-6 flex items-center justify-between">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Showing {data.projects.length} of {data.allProjects.length} projects
-                </p>
-              </div>
-            )}
+              {/* Loading State */}
+              {isLoading && (
+                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  {Array.from({ length: 6 }).map((_, index) => (
+                    <ProjectCardSkeleton key={index} />
+                  ))}
+                </div>
+              )}
 
-            {/* Projects Grid */}
-            {!isLoading && (
-              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {data.projects.map((project: Project) => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project} 
-                    loading={false}
-                  />
-                ))}
-              </div>
-            )}
+              {/* Results Summary */}
+              {!isLoading && (
+                <div className="mb-6 flex items-center justify-between">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Showing {data.projects.length} of {data.allProjects.length} projects
+                  </p>
+                </div>
+              )}
 
-            {/* Empty State (if no projects) */}
-            {!isLoading && data.projects.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">No projects found</h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {data.allProjects.length > 0 
-                    ? "Try adjusting your filters to see more projects."
-                    : "We're working on some exciting projects. Check back soon!"
-                  }
-                </p>
-              </div>
-            )}
+              {/* Projects Grid */}
+              {!isLoading && (
+                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  {data.projects.map((project: Project) => (
+                    <ProjectCard 
+                      key={project.id} 
+                      project={project} 
+                      loading={false}
+                    />
+                  ))}
+                </div>
+              )}
 
-            {/* Data freshness indicator */}
-            {!isLoading && data.timestamp && (
-              <div className="mt-8 text-center text-xs text-gray-500 dark:text-gray-500">
-                Last updated: {new Date(data.timestamp).toLocaleString()}
-              </div>
-            )}
-          </Container>
-        </Section>
+              {/* No Results */}
+              {!isLoading && data.projects.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 dark:text-gray-400 text-lg">
+                    No projects found matching your criteria.
+                  </p>
+                  <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">
+                    Try adjusting your filters or search terms.
+                  </p>
+                </div>
+              )}
+            </Container>
+          </Section>
+        </div>
       </main>
     </div>
   );

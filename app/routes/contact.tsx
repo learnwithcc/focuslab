@@ -35,28 +35,32 @@ export default function ContactPage() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <main className="w-full">
         {/* Hero Section */}
-        <Section spacing="lg" className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
-          <Container maxWidth="7xl">
-            <Breadcrumb items={breadcrumbItems} className="mb-8" />
-            <div className="text-center">
-              <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
-                Contact Us
-              </h1>
-              <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
-                We&apos;d love to hear from you! Please fill out the form below to get in touch.
-              </p>
-            </div>
-          </Container>
-        </Section>
+        <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              <Breadcrumb items={breadcrumbItems} className="mb-8" />
+              <div className="text-center">
+                <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+                  Contact Us
+                </h1>
+                <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
+                  We&apos;d love to hear from you! Please fill out the form below to get in touch.
+                </p>
+              </div>
+            </Container>
+          </Section>
+        </div>
 
         {/* Contact Form Section */}
-        <Section spacing="lg">
-          <Container maxWidth="7xl">
-            <div className="mx-auto max-w-2xl">
-              <ContactForm />
-            </div>
-          </Container>
-        </Section>
+        <div className="w-full bg-white dark:bg-gray-900">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              <div className="mx-auto max-w-2xl">
+                <ContactForm />
+              </div>
+            </Container>
+          </Section>
+        </div>
       </main>
     </div>
   );
