@@ -63,7 +63,7 @@ const colorClasses = {
 
 export function HighlightCards() {
   return (
-    <section className="bg-white dark:bg-gray-950">
+    <section className="bg-gradient-to-br from-purple-50 via-white to-teal-50 dark:from-purple-900/20 dark:via-gray-950 dark:to-teal-900/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16 text-center lg:py-20">
           <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">

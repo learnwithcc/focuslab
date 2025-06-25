@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer
       role="contentinfo"
-      className="bg-white dark:bg-gray-950 border-t border-purple-200 dark:border-gray-700"
+      className="bg-gradient-to-r from-purple-50 to-teal-50 dark:from-purple-900/20 dark:to-teal-900/20 border-t border-purple-200 dark:border-gray-700"
     >
       {/* Let's Connect Section */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
