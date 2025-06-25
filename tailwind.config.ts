@@ -21,6 +21,10 @@ export default {
           dark: '#FD9E14',
           DEFAULT: 'var(--orange-accent)',
         },
+        gray: {
+          950: '#0a0a0a',
+          975: '#050505',
+        }
       },
       fontFamily: {
         sans: [

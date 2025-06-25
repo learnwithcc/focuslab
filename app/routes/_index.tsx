@@ -104,7 +104,7 @@ const featuredProjects = [
 
 export default function Index() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-975">
       <main className="w-full">
         {/* Hero Section */}
         <section className="relative">
@@ -116,7 +116,7 @@ export default function Index() {
                   Your Beautiful Brain!
                 </span>
               </h1>
-              <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-300 sm:text-xl lg:text-2xl">
+              <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-200 sm:text-xl lg:text-2xl">
                 Creating accessible, intuitive development solutions that work
                 with your brain, not against it. Empowering neurodivergent
                 developers to build amazing things.
@@ -143,7 +143,7 @@ export default function Index() {
         </section>
 
         {/* Mission Statement Section */}
-        <section className="bg-gradient-to-r from-teal-50 to-purple-50 dark:bg-gray-800">
+        <section className="bg-white dark:bg-gray-950">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 lg:py-20">
               <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -152,7 +152,7 @@ export default function Index() {
                   <h2 className="mb-6 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                     Our Mission
                   </h2>
-                  <div className="space-y-6 leading-relaxed text-lg text-gray-600 dark:text-gray-300">
+                  <div className="space-y-6 leading-relaxed text-lg text-gray-600 dark:text-gray-200">
                     <p>
                       Every developer deserves tools that work <em>with</em>{" "}
                       their unique way of thinking, not against it. We're
@@ -172,7 +172,7 @@ export default function Index() {
 
                 {/* Founder Story */}
                 <div className="order-1 lg:order-2">
-                  <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+                  <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-lg dark:border-gray-800 dark:bg-gray-950">
                     <div className="mb-6 flex items-center">
                       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-teal-primary to-primary-purple text-2xl font-bold text-white">
                         F
@@ -181,12 +181,12 @@ export default function Index() {
                         <h3 className="text-xl font-semibold text-primary-purple dark:text-white">
                           Founder's Story
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-300">
                           Building from experience
                         </p>
                       </div>
                     </div>
-                    <blockquote className="leading-relaxed text-gray-700 dark:text-gray-300">
+                    <blockquote className="leading-relaxed text-gray-700 dark:text-gray-200">
                       "As a neurodivergent developer, I've experienced firsthand
                       the frustration of tools that seem designed for
                       neurotypical workflows. After years of adapting myself to
@@ -195,9 +195,9 @@ export default function Index() {
                       development environments that embrace neurodiversity as a
                       strength."
                     </blockquote>
-                    <div className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-600">
+                    <div className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-700">
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        <strong className="text-gray-700 dark:text-gray-300">
+                        <strong className="text-gray-700 dark:text-gray-200">
                           FocusLab Founder
                         </strong>{" "}
                         — Passionate about inclusive development tools
@@ -214,13 +214,13 @@ export default function Index() {
         <HighlightCards />
 
         {/* Featured Projects Section */}
-        <section className="bg-white dark:bg-gray-900">
+        <section className="bg-white dark:bg-gray-975">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 text-center lg:py-20">
               <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                 Our Flagship Projects
               </h2>
-              <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
+              <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-200 sm:text-xl">
                 We're actively developing open-source tools to make the
                 developer experience more accessible and productive for
                 everyone.
@@ -244,7 +244,7 @@ export default function Index() {
                           </h3>
                           <GitHubIcon className="h-6 w-6 text-gray-400" />
                         </div>
-                        <p className="text-gray-600 dark:text-gray-300">
+                        <p className="text-gray-600 dark:text-gray-200">
                           {project.description}
                         </p>
                       </div>
@@ -252,7 +252,7 @@ export default function Index() {
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                            className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
                           >
                             {tag}
                           </span>

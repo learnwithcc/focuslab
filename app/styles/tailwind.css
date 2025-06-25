@@ -13,10 +13,10 @@
   }
 
   .dark {
-    /* Dark theme colors */
-    --primary-purple: #7b2cbf;
-    --teal-primary: #20c997;
-    --orange-accent: #fd7e14;
+    /* Dark theme colors - more dramatic and vibrant */
+    --primary-purple: #c77dff;
+    --teal-primary: #06ffa5;
+    --orange-accent: #ffbe0b;
   }
 
   html {
@@ -25,7 +25,7 @@
 
   html,
   body {
-    @apply bg-white dark:bg-gray-950 motion-safe:transition-colors motion-reduce:transition-none duration-200;
+    @apply bg-white dark:bg-gray-975 motion-safe:transition-colors motion-reduce:transition-none duration-200;
 
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;

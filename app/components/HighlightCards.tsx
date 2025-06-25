@@ -49,21 +49,21 @@ const highlights: HighlightCard[] = [
 const colorClasses = {
   purple: {
     title: 'text-primary-purple dark:text-purple-400',
-    card: 'border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/50 dark:to-gray-900'
+    card: 'border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-gray-900 dark:to-gray-950'
   },
   teal: {
     title: 'text-teal-primary dark:text-teal-400',
-    card: 'border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50 to-white dark:from-teal-950/50 dark:to-gray-900'
+    card: 'border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50 to-white dark:from-gray-900 dark:to-gray-950'
   },
   orange: {
     title: 'text-orange-accent dark:text-orange-400',
-    card: 'border-orange-200 dark:border-orange-800 bg-gradient-to-br from-orange-50 to-white dark:from-orange-950/50 dark:to-gray-900'
+    card: 'border-orange-200 dark:border-orange-800 bg-gradient-to-br from-orange-50 to-white dark:from-gray-900 dark:to-gray-950'
   }
 };
 
 export function HighlightCards() {
   return (
-    <section className="bg-gradient-to-br from-purple-50 via-white to-teal-50 dark:bg-gray-900">
+    <section className="bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-16 text-center lg:py-20">
           <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
@@ -89,7 +89,7 @@ export function HighlightCards() {
                 <h3 className={`mb-4 text-xl font-bold ${colorClasses[highlight.color].title}`}>
                   {highlight.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-300">
                   {highlight.description}
                 </p>
               </div>
@@ -97,7 +97,7 @@ export function HighlightCards() {
           </div>
           
           <div className="mt-12">
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-gray-600 dark:text-gray-200">
               While most of our projects are still in development, we're excited to be launching select tools to the community soon.
             </p>
           </div>

@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer
       role="contentinfo"
-      className="bg-gradient-to-r from-purple-50 to-teal-50 dark:bg-gray-900 border-t border-purple-200 dark:border-gray-700"
+      className="bg-white dark:bg-gray-950 border-t border-purple-200 dark:border-gray-700"
     >
       {/* Let's Connect Section */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,7 +35,7 @@ export function Footer() {
               className="flex items-center gap-2 text-gray-700 hover:text-primary-purple dark:text-gray-300 dark:hover:text-white transition-colors duration-200"
               aria-label="Visit LearnWith.cc"
             >
-              <ExternalLinkIcon className="h-5 w-5" aria-hidden="true" />
+              <ExternalLinkIcon className="h-5 w-5" aria-hidden={true} />
               <span className="font-medium">LearnWith.cc</span>
             </a>
             
