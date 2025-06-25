@@ -1,5 +1,6 @@
 import { MetaFunction } from '@remix-run/node';
 import { useLocation } from '@remix-run/react';
+import { Section, Container } from "~/components/Layout";
 import { ContactForm, Breadcrumb } from '~/components';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
 import { getBreadcrumbItems } from '~/utils/structured-data';
@@ -31,13 +32,32 @@ export default function ContactPage() {
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <Breadcrumb items={breadcrumbItems} className="mb-6" />
-      <h1 className="mb-4 text-4xl font-bold">Contact Us</h1>
-      <p className="mb-8 text-lg">
-        We&apos;d love to hear from you! Please fill out the form below to get in touch.
-      </p>
-      <ContactForm />
-    </main>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <main className="w-full">
+        {/* Hero Section */}
+        <Section spacing="lg" className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+          <Container maxWidth="7xl">
+            <Breadcrumb items={breadcrumbItems} className="mb-8" />
+            <div className="text-center">
+              <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+                Contact Us
+              </h1>
+              <p className="mx-auto max-w-3xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
+                We&apos;d love to hear from you! Please fill out the form below to get in touch.
+              </p>
+            </div>
+          </Container>
+        </Section>
+
+        {/* Contact Form Section */}
+        <Section spacing="lg">
+          <Container maxWidth="7xl">
+            <div className="mx-auto max-w-2xl">
+              <ContactForm />
+            </div>
+          </Container>
+        </Section>
+      </main>
+    </div>
   );
 } 
