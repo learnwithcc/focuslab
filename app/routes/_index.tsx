@@ -107,12 +107,12 @@ export default function Index() {
     <div className="min-h-screen bg-white dark:bg-gray-975">
       <main className="w-full">
         {/* Hero Section */}
-        <section className="relative">
+        <section className="relative bg-white dark:bg-header-bg">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 text-center lg:py-20">
-              <h1 className="leading-tight text-4xl font-bold text-primary-purple dark:text-white sm:text-5xl lg:text-6xl">
+              <h1 className="leading-tight text-4xl font-bold text-primary-purple dark:text-header-primary-text sm:text-5xl lg:text-6xl">
                 Development Tools Built for{" "}
-                <span className="text-teal-primary dark:text-teal-primary">
+                <span className="text-teal-primary dark:text-header-secondary-text">
                   Your Beautiful Brain!
                 </span>
               </h1>
@@ -214,7 +214,7 @@ export default function Index() {
         <HighlightCards />
 
         {/* Featured Projects Section */}
-        <section className="bg-white dark:bg-gray-975">
+        <section className="bg-white dark:bg-projects-bg">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-16 text-center lg:py-20">
               <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">

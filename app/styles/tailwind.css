@@ -10,6 +10,11 @@
     --primary-purple: #4a0e4e;
     --teal-primary: #00b2a9;
     --orange-accent: #ff6b35;
+    --header-bg: #ffffff;
+    --header-primary-text: #4a0e4e;
+    --header-secondary-text: #00b2a9;
+    --header-primary-cta: #00b2a9;
+    --projects-bg: #ffffff;
   }
 
   .dark {
@@ -17,6 +22,12 @@
     --primary-purple: #c77dff;
     --teal-primary: #06ffa5;
     --orange-accent: #ffbe0b;
+    /* Specific mockup colors */
+    --header-bg: #090D22;
+    --header-primary-text: #8934EE;
+    --header-secondary-text: #01D8EE;
+    --header-primary-cta: #01D8EE;
+    --projects-bg: #0B0F24;
   }
 
   html {

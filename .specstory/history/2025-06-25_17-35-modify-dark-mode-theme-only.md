@@ -1042,3 +1042,152 @@ I understand! Looking at the mockup image you've attached, I can see that these 
 
 ---
 
+
+
+---
+
+Perfect! Now I've restored the gradient backgrounds but made them appropriate for dark mode by:
+
+1. **Our Mission section**: Uses a subtle dark teal to purple gradient overlay (`dark:from-teal-900/20 dark:to-purple-900/20`)
+2. **What We're Building section**: Uses a three-stop gradient that transitions through the dark background (`dark:from-purple-900/20 dark:via-gray-950 dark:to-teal-900/20`)
+3. **Let's Connect section**: Uses a subtle dark purple to teal gradient (`dark:from-purple-900/20 dark:to-teal-900/20`)
+
+This maintains the visual interest and sectional separation while keeping the dark theme consistent with your mockup. Let me commit these corrections:
+
+---
+
+```bash
+git add -A
+```
+
+```
+❯ git add -A
+
+╭─     ~/dev/projects/focuslab     main ⇡2 +4 ··································· ✔  14:01:53   
+╰─
+```
+
+---
+
+```bash
+git commit -m "fix(theme): restore gradient backgrounds with dark mode variants
+
+- Restore gradient backgrounds for Our Mission, What We're Building, and Let's Connect sections
+- Add subtle dark mode gradient overlays using transparent colors
+- Our Mission: teal-50 to purple-50 (light) / teal-900/20 to purple-900/20 (dark)
+- What We're Building: purple-50 via white to teal-50 (light) / purple-900/20 via gray-950 to teal-900/20 (dark)  
+- Let's Connect: purple-50 to teal-50 (light) / purple-900/20 to teal-900/20 (dark)
+- Maintains visual sectional separation while respecting dark theme mockup"
+```
+
+```
+
+❯ >....                                                                                                      
+rk)  
+- Let's Connect: purple-50 to teal-50 (light) / purple-900/20 to teal-900/20 (dark)
+- Maintains visual sectional separation while respecting dark theme mockup"
+[main 8f7e5aa] fix(theme): restore gradient backgrounds with dark mode variants
+ 4 files changed, 165 insertions(+), 3 deletions(-)
+
+╭─     ~/dev/projects/focuslab     main ⇡3 ······································ ✔  14:02:01   
+╰─
+```
+
+---
+
+Excellent! I've corrected the approach to match your mockup. Instead of removing the gradient backgrounds entirely, I've now created appropriate dark mode versions that:
+
+## Fixed Gradient Backgrounds
+
+**Our Mission Section:**
+- **Light mode**: `from-teal-50 to-purple-50` (original light gradients)
+- **Dark mode**: `from-teal-900/20 to-purple-900/20` (subtle dark gradient overlays)
+
+**What We're Building Section:**
+- **Light mode**: `from-purple-50 via-white to-teal-50` (original three-stop gradient)
+- **Dark mode**: `from-purple-900/20 via-gray-950 to-teal-900/20` (dark gradient with deep background)
+
+**Let's Connect Section:**
+- **Light mode**: `from-purple-50 to-teal-50` (original gradient)
+- **Dark mode**: `from-purple-900/20 to-teal-900/20` (subtle dark gradient)
+
+This approach maintains the visual sectional separation and design interest from your original layout while creating appropriate dark mode variants that match the overall dark theme aesthetic shown in your mockup. The `/20` opacity ensures the gradients are subtle enough to work with the dark theme without being overpowering.
+
+---
+
+_**User**_
+
+Still incorrect. The header background should be #090D22
+
+Header primary cta button #01D8EE
+
+Projects background: #0B0F24
+
+Primary header text: #8934EE
+
+Secondary header text: same as primary cta button
+
+---
+
+_**Assistant**_
+
+I understand! You're providing the specific hex colors that should be used for the dark mode. Let me update the components with these exact colors:
+
+1. **Header background**: `#090D22`
+2. **Header primary CTA button**: `#01D8EE` 
+3. **Projects background**: `#0B0F24`
+4. **Primary header text**: `#8934EE`
+5. **Secondary header text**: `#01D8EE` (same as primary CTA button)
+
+Let me first check the current header structure and then apply these specific colors:
+
+---
+
+Read file: app/routes/_index.tsx
+
+---
+
+Let me check the header section and the Button component to understand the current structure:
+
+---
+
+Read file: app/routes/_index.tsx
+
+---
+
+Now let me check the CSS variables to add the specific hex colors, and then check the Button component:
+
+---
+
+
+
+---
+
+Let me read the current CSS file to see the exact structure:
+
+---
+
+Read file: app/styles/tailwind.css
+
+---
+
+Now let me add the specific colors to the CSS variables:
+
+---
+
+
+
+---
+
+Now I need to update the Tailwind config to include these custom colors:
+
+---
+
+
+
+---
+
+
+
+---
+

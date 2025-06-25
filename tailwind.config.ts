@@ -24,7 +24,12 @@ export default {
         gray: {
           950: '#0a0a0a',
           975: '#050505',
-        }
+        },
+        'header-bg': 'var(--header-bg)',
+        'header-primary-text': 'var(--header-primary-text)',
+        'header-secondary-text': 'var(--header-secondary-text)',
+        'header-primary-cta': 'var(--header-primary-cta)',
+        'projects-bg': 'var(--projects-bg)',
       },
       fontFamily: {
         sans: [

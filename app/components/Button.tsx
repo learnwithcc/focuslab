@@ -65,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
 
     // Variant classes
     const variantClasses = {
-      primary: 'bg-teal-primary text-white hover:bg-teal-600 focus:ring-teal-primary border border-transparent',
+      primary: 'bg-teal-primary text-white hover:bg-teal-600 focus:ring-teal-primary border border-transparent dark:bg-header-primary-cta dark:hover:bg-header-primary-cta/80',
       secondary: 'bg-white text-primary-purple hover:bg-gray-50 focus:ring-teal-primary border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600',
       outline: 'bg-transparent text-teal-primary hover:bg-teal-50 focus:ring-teal-primary border border-teal-primary dark:text-teal-primary dark:hover:bg-teal-900/20 dark:border-teal-primary',
       ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
