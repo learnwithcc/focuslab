@@ -31,9 +31,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     };
 
     const variantClasses = {
-      default: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
-      elevated: 'bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700',
-      outlined: 'bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600'
+      default: 'bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800',
+      elevated: 'bg-white dark:bg-gray-950 shadow-lg border border-gray-200 dark:border-gray-800',
+      outlined: 'bg-white dark:bg-gray-950 border-2 border-gray-300 dark:border-gray-700'
     };
 
     const cardClasses = buildComponentClasses(
@@ -51,20 +51,29 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       className
     );
 
-    const Element = interactive ? 'button' : 'div';
+    if (interactive) {
+      return (
+        <button
+          ref={ref as React.Ref<HTMLButtonElement>}
+          className={cardClasses}
+          onClick={onClick}
+          data-testid={testId}
+          {...rest}
+        >
+          {children}
+        </button>
+      );
+    }
 
     return (
-      <Element
-        ref={ref as React.Ref<HTMLButtonElement | HTMLDivElement>}
+      <div
+        ref={ref}
         className={cardClasses}
-        onClick={interactive ? onClick : undefined}
-        role={interactive ? 'button' : undefined}
-        tabIndex={interactive ? 0 : undefined}
         data-testid={testId}
         {...rest}
       >
         {children}
-      </Element>
+      </div>
     );
   }
 );
