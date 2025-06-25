@@ -113,7 +113,7 @@ export default function Index() {
               <h1 className="leading-tight text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                 Development Tools Built for{" "}
                 <span className="text-blue-600 dark:text-blue-400">
-                  Neurodivergent Minds
+                  Your Beautiful Brain!
                 </span>
               </h1>
               <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-300 sm:text-xl lg:text-2xl">
@@ -236,7 +236,7 @@ export default function Index() {
                     className="block rounded-lg motion-safe:transition-transform motion-reduce:transform-none duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     aria-label={`${project.title} - view on GitHub`}
                   >
-                    <Card className="flex h-full flex-col text-left">
+                    <Card variant="elevated" className="flex h-full flex-col text-left">
                       <div className="flex-grow">
                         <div className="mb-4 flex items-start justify-between">
                           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
