@@ -4,7 +4,9 @@ import {
   type ThemeValue,
   applyThemeToDocument,
   saveThemePreference,
-  hasThemeOverride
+  hasThemeOverride,
+  clearThemeOverride,
+  getSystemTheme
 } from '~/utils/theme';
 
 // SVG Icons as components for better SSR
@@ -28,10 +30,19 @@ const MoonIcon = () => (
   </svg>
 );
 
+const AutoIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+    <line x1="8" y1="21" x2="16" y2="21" />
+    <line x1="12" y1="17" x2="12" y2="21" />
+  </svg>
+);
+
 export function VanillaThemeToggle() {
   // Start with undefined to prevent hydration mismatch
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
+  const [isAuto, setIsAuto] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Only run on client after mount
@@ -44,6 +55,7 @@ export function VanillaThemeToggle() {
       : THEMES.LIGHT;
     
     setTheme(currentTheme);
+    setIsAuto(!hasThemeOverride());
     
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -53,6 +65,7 @@ export function VanillaThemeToggle() {
         const newTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
         applyThemeToDocument(newTheme);
         setTheme(newTheme);
+        setIsAuto(true);
       }
     };
     
@@ -77,12 +90,27 @@ export function VanillaThemeToggle() {
   const toggleTheme = () => {
     if (!theme) return;
     
-    const newTheme = theme === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
-    
-    // Apply theme immediately
-    applyThemeToDocument(newTheme);
-    saveThemePreference(newTheme);
-    setTheme(newTheme);
+    if (isAuto) {
+      // Auto → Light
+      const newTheme = THEMES.LIGHT;
+      applyThemeToDocument(newTheme);
+      saveThemePreference(newTheme);
+      setTheme(newTheme);
+      setIsAuto(false);
+    } else if (theme === THEMES.LIGHT) {
+      // Light → Dark
+      const newTheme = THEMES.DARK;
+      applyThemeToDocument(newTheme);
+      saveThemePreference(newTheme);
+      setTheme(newTheme);
+      setIsAuto(false);
+    } else {
+      // Dark → Auto
+      clearThemeOverride();
+      const systemTheme = getSystemTheme();
+      setTheme(systemTheme);
+      setIsAuto(true);
+    }
   };
 
   // Don't render interactive elements until mounted to prevent hydration issues
@@ -112,7 +140,19 @@ export function VanillaThemeToggle() {
   }
 
   const currentTheme = theme || THEMES.LIGHT;
-  const isLight = currentTheme === THEMES.LIGHT;
+  
+  // Determine what to show
+  const getThemeDisplay = () => {
+    if (isAuto) {
+      return { icon: <AutoIcon />, label: 'Auto', ariaLabel: 'Switch to light mode (currently following system)' };
+    } else if (currentTheme === THEMES.LIGHT) {
+      return { icon: <SunIcon />, label: 'Light', ariaLabel: 'Switch to dark mode' };
+    } else {
+      return { icon: <MoonIcon />, label: 'Dark', ariaLabel: 'Switch to automatic (system preference)' };
+    }
+  };
+  
+  const { icon, label, ariaLabel } = getThemeDisplay();
 
   return (
     <div 
@@ -130,8 +170,8 @@ export function VanillaThemeToggle() {
           dark:focus-visible:ring-offset-gray-900
         "
         type="button"
-        aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
-        title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+        aria-label={ariaLabel}
+        title={ariaLabel}
         onClick={toggleTheme}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
@@ -145,7 +185,7 @@ export function VanillaThemeToggle() {
           className="flex items-center justify-center transition-all duration-300"
           style={{ transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
         >
-          {isLight ? <SunIcon /> : <MoonIcon />}
+          {icon}
         </span>
         <span 
           className="ml-2 text-sm font-medium whitespace-nowrap transition-all duration-300"
@@ -156,7 +196,7 @@ export function VanillaThemeToggle() {
             transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         >
-          {isLight ? 'Light' : 'Dark'}
+          {label}
         </span>
       </button>
     </div>
@@ -193,8 +233,8 @@ export const VanillaThemeScript = () => (
           root.setAttribute('data-theme', theme);
           root.style.colorScheme = theme;
           
-          // Listen for system theme changes when no override is set
-          if (!overrideTheme && window.matchMedia) {
+          // Always listen for system theme changes
+          if (window.matchMedia) {
             const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
             mediaQuery.addEventListener('change', (e) => {
               // Only update if no manual override exists

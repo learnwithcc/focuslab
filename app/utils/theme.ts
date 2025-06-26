@@ -142,3 +142,17 @@ export function hasThemeOverride(): boolean {
   const overrideTheme = parseThemeCookie(document.cookie, THEME_OVERRIDE_COOKIE_NAME);
   return overrideTheme !== null;
 }
+
+/**
+ * Clear theme override and return to system preference
+ */
+export function clearThemeOverride(): void {
+  if (typeof window === 'undefined') return;
+  
+  // Remove override cookie
+  document.cookie = `${THEME_OVERRIDE_COOKIE_NAME}=; Path=/; Max-Age=0`;
+  
+  // Apply system theme immediately
+  const systemTheme = getSystemTheme();
+  applyThemeToDocument(systemTheme);
+}
