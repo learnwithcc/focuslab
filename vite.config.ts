@@ -9,10 +9,15 @@ import { vercelPreset } from '@vercel/remix/vite';
 
 installGlobals();
 
+// Detect if we're building for Vercel
+const isVercel = process.env.VERCEL === '1';
 
 export default defineConfig({
   plugins: [
-    !process.env['VITEST'] && !process.env['STORYBOOK'] && remix(),
+    !process.env['VITEST'] && !process.env['STORYBOOK'] && remix({
+      // Apply vercelPreset only for Vercel builds
+      ...(isVercel ? { presets: [vercelPreset()] } : {})
+    }),
     tsconfigPaths(),
     process.env['STORYBOOK'] && react(),
   ].filter(Boolean),
