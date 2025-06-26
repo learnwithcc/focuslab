@@ -8,6 +8,7 @@ import {
   clearThemeOverride,
   getSystemTheme
 } from '~/utils/theme';
+import { trackEvent } from '~/utils/posthog';
 
 // SVG Icons as components for better SSR
 const SunIcon = () => (
@@ -63,9 +64,25 @@ export function VanillaThemeToggle() {
       // Only update if no manual override exists
       if (!hasThemeOverride()) {
         const newTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
+        const previousTheme = theme;
+        
         applyThemeToDocument(newTheme);
         setTheme(newTheme);
         setIsAuto(true);
+
+        // Track automatic system theme change
+        if (previousTheme && previousTheme !== newTheme) {
+          trackEvent('theme_auto_change', {
+            device_type: 'desktop',
+            trigger: 'system_preference_change',
+            previous_theme: previousTheme,
+            new_theme: newTheme,
+            user_agent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            viewport_width: window.innerWidth,
+            viewport_height: window.innerHeight
+          });
+        }
       }
     };
     
@@ -90,6 +107,9 @@ export function VanillaThemeToggle() {
   const toggleTheme = () => {
     if (!theme) return;
     
+    const previousState = isAuto ? 'auto' : theme;
+    let newState: string;
+    
     if (isAuto) {
       // Auto → Light
       const newTheme = THEMES.LIGHT;
@@ -97,6 +117,7 @@ export function VanillaThemeToggle() {
       saveThemePreference(newTheme);
       setTheme(newTheme);
       setIsAuto(false);
+      newState = 'light';
     } else if (theme === THEMES.LIGHT) {
       // Light → Dark
       const newTheme = THEMES.DARK;
@@ -104,20 +125,34 @@ export function VanillaThemeToggle() {
       saveThemePreference(newTheme);
       setTheme(newTheme);
       setIsAuto(false);
+      newState = 'dark';
     } else {
       // Dark → Auto
       clearThemeOverride();
       const systemTheme = getSystemTheme();
       setTheme(systemTheme);
       setIsAuto(true);
+      newState = 'auto';
     }
+
+    // Track the theme toggle event
+    trackEvent('theme_toggle', {
+      device_type: 'desktop',
+      toggle_type: 'floating_button',
+      previous_theme: previousState,
+      new_theme: newState,
+      user_agent: navigator.userAgent,
+      timestamp: new Date().toISOString(),
+      viewport_width: window.innerWidth,
+      viewport_height: window.innerHeight
+    });
   };
 
   // Don't render interactive elements until mounted to prevent hydration issues
   if (!mounted) {
     return (
       <div 
-        className="fixed right-4 z-50 transform -translate-y-1/2"
+        className="hidden md:block fixed right-0 z-50 transform -translate-y-1/2"
         style={{ top: '20%' }}
       >
         <div
@@ -156,7 +191,7 @@ export function VanillaThemeToggle() {
 
   return (
     <div 
-      className="fixed right-4 z-50 transform -translate-y-1/2"
+      className="hidden md:block fixed right-0 z-50 transform -translate-y-1/2"
       style={{ top: '20%' }}
     >
       <button
@@ -183,13 +218,18 @@ export function VanillaThemeToggle() {
       >
         <span 
           className="flex items-center justify-center transition-all duration-300"
-          style={{ transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+          style={{ 
+            transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+            width: '2.5rem',
+            flexShrink: 0
+          }}
         >
           {icon}
         </span>
         <span 
-          className="ml-2 text-sm font-medium whitespace-nowrap transition-all duration-300"
+          className="text-sm font-medium whitespace-nowrap transition-all duration-300"
           style={{ 
+            marginLeft: isExpanded ? '0.75rem' : '0px',
             width: isExpanded ? 'auto' : '0px',
             opacity: isExpanded ? 1 : 0,
             overflow: 'hidden',
@@ -200,6 +240,140 @@ export function VanillaThemeToggle() {
         </span>
       </button>
     </div>
+  );
+}
+
+// Mobile-friendly theme toggle for header
+export function MobileThemeToggle() {
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
+  const [isAuto, setIsAuto] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    
+    const currentTheme = document.documentElement.classList.contains(THEMES.DARK) 
+      ? THEMES.DARK 
+      : THEMES.LIGHT;
+    
+    setTheme(currentTheme);
+    setIsAuto(!hasThemeOverride());
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (!hasThemeOverride()) {
+        const newTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
+        const previousTheme = theme;
+        
+        applyThemeToDocument(newTheme);
+        setTheme(newTheme);
+        setIsAuto(true);
+
+        // Track automatic system theme change
+        if (previousTheme && previousTheme !== newTheme) {
+          trackEvent('theme_auto_change', {
+            device_type: 'mobile',
+            trigger: 'system_preference_change',
+            previous_theme: previousTheme,
+            new_theme: newTheme,
+            user_agent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            viewport_width: window.innerWidth,
+            viewport_height: window.innerHeight
+          });
+        }
+      }
+    };
+    
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    } else {
+      mediaQuery.addListener(handleSystemThemeChange);
+    }
+    
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      } else {
+        mediaQuery.removeListener(handleSystemThemeChange);
+      }
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    if (!theme) return;
+    
+    const previousState = isAuto ? 'auto' : theme;
+    let newState: string;
+    
+    if (isAuto) {
+      const newTheme = THEMES.LIGHT;
+      applyThemeToDocument(newTheme);
+      saveThemePreference(newTheme);
+      setTheme(newTheme);
+      setIsAuto(false);
+      newState = 'light';
+    } else if (theme === THEMES.LIGHT) {
+      const newTheme = THEMES.DARK;
+      applyThemeToDocument(newTheme);
+      saveThemePreference(newTheme);
+      setTheme(newTheme);
+      setIsAuto(false);
+      newState = 'dark';
+    } else {
+      clearThemeOverride();
+      const systemTheme = getSystemTheme();
+      setTheme(systemTheme);
+      setIsAuto(true);
+      newState = 'auto';
+    }
+
+    // Track the theme toggle event for mobile
+    trackEvent('theme_toggle', {
+      device_type: 'mobile',
+      toggle_type: 'header_button',
+      previous_theme: previousState,
+      new_theme: newState,
+      user_agent: navigator.userAgent,
+      timestamp: new Date().toISOString(),
+      viewport_width: window.innerWidth,
+      viewport_height: window.innerHeight
+    });
+  };
+
+  if (!mounted) {
+    return (
+      <button 
+        className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white p-2"
+        disabled
+      >
+        <span className="w-6 h-6 block" />
+      </button>
+    );
+  }
+
+  const getThemeDisplay = () => {
+    if (isAuto) {
+      return { icon: <AutoIcon />, ariaLabel: 'Switch to light mode (currently following system)' };
+    } else if (theme === THEMES.LIGHT) {
+      return { icon: <SunIcon />, ariaLabel: 'Switch to dark mode' };
+    } else {
+      return { icon: <MoonIcon />, ariaLabel: 'Switch to automatic (system preference)' };
+    }
+  };
+  
+  const { icon, ariaLabel } = getThemeDisplay();
+
+  return (
+    <button
+      className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white p-2 transition-colors"
+      type="button"
+      aria-label={ariaLabel}
+      title={ariaLabel}
+      onClick={toggleTheme}
+    >
+      {icon}
+    </button>
   );
 }
 

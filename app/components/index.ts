@@ -32,5 +32,6 @@ export { ProjectFilters } from './ProjectFilters';
 export { Breadcrumb } from './Breadcrumb';
 export { HighlightCards } from './HighlightCards';
 export { Footer } from './Footer';
+export { VanillaThemeToggle, MobileThemeToggle } from './VanillaThemeToggle';
 
 // Add component exports here as they are created 
