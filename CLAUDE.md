@@ -192,3 +192,30 @@ Key requirements:
 - Keep `vercel.json` simple with just `"framework": "remix"`
 
 The project is configured for zero-config Vercel deployment with proper serverless function support.
+
+## Known Issues & Fixes
+
+### React Hydration Failure (Cookie Consent System)
+
+**Issue**: React hydration fails with "process is not defined" errors in the client bundle, preventing the cookie consent system from functioning.
+
+**Symptoms**:
+- Cookie consent banner appears but buttons don't work
+- Console shows `ReferenceError: process is not defined` from @remix-run/node
+- React components don't hydrate (no interactive functionality)
+- entry.client.tsx console logs don't appear
+
+**Root Cause**: Vite bundles server-side Node.js code (@remix-run/node) into the client bundle without proper polyfills.
+
+**Fix**: Add process polyfill to vite.config.ts:
+```typescript
+export default defineConfig({
+  // ... other config
+  define: {
+    'process.env': {},
+  },
+  // ... rest of config
+});
+```
+
+**Important**: This fix is critical for local development but may need adjustment for production deployments on Vercel.
