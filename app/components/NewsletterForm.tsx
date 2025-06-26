@@ -7,6 +7,7 @@ import { Button } from './Button';
 // import { ErrorBoundary } from './ErrorBoundary';
 import { useFormValidation } from '~/hooks/useFormValidation';
 import { newsletterSchema } from '~/utils/validation';
+import { trackEvent } from '~/utils/posthog';
 
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 
@@ -32,6 +33,8 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
   const navigation = useNavigation();
   const actionData = useActionData<ActionData>();
   const isSubmitting = navigation.state === 'submitting';
+  const [formStartTime] = React.useState(Date.now());
+  const [hasInteracted, setHasInteracted] = React.useState(false);
 
   const initialValues: NewsletterFormValues = {
     email: '',
@@ -49,6 +52,16 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
     resetForm,
   } = useFormValidation(initialValues, newsletterSchema);
 
+  // Track form interaction on first input
+  React.useEffect(() => {
+    if (!hasInteracted && values.email) {
+      setHasInteracted(true);
+      trackEvent('newsletter_form_started', {
+        timestamp: Date.now(),
+      });
+    }
+  }, [values.email, hasInteracted]);
+
   // Combine client and server errors
   const errors = {
     ...clientErrors,
@@ -60,6 +73,19 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
     if (Object.keys(validationErrors).length > 0) {
       event.preventDefault();
       setErrors(validationErrors);
+      
+      // Track form validation errors
+      trackEvent('newsletter_form_validation_error', {
+        errors: Object.keys(validationErrors),
+        error_count: Object.keys(validationErrors).length,
+        form_completion_time: Date.now() - formStartTime,
+      });
+    } else {
+      // Track form submission attempt
+      trackEvent('newsletter_form_submitted', {
+        has_email: !!values.email,
+        form_completion_time: Date.now() - formStartTime,
+      });
     }
   };
 
@@ -68,13 +94,25 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
     if (actionData?.success) {
       resetForm();
       onSuccess?.();
+      
+      // Track successful newsletter subscription
+      trackEvent('newsletter_subscription_success', {
+        response_time: Date.now() - formStartTime,
+      });
     } else if (actionData?.errors) {
       const errorMessage =
         Object.values(actionData.errors).find((msg) => msg) ||
         'Form submission failed';
       onError?.(new Error(errorMessage));
+      
+      // Track newsletter subscription error
+      trackEvent('newsletter_subscription_error', {
+        error_message: errorMessage,
+        errors: Object.keys(actionData.errors || {}),
+        response_time: Date.now() - formStartTime,
+      });
     }
-  }, [actionData, onSuccess, onError, resetForm]);
+  }, [actionData, onSuccess, onError, resetForm, formStartTime]);
 
   return (
     <div>

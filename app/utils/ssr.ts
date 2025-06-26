@@ -39,9 +39,11 @@ export function useIsMounted() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    console.log('useIsMounted - Setting mounted to true');
     setIsMounted(true);
   }, []);
 
+  console.log('useIsMounted - Current state:', isMounted);
   return isMounted;
 }
 

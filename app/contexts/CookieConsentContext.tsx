@@ -47,21 +47,36 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
 
   // Initialize consent state after mounting (client-side only)
   useEffect(() => {
-    if (!isMounted) return;
+    console.log('CookieConsentProvider - useEffect triggered', { isMounted });
+    if (!isMounted) {
+      console.log('CookieConsentProvider - Not mounted yet, skipping initialization');
+      return;
+    }
 
+    console.log('CookieConsentProvider - Starting initialization...');
+    
     // Load consent on mount
     const savedConsent = loadConsent();
     const required = isConsentRequired();
     
+    console.log('CookieConsentProvider - Initialization data:', {
+      savedConsent,
+      required,
+      localStorage: typeof window !== 'undefined' ? localStorage.getItem('cookie-consent') : 'SSR'
+    });
+    
     if (savedConsent) {
       setConsent(savedConsent);
       setShowBanner(false);
+      console.log('CookieConsentProvider - Found saved consent, hiding banner');
     } else {
       setShowBanner(required);
+      console.log('CookieConsentProvider - No saved consent, showing banner:', required);
     }
     
     setIsRequired(required);
     setIsInitialized(true);
+    console.log('CookieConsentProvider - Initialization complete');
   }, [isMounted]);
 
   // Handle consent events using SSR-safe event listeners

@@ -24,7 +24,20 @@ export async function loader() {
 
 export default function PostHogDebug() {
   const { env } = useLoaderData<typeof loader>();
-  const { consent, showBanner, showModal, isInitialized, isConsentRequired } = useCookieConsent();
+  const cookieContext = useCookieConsent();
+  const { consent, showBanner, showModal, isInitialized, isConsentRequired } = cookieContext;
+
+  // Debug logging
+  useEffect(() => {
+    console.log('PostHog Debug - Cookie Context:', {
+      consent,
+      showBanner,
+      showModal,
+      isInitialized,
+      isConsentRequired,
+      fullContext: cookieContext
+    });
+  }, [consent, showBanner, showModal, isInitialized, isConsentRequired, cookieContext]);
   const [posthogStatus, setPosthogStatus] = useState<{
     loaded: boolean;
     apiKey: string;

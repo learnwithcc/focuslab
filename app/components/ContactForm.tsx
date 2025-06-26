@@ -7,6 +7,7 @@ import { Button } from './Button';
 // import { ErrorBoundary } from './ErrorBoundary';
 import { useFormValidation } from '~/hooks/useFormValidation';
 import { contactSchema } from '~/utils/validation';
+import { trackEvent } from '~/utils/posthog';
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
@@ -35,6 +36,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   const actionData = useActionData<ActionData>();
   const isSubmitting = navigation.state === 'submitting';
   const [formStartTime] = React.useState(Date.now());
+  const [hasInteracted, setHasInteracted] = React.useState(false);
 
   const initialValues: ContactFormValues = {
     name: '',
@@ -55,6 +57,16 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     resetForm,
   } = useFormValidation(initialValues, contactSchema);
 
+  // Track form interaction on first input
+  React.useEffect(() => {
+    if (!hasInteracted && (values.name || values.email || values.subject || values.message)) {
+      setHasInteracted(true);
+      trackEvent('contact_form_started', {
+        timestamp: Date.now(),
+      });
+    }
+  }, [values, hasInteracted]);
+
   // Combine client and server errors
   const errors = {
     ...clientErrors,
@@ -66,6 +78,22 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     if (Object.keys(validationErrors).length > 0) {
       event.preventDefault();
       setErrors(validationErrors);
+      
+      // Track form validation errors
+      trackEvent('contact_form_validation_error', {
+        errors: Object.keys(validationErrors),
+        error_count: Object.keys(validationErrors).length,
+        form_completion_time: Date.now() - formStartTime,
+      });
+    } else {
+      // Track form submission attempt
+      trackEvent('contact_form_submitted', {
+        has_subject: !!values.subject,
+        message_length: values.message.length,
+        form_completion_time: Date.now() - formStartTime,
+        has_name: !!values.name,
+        has_email: !!values.email,
+      });
     }
   };
 
@@ -74,13 +102,26 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     if (actionData?.success) {
       resetForm();
       onSuccess?.();
+      
+      // Track successful form submission
+      trackEvent('contact_form_success', {
+        response_time: Date.now() - formStartTime,
+        message_length: values.message.length,
+      });
     } else if (actionData?.errors) {
       const errorMessage =
         Object.values(actionData.errors).find((msg) => msg) ||
         'Form submission failed';
       onError?.(new Error(errorMessage));
+      
+      // Track form submission error
+      trackEvent('contact_form_error', {
+        error_message: errorMessage,
+        errors: Object.keys(actionData.errors || {}),
+        response_time: Date.now() - formStartTime,
+      });
     }
-  }, [actionData, onSuccess, onError, resetForm]);
+  }, [actionData, onSuccess, onError, resetForm, formStartTime, values.message.length]);
 
   return (
     <div>
