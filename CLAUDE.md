@@ -219,3 +219,39 @@ export default defineConfig({
 ```
 
 **Important**: This fix is critical for local development but may need adjustment for production deployments on Vercel.
+
+### Vercel Deployment Error (Missing server-index.mjs)
+
+**Issue**: Vercel deployment fails with ENOENT error looking for server-index.mjs file.
+
+**Error Message**:
+```
+Error: ENOENT: no such file or directory, open '/vercel/path0/build/server/nodejs-eyJydW50aW1lIjoibm9kZWpzIn0/server-index.mjs'
+```
+
+**Root Cause**: Vercel expects an ESM server entry point that isn't generated without the vercelPreset() configuration.
+
+**Fix**: Apply vercelPreset() conditionally based on environment:
+```typescript
+// Detect if we're building for Vercel
+const isVercel = process.env.VERCEL === '1';
+
+export default defineConfig({
+  plugins: [
+    !process.env['VITEST'] && !process.env['STORYBOOK'] && remix({
+      // Apply vercelPreset only for Vercel builds
+      ...(isVercel ? { presets: [vercelPreset()] } : {})
+    }),
+    // ... rest of plugins
+  ],
+  define: {
+    'process.env': {},
+  },
+  // ... rest of config
+});
+```
+
+**Why This Works**:
+- Local development: When VERCEL env var is not set, maintains the process.env polyfill fix
+- Vercel deployment: When VERCEL=1, applies vercelPreset() which generates the expected server-index.mjs file
+- No regression risk as environments are cleanly separated
