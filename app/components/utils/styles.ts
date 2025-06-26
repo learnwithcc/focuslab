@@ -60,6 +60,13 @@ export const buttonVariants = {
     focus: 'focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
     active: 'active:bg-red-800',
     disabled: 'disabled:bg-red-300 disabled:border-red-300 disabled:cursor-not-allowed'
+  },
+  link: {
+    base: 'bg-transparent text-blue-600 border-transparent',
+    hover: 'hover:text-blue-700 hover:underline',
+    focus: 'focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+    active: 'active:text-blue-800',
+    disabled: 'disabled:text-blue-300 disabled:cursor-not-allowed'
   }
 } as const;
 

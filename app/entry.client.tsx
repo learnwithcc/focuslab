@@ -27,11 +27,31 @@ if (typeof window !== 'undefined' && window.ENV?.SENTRY_DSN && window.ENV.SENTRY
   });
 }
 
+console.log('🚀 entry.client.tsx: Starting hydration...');
+
+// Add a global error handler for React errors
+window.addEventListener('error', (event) => {
+  console.error('❌ Global error during hydration:', event.error);
+  console.error('❌ Error message:', event.message);
+  console.error('❌ Error filename:', event.filename);
+  console.error('❌ Error stack:', event.error?.stack);
+});
+
 startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <RemixBrowser />
-    </StrictMode>
-  );
+  console.log('🚀 entry.client.tsx: Inside startTransition');
+  
+  try {
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <RemixBrowser />
+      </StrictMode>
+    );
+    
+    console.log('🚀 entry.client.tsx: hydrateRoot called successfully');
+  } catch (error) {
+    console.error('❌ entry.client.tsx: hydrateRoot failed:', error);
+    console.error('❌ Error message:', error.message);
+    console.error('❌ Error stack:', error.stack);
+  }
 });

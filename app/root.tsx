@@ -93,7 +93,10 @@ export function Layout({ children, nonce, env, theme }: { children: React.ReactN
 }
 
 const App = () => {
+  console.log('🚀 App: Component rendering');
+  
   const { nonce, env, theme } = useLoaderData<typeof loader>();
+  console.log('🚀 App: Loaded data', { env: env ? Object.keys(env) : 'none', theme });
   useAxe();
 
   return (

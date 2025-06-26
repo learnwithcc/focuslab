@@ -1,20 +1,51 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { CookieBannerProps } from '~/types/cookies';
 import { Button } from './Button';
 
-export function CookieBanner({ onAcceptAll, onRejectAll, onCustomize }: CookieBannerProps) {
-  const [isVisible, setIsVisible] = useState(false);
+// Simple debug utility
+const debug = {
+  log: (component: string, message: string, data?: any) => {
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+      console.log(`[${component}] ${message}`, data);
+    }
+  },
+  mark: (name: string) => {
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && window.performance) {
+      window.performance.mark(name);
+    }
+  }
+};
+
+interface ExtendedCookieBannerProps extends CookieBannerProps {
+  isVisible?: boolean;
+}
+
+export function CookieBanner({ 
+  onAcceptAll, 
+  onRejectAll, 
+  onCustomize,
+  isVisible = true 
+}: ExtendedCookieBannerProps) {
+  debug.log('CookieBanner', 'Component function called', { isVisible });
 
   useEffect(() => {
-    // Small delay to prevent layout shift
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
+    if (isVisible) {
+      debug.mark('COOKIE_BANNER_VISIBLE');
+      debug.log('CookieBanner', 'Banner is now visible');
+    }
+  }, [isVisible]);
+  
+  debug.log('CookieBanner', 'Rendering banner');
 
-  if (!isVisible) return null;
-
+  // Always render the banner content to prevent layout shifts
+  // Visibility is controlled by the parent container
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg">
+    <div 
+      className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg"
+      role="region"
+      aria-label="Cookie consent"
+      aria-live="polite"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex-1">
@@ -24,6 +55,7 @@ export function CookieBanner({ onAcceptAll, onRejectAll, onCustomize }: CookieBa
               <a 
                 href="/privacy-policy" 
                 className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                tabIndex={isVisible ? 0 : -1}
               >
                 Learn more
               </a>
@@ -35,6 +67,8 @@ export function CookieBanner({ onAcceptAll, onRejectAll, onCustomize }: CookieBa
               size="sm"
               onClick={onCustomize}
               className="w-full sm:w-auto"
+              tabIndex={isVisible ? 0 : -1}
+              aria-label="Customize cookie preferences"
             >
               Customize
             </Button>
@@ -43,6 +77,8 @@ export function CookieBanner({ onAcceptAll, onRejectAll, onCustomize }: CookieBa
               size="sm"
               onClick={onRejectAll}
               className="w-full sm:w-auto"
+              tabIndex={isVisible ? 0 : -1}
+              aria-label="Reject all cookies"
             >
               Reject All
             </Button>
@@ -51,6 +87,8 @@ export function CookieBanner({ onAcceptAll, onRejectAll, onCustomize }: CookieBa
               size="sm"
               onClick={onAcceptAll}
               className="w-full sm:w-auto"
+              tabIndex={isVisible ? 0 : -1}
+              aria-label="Accept all cookies"
             >
               Accept All
             </Button>

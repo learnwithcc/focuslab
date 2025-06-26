@@ -1,0 +1,83 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link "Focus Lab":
+    - /url: /
+  - navigation:
+    - link "Home":
+      - /url: /
+    - link "About":
+      - /url: /about
+    - link "Projects":
+      - /url: /projects
+    - link "Contact":
+      - /url: /contact
+- main:
+  - main:
+    - heading "Development Tools Built for Your Beautiful Brain!" [level=1]
+    - paragraph: Creating accessible, intuitive development solutions that work with your brain, not against it. Empowering neurodivergent developers to build amazing things.
+    - link "Get in Touch":
+      - /url: /contact
+      - button "Get in Touch"
+    - link "View Our Work":
+      - /url: /#featured-projects
+      - button "View Our Work"
+    - heading "Our Mission" [level=2]
+    - paragraph:
+      - text: Every developer deserves tools that work
+      - emphasis: with
+      - text: their unique way of thinking, not against it. We're building development solutions specifically designed for neurodivergent minds—tools that reduce cognitive load, enhance focus, and celebrate different ways of processing information.
+    - paragraph: Whether you're ADHD, autistic, dyslexic, or think differently in any way, our mission is to create an ecosystem where your neurodivergent traits become superpowers in your development journey.
+    - text: F
+    - heading "Founder's Story" [level=3]
+    - paragraph: Building from experience
+    - blockquote: "\"As a neurodivergent developer, I've experienced firsthand the frustration of tools that seem designed for neurotypical workflows. After years of adapting myself to fit the tools, I realized we needed tools that adapt to us instead. FocusLab was born from this vision—creating development environments that embrace neurodiversity as a strength.\""
+    - paragraph:
+      - strong: FocusLab Founder
+      - text: — Passionate about inclusive development tools
+    - heading "What We're Building" [level=2]
+    - paragraph: "FocusLab is developing specialized tools that enhance productivity for developers with ADHD, autism, and other neurodivergent traits. Our approach isn't about \"fixing\" anything—it's about creating technology that works with your brain, not against it:"
+    - img
+    - heading "Reducing Cognitive Load" [level=3]
+    - paragraph: Simplifying interfaces and workflows to preserve mental energy for what matters
+    - img
+    - heading "Minimizing Decision Fatigue" [level=3]
+    - paragraph: Creating opinionated tools that eliminate unnecessary choices
+    - img
+    - heading "Streamlining Context Switching" [level=3]
+    - paragraph: Building systems that maintain continuity between different work modes
+    - paragraph: While most of our projects are still in development, we're excited to be launching select tools to the community soon.
+    - heading "Our Flagship Projects" [level=2]
+    - paragraph: We're actively developing open-source tools to make the developer experience more accessible and productive for everyone.
+    - link "Tally MCP Server - view on GitHub":
+      - /url: https://github.com/learnwithcc/tally-mcp
+      - heading "Tally MCP Server" [level=3]
+      - img
+      - paragraph: A powerful form management integration that connects Tally.so directly to AI assistants through the Model Context Protocol, enabling natural language form creation and management without context switching. It features intelligent bulk operations with safety-first workflows, real-time response analytics, and automated form lifecycle management designed to streamline workflows for content creators and developers.
+      - text: MCP TypeScript API Form Management
+    - link "FocusLab Website - view on GitHub":
+      - /url: https://github.com/focus-lab-ltd/focuslab
+      - heading "FocusLab Website" [level=3]
+      - img
+      - paragraph: The official website for FocusLab, built with Remix, Tailwind CSS, and TypeScript. It serves as a central hub for our tools, resources, and community, showcasing our commitment to accessible and neurodivergent-friendly design.
+      - text: Remix React Tailwind CSS TypeScript
+- contentinfo:
+  - heading "Let's Connect" [level=2]
+  - link "Visit our GitHub profile":
+    - /url: https://github.com/learnwithcc
+    - text: GitHub
+  - link "Visit LearnWith.cc":
+    - /url: https://learnwith.cc
+    - text: LearnWith.cc
+  - link "Send us an email":
+    - /url: /contact
+    - text: Email
+  - text: © 2025 FocusLab.io
+  - link "Privacy Policy":
+    - /url: /privacy-policy
+  - text: "|"
+  - link "Terms of Service":
+    - /url: /terms-of-service
+  - text: Built for developers who think differently.
+```

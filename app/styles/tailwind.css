@@ -58,3 +58,51 @@
     border: 0 !important;
   }
 }
+
+@layer components {
+  /* Cookie Banner animations and SSR-safe styles */
+  .cookie-banner-container {
+    /* Ensure smooth transitions during hydration */
+    @apply transition-all duration-300 ease-out;
+    
+    /* Prevent layout shifts during hydration */
+    will-change: transform, opacity;
+    
+    /* SSR-safe initial positioning */
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .cookie-banner-container.initialized {
+    /* Ready for normal operation after hydration */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  }
+  
+  /* Smooth entrance animation */
+  .cookie-banner-enter {
+    @apply transition-all duration-300 ease-out;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* Smooth exit animation */
+  .cookie-banner-exit {
+    @apply transition-all duration-300 ease-out;
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .cookie-banner-container {
+      transition: none !important;
+    }
+    
+    .cookie-banner-container.initialized {
+      transition: none !important;
+    }
+  }
+}

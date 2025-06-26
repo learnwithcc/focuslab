@@ -4,7 +4,7 @@
  * These utilities help prevent hydration mismatches and handle browser API usage
  * safely in components that need to work both server-side and client-side.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect, useSyncExternalStore } from 'react';
 
 /**
  * Check if we're running in a browser environment
@@ -17,39 +17,106 @@ export const isBrowser = typeof window !== 'undefined';
 export const isServer = !isBrowser;
 
 /**
- * Hook to detect if component is mounted (hydrated) on the client
- * This is useful for preventing hydration mismatches when components
- * need to render differently on server vs client
+ * Hook that runs effects immediately on client, skips on server
+ * Similar to useLayoutEffect but SSR-safe
  */
-export function useIsomorphicLayoutEffect(
-  effect: React.EffectCallback,
-  deps?: React.DependencyList
-) {
-  if (isBrowser) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(effect, deps);
-  }
+export const useIsomorphicLayoutEffect = isBrowser ? useLayoutEffect : useEffect;
+
+/**
+ * Global hydration state for immediate detection
+ * This provides synchronous hydration state without delays
+ */
+let isHydrated = false;
+
+// Mark hydration complete immediately when this module loads on client
+if (isBrowser) {
+  isHydrated = true;
+}
+
+/**
+ * Subscribe to hydration state changes
+ */
+function subscribe(callback: () => void) {
+  // Hydration only happens once, so no need for actual subscription
+  return () => {};
+}
+
+/**
+ * Get current hydration state
+ */
+function getSnapshot() {
+  return isHydrated;
+}
+
+/**
+ * Get server snapshot (always false during SSR)
+ */
+function getServerSnapshot() {
+  return false;
 }
 
 /**
  * Hook to track if the component has mounted (hydrated) on the client
- * Returns false during SSR and initial render, true after hydration
+ * This version provides IMMEDIATE hydration detection using React 18's useSyncExternalStore
+ * Returns false only during SSR, true immediately on client
  */
-export function useIsMounted() {
-  const [isMounted, setIsMounted] = useState(false);
+export function useIsMounted(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
+}
+
+/**
+ * Alternative hook for hydration detection with useEffect
+ * Use this only when you need to trigger side effects after hydration
+ */
+export function useHydrated(): boolean {
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    console.log('useIsMounted - Setting mounted to true');
-    setIsMounted(true);
+    setHydrated(true);
   }, []);
 
-  console.log('useIsMounted - Current state:', isMounted);
-  return isMounted;
+  return hydrated;
+}
+
+/**
+ * Hook to run a callback only after hydration
+ * Useful for effects that should only run on the client after mount
+ */
+export function useHydratedEffect(
+  effect: React.EffectCallback,
+  deps?: React.DependencyList
+) {
+  const isMounted = useIsMounted();
+  
+  useEffect(() => {
+    if (isMounted) {
+      return effect();
+    }
+  }, [isMounted, ...(deps || [])]);
+}
+
+/**
+ * Hook that provides both SSR and hydration state
+ * Useful for components that need to know both states
+ */
+export function useSSRState() {
+  const isMounted = useIsMounted();
+  
+  return {
+    isSSR: !isMounted,
+    isClient: isMounted,
+    isBrowser,
+    isServer,
+  };
 }
 
 /**
  * Hook to safely access window properties
- * Returns undefined during SSR, actual value after hydration
+ * Returns fallback during SSR, actual value after hydration
  */
 export function useWindowProperty<T>(
   getter: () => T,
@@ -59,7 +126,7 @@ export function useWindowProperty<T>(
   const isMounted = useIsMounted();
 
   useEffect(() => {
-    if (isBrowser) {
+    if (isMounted && isBrowser) {
       try {
         setValue(getter());
       } catch (error) {
@@ -347,3 +414,131 @@ export function useFocusTrap(isActive: boolean, containerRef: React.RefObject<HT
     };
   }, [isActive, containerRef]);
 }
+
+// =============================================================================
+// TypeScript Types for SSR Utilities
+// =============================================================================
+
+/**
+ * SSR State interface for better type safety
+ */
+export interface SSRState {
+  isSSR: boolean;
+  isClient: boolean;
+  isBrowser: boolean;
+  isServer: boolean;
+}
+
+/**
+ * Storage operation result
+ */
+export interface StorageResult<T = string> {
+  success: boolean;
+  value?: T;
+  error?: Error;
+}
+
+/**
+ * Enhanced storage interface with better error handling
+ */
+export interface SafeStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): boolean;
+  removeItem(key: string): boolean;
+  getItemSafe<T = string>(key: string): StorageResult<T>;
+  setItemSafe(key: string, value: string): StorageResult<void>;
+}
+
+// =============================================================================
+// Enhanced Storage Utilities
+// =============================================================================
+
+/**
+ * Enhanced localStorage with detailed error reporting
+ */
+export const enhancedLocalStorage: SafeStorage = {
+  ...safeLocalStorage,
+  
+  getItemSafe<T = string>(key: string): StorageResult<T> {
+    if (!isBrowser) {
+      return { success: false, error: new Error('Not in browser environment') };
+    }
+    
+    try {
+      const value = localStorage.getItem(key);
+      return { 
+        success: true, 
+        value: value as T 
+      };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error as Error 
+      };
+    }
+  },
+  
+  setItemSafe(key: string, value: string): StorageResult<void> {
+    if (!isBrowser) {
+      return { success: false, error: new Error('Not in browser environment') };
+    }
+    
+    try {
+      localStorage.setItem(key, value);
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error as Error 
+      };
+    }
+  },
+};
+
+// =============================================================================
+// Utility Functions
+// =============================================================================
+
+/**
+ * Check if hydration is complete (synchronous)
+ */
+export function isHydratedSync(): boolean {
+  return isHydrated;
+}
+
+/**
+ * Execute a function only if hydrated
+ */
+export function whenHydrated<T>(fn: () => T): T | null {
+  return isHydrated ? fn() : null;
+}
+
+/**
+ * Execute a function only if hydrated, with fallback
+ */
+export function whenHydratedOr<T>(fn: () => T, fallback: T): T {
+  return isHydrated ? fn() : fallback;
+}
+
+// =============================================================================
+// Backward Compatibility (Deprecated - will be removed)
+// =============================================================================
+
+/**
+ * @deprecated Use console.log directly or remove debug logging
+ * Minimal timer for backward compatibility
+ */
+export const initTimer = {
+  log: (component: string, event: string, data?: any) => {
+    // No-op in production, could be enabled for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[${component}] ${event}`, data);
+    }
+  },
+  mark: (label: string) => {
+    // No-op in production, could be enabled for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[MARK] ${label}`);
+    }
+  },
+};
