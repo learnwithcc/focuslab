@@ -7,8 +7,8 @@ export interface ButtonProps extends
   SizeProps, 
   VariantProps, 
   LoadingProps, 
-  FocusableProps,
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'disabled'> {
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'disabled' | 'onFocus' | 'onBlur'>,
+  Omit<FocusableProps, 'autoFocus'> {
   type?: 'button' | 'submit' | 'reset';
   href?: string;
   target?: string;
@@ -70,6 +70,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       outline: 'bg-transparent text-teal-primary hover:bg-teal-50 focus:ring-teal-primary border border-teal-primary dark:text-teal-primary dark:hover:bg-teal-900/20 dark:border-teal-primary',
       ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
       danger: 'bg-orange-accent text-white hover:bg-red-700 focus:ring-orange-accent border border-transparent',
+      link: 'bg-transparent text-teal-primary hover:text-teal-600 hover:underline focus:ring-teal-primary border border-transparent p-0 font-normal',
     };
 
     const buttonClasses = buildComponentClasses(

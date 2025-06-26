@@ -1,7 +1,7 @@
 // Base component prop interfaces for consistent component APIs
 
 export type ComponentSize = 'sm' | 'md' | 'lg';
-export type ComponentVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ComponentVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'link';
 
 // Base props that most components should support
 export interface BaseComponentProps {
@@ -47,8 +47,8 @@ export interface FormComponentProps extends InteractiveComponentProps {
 export interface FocusableProps {
   autoFocus?: boolean;
   tabIndex?: number;
-  onFocus?: (event: React.FocusEvent) => void;
-  onBlur?: (event: React.FocusEvent) => void;
+  onFocus?: React.FocusEventHandler<any>;
+  onBlur?: React.FocusEventHandler<any>;
 }
 
 // Props for keyboard navigation
