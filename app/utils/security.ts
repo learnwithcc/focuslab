@@ -12,7 +12,7 @@ export const securityHeaders = {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Allow inline styles and Google Fonts
     "img-src 'self' data: https:", // Allow images from self, data URLs, and HTTPS
     "font-src 'self' data: https://fonts.gstatic.com", // Allow fonts from self, data URLs, and Google Fonts
-    "connect-src 'self'", // Allow AJAX/fetch requests to same origin
+    "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com", // Allow AJAX/fetch requests to same origin and PostHog
     "media-src 'self'", // Allow media from same origin
     "object-src 'none'", // Disable plugins like Flash
     "child-src 'self'", // Allow frames from same origin
