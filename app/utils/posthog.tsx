@@ -23,9 +23,10 @@ interface PHProviderProps {
   };
 }
 
-// Constants for retry logic
-const CONSENT_CHECK_MAX_RETRIES = 10;
-const CONSENT_CHECK_RETRY_DELAY = 100; // ms
+// Constants for retry logic - increased for better reliability
+const CONSENT_CHECK_MAX_RETRIES = 20;
+const CONSENT_CHECK_RETRY_DELAY = 150; // ms
+const CONSENT_SYSTEM_TIMEOUT = 5000; // 5 seconds total timeout
 
 // Helper function to check if consent system is initialized
 function isConsentSystemReady(): boolean {
@@ -37,9 +38,25 @@ function isConsentSystemReady(): boolean {
     localStorage.setItem(testKey, '1');
     localStorage.removeItem(testKey);
     
-    // Check if consent data exists (even if it's a rejection)
+    // The consent system is ready if:
+    // 1. We have stored consent data, OR
+    // 2. The CookieConsentProvider is initialized (indicated by the banner being present)
     const consentData = localStorage.getItem('cookie-consent');
-    return consentData !== null;
+    const consentBanner = document.querySelector('.cookie-banner-container');
+    
+    // If we have consent data, the system is definitely ready
+    if (consentData !== null) {
+      return true;
+    }
+    
+    // If we don't have consent data but the banner is present and initialized,
+    // the system is ready and waiting for user interaction
+    if (consentBanner && consentBanner.classList.contains('initialized')) {
+      return true;
+    }
+    
+    // System not ready yet
+    return false;
   } catch {
     return false;
   }
@@ -63,31 +80,50 @@ function hasAnalyticsConsent(): boolean {
   }
 }
 
-// Helper function to wait for consent system with retry logic
+// Helper function to wait for consent system with improved retry logic
 async function waitForConsentSystem(): Promise<boolean> {
-  for (let i = 0; i < CONSENT_CHECK_MAX_RETRIES; i++) {
-    if (isConsentSystemReady()) {
-      return true;
-    }
-    
-    // Wait before retrying
-    await new Promise(resolve => setTimeout(resolve, CONSENT_CHECK_RETRY_DELAY));
-  }
+  const startTime = Date.now();
   
-  // Consent system failed to initialize after retries
-  return false;
+  return new Promise((resolve) => {
+    const checkConsent = () => {
+      // Check if we've exceeded the timeout
+      if (Date.now() - startTime > CONSENT_SYSTEM_TIMEOUT) {
+        console.warn('PostHog: Consent system timeout after', CONSENT_SYSTEM_TIMEOUT, 'ms');
+        resolve(false);
+        return;
+      }
+      
+      if (isConsentSystemReady()) {
+        console.log('PostHog: Consent system ready after', Date.now() - startTime, 'ms');
+        resolve(true);
+        return;
+      }
+      
+      // Continue checking
+      setTimeout(checkConsent, CONSENT_CHECK_RETRY_DELAY);
+    };
+    
+    // Start checking immediately
+    checkConsent();
+  });
 }
 
 // Helper function to update PostHog consent state
 function updatePostHogConsent() {
   if (!posthog || !posthog.__loaded) {
+    console.warn('PostHog: Cannot update consent - PostHog not available or loaded');
     return;
   }
   
-  if (hasAnalyticsConsent()) {
+  const hasConsent = hasAnalyticsConsent();
+  console.log('PostHog: Updating consent state', { hasConsent });
+  
+  if (hasConsent) {
     posthog.opt_in_capturing();
-  } else {
+    console.log('PostHog: Opted in to capturing');
+  } else {  
     posthog.opt_out_capturing();
+    console.log('PostHog: Opted out of capturing');
   }
 }
 
@@ -131,8 +167,8 @@ export function PHProvider({ children, env }: PHProviderProps) {
         const consentReady = await waitForConsentSystem();
         
         if (!consentReady) {
-          // Consent system failed - initialize PostHog with opt-out by default
-          console.warn('PostHog: Consent system failed to initialize, defaulting to opt-out');
+          // Consent system failed - initialize PostHog with opt-out by default but enable recovery
+          console.warn('PostHog: Consent system failed to initialize, defaulting to opt-out with recovery enabled');
           setConsentSystemFailed(true);
           
           posthog.init(apiKey, {
@@ -143,7 +179,18 @@ export function PHProvider({ children, env }: PHProviderProps) {
             opt_out_capturing_by_default: true, // Default to opted out for GDPR compliance
             loaded: () => {
               setIsInitialized(true);
-              // Don't capture anything if consent system failed
+              // Set up recovery mechanism - check for consent every few seconds
+              const recoveryInterval = setInterval(() => {
+                if (isConsentSystemReady()) {
+                  console.log('PostHog: Consent system recovered, updating consent state');
+                  updatePostHogConsent();
+                  setConsentSystemFailed(false);
+                  clearInterval(recoveryInterval);
+                }
+              }, 2000);
+              
+              // Clear recovery after 30 seconds to avoid infinite checking
+              setTimeout(() => clearInterval(recoveryInterval), 30000);
             },
           });
           return;
@@ -181,13 +228,21 @@ export function PHProvider({ children, env }: PHProviderProps) {
 
   // Listen for consent changes with optimized handling
   const handleConsentUpdate = useCallback(() => {
+    console.log('PostHog: Received consent update event', {
+      isInitialized,
+      posthogLoaded: posthog?.__loaded,
+      hasConsent: hasAnalyticsConsent()
+    });
+    
     // Only update if PostHog is initialized
     if (!isInitialized || !posthog.__loaded) {
+      console.warn('PostHog: Cannot update consent - not initialized or not loaded');
       return;
     }
 
     try {
       updatePostHogConsent();
+      console.log('PostHog: Consent state updated successfully');
     } catch (error) {
       console.error('PostHog: Error updating consent state:', error);
     }
@@ -288,4 +343,29 @@ export function getAnalyticsConsentStatus(): {
     hasConsent: hasAnalyticsConsent(),
     isSystemReady: isConsentSystemReady(),
   };
+}
+
+// Export function for debugging and validation
+export function validatePostHogConsentIntegration(): {
+  posthogAvailable: boolean;
+  posthogLoaded: boolean;
+  consentSystemReady: boolean;
+  hasAnalyticsConsent: boolean;
+  posthogOptedIn: boolean;
+  eventListenersActive: boolean;
+} {
+  return {
+    posthogAvailable: !!posthog,
+    posthogLoaded: posthog?.__loaded || false,
+    consentSystemReady: isConsentSystemReady(),
+    hasAnalyticsConsent: hasAnalyticsConsent(),
+    posthogOptedIn: posthog?.__loaded ? !posthog.has_opted_out_capturing() : false,
+    eventListenersActive: isBrowser && typeof window !== 'undefined',
+  };
+}
+
+// Export function to manually trigger consent state sync (for testing)
+export function syncPostHogConsentState(): void {
+  console.log('PostHog: Manual consent sync triggered');
+  updatePostHogConsent();
 } 

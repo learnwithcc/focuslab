@@ -40,6 +40,21 @@ if (typeof window !== 'undefined' && window.ENV?.SENTRY_DSN && window.ENV.SENTRY
 
 console.log('🚀 entry.client.tsx: Starting hydration...');
 
+// In development, expose PostHog debugging functions to global scope
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  // Import debug functions and expose them globally after hydration
+  import('~/utils/posthog').then((posthogModule) => {
+    (window as any).debugPostHog = {
+      validate: posthogModule.validatePostHogConsentIntegration,
+      sync: posthogModule.syncPostHogConsentState,
+      getStatus: posthogModule.getAnalyticsConsentStatus,
+      isReady: posthogModule.isPostHogReady,
+      trackEvent: posthogModule.trackEvent,
+    };
+    console.log('🔧 PostHog debug functions available at window.debugPostHog');
+  }).catch(console.error);
+}
+
 // Add a global error handler for React errors
 window.addEventListener('error', (event) => {
   console.error('❌ Global error during hydration:', event.error);
