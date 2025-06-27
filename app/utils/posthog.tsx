@@ -1,10 +1,19 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import * as posthogJs from "posthog-js";
-const posthog = posthogJs.default;
+import posthogImport from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { useLocation, useMatches } from "@remix-run/react";
 import type { ReactNode } from "react";
 import { useIsMounted, safeLocalStorage, isBrowser } from "~/utils/ssr";
+
+// Ensure PostHog is properly available with fallback handling
+const posthog = posthogImport || (typeof window !== 'undefined' ? (window as any).posthog : null);
+
+// Add debugging to verify PostHog is available
+if (isBrowser && !posthog) {
+  console.error('PostHog: Failed to import posthog-js module');
+} else if (isBrowser) {
+  console.log('PostHog: Module imported successfully');
+}
 
 interface PHProviderProps {
   children: ReactNode;
@@ -71,7 +80,7 @@ async function waitForConsentSystem(): Promise<boolean> {
 
 // Helper function to update PostHog consent state
 function updatePostHogConsent() {
-  if (!posthog.__loaded) {
+  if (!posthog || !posthog.__loaded) {
     return;
   }
   
@@ -102,8 +111,13 @@ export function PHProvider({ children, env }: PHProviderProps) {
     const apiKey = env?.POSTHOG_API_KEY;
     const apiHost = env?.POSTHOG_API_HOST || "https://us.i.posthog.com";
     
-    // Validate API key
+    // Validate API key and PostHog availability
     if (!apiKey || apiKey === "" || apiKey === "YOUR_POSTHOG_API_KEY") {
+      return;
+    }
+
+    if (!posthog) {
+      console.error('PostHog: Module not available, cannot initialize');
       return;
     }
 
@@ -235,8 +249,8 @@ export function PHProvider({ children, env }: PHProviderProps) {
 
 // Export helper functions for manual event tracking
 export function trackEvent(eventName: string, properties?: Record<string, any>) {
-  // Check if PostHog is loaded and consent is granted
-  if (!posthog.__loaded || !hasAnalyticsConsent()) {
+  // Check if PostHog is available, loaded and consent is granted
+  if (!posthog || !posthog.__loaded || !hasAnalyticsConsent()) {
     return;
   }
   
@@ -248,8 +262,8 @@ export function trackEvent(eventName: string, properties?: Record<string, any>) 
 }
 
 export function identifyUser(userId: string, properties?: Record<string, any>) {
-  // Check if PostHog is loaded and consent is granted
-  if (!posthog.__loaded || !hasAnalyticsConsent()) {
+  // Check if PostHog is available, loaded and consent is granted
+  if (!posthog || !posthog.__loaded || !hasAnalyticsConsent()) {
     return;
   }
   
@@ -262,7 +276,7 @@ export function identifyUser(userId: string, properties?: Record<string, any>) {
 
 // Export function to check if PostHog is ready and consent is granted
 export function isPostHogReady(): boolean {
-  return posthog.__loaded && hasAnalyticsConsent();
+  return posthog && posthog.__loaded && hasAnalyticsConsent();
 }
 
 // Export function to get current consent status
