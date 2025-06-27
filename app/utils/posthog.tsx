@@ -173,7 +173,8 @@ export function PHProvider({ children, env }: PHProviderProps) {
           
           posthog.init(apiKey, {
             api_host: apiHost,
-            capture_pageview: false,
+            capture_pageview: true, // Enable automatic pageview tracking
+            capture_pageleave: true, // Enable automatic pageleave tracking
             persistence: 'localStorage',
             autocapture: false,
             opt_out_capturing_by_default: true, // Default to opted out for GDPR compliance
@@ -201,20 +202,14 @@ export function PHProvider({ children, env }: PHProviderProps) {
         
         posthog.init(apiKey, {
           api_host: apiHost,
-          capture_pageview: false,
+          capture_pageview: true, // Enable automatic pageview tracking
+          capture_pageleave: true, // Enable automatic pageleave tracking
           persistence: 'localStorage',
           autocapture: false,
           opt_out_capturing_by_default: !hasConsent, // Respect initial consent state
           loaded: (posthogInstance) => {
             setIsInitialized(true);
-            
-            // Only capture initial pageview if we have consent
-            if (hasConsent) {
-              posthogInstance.capture("$pageview", {
-                $current_url: window.location.pathname,
-                $screen_name: 'initial_load',
-              });
-            }
+            console.log('PostHog: Initialization complete with automatic pageview tracking enabled');
           },
         });
       } catch (error) {
@@ -288,11 +283,8 @@ export function PHProvider({ children, env }: PHProviderProps) {
           posthog.identify(user.id, { email: user.email });
         }
         
-        // Capture pageview on route change
-        posthog.capture("$pageview", {
-          $current_url: location.pathname,
-          $screen_name: id,
-        });
+        // Note: Pageview tracking is now handled automatically by PostHog
+        // No need to manually capture $pageview events
       }
     } catch (error) {
       console.error('PostHog: Route tracking error:', error);

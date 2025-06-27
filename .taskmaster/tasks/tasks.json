@@ -975,11 +975,131 @@
         ],
         "priority": "high",
         "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Fix PostHog Initialization Code",
+        "description": "Debug and resolve the PostHog initialization failure where the external script loads successfully but window.posthog object never gets created, preventing analytics tracking functionality.",
+        "details": "Investigate the PostHog initialization sequence to identify why window.posthog remains undefined despite successful script loading. Start by examining the PostHog script loading implementation in app/root.tsx or entry.client.tsx to verify proper script tag placement and timing. Check if the PostHog initialization code is being called before the external script has fully loaded and executed. Implement proper script loading detection using onload event handlers or polling for window.posthog availability. Verify that the PostHog project key and configuration options are correctly passed during initialization. Examine potential conflicts with React hydration timing by ensuring PostHog initialization occurs after client-side hydration is complete. Check for any CSP violations or network errors that might prevent the PostHog script from executing properly. Add proper error handling and fallback mechanisms for when PostHog fails to initialize. Consider implementing a PostHog context provider to manage initialization state and provide loading/error states to components that depend on analytics. Test initialization in both development and production environments to identify environment-specific issues.",
+        "testStrategy": "Use browser DevTools Network tab to confirm PostHog script loads with 200 status and verify script content is not blocked by CSP. Check Console for any JavaScript errors during PostHog initialization. Use browser DevTools to inspect window.posthog object availability at different stages of page load. Test PostHog initialization timing by adding console logs before and after initialization calls. Verify PostHog events are properly tracked by checking the PostHog dashboard or network requests to PostHog endpoints. Test across different browsers and devices to ensure consistent initialization. Use React DevTools to verify hydration completion timing relative to PostHog initialization. Test with disabled JavaScript and re-enabled to simulate hydration scenarios.",
+        "status": "pending",
+        "dependencies": [
+          12,
+          16
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Analyze PostHog utility module imports and exports",
+            "description": "Review app/utils/posthog.tsx to verify exports are correct, initialization logic is sound, and there are no import/export issues preventing the module from loading. Check if trackEvent and other functions are properly exported.",
+            "details": "<info added on 2025-06-27T10:30:18.593Z>\nAssigned to: CodeAnalyst agent\n\nTags: posthog, utility-module, import-export-issues, code-analysis\n\nFocus: Analyze PostHog utility module to identify and resolve import/export issues that may be affecting the initialization process.\n</info added on 2025-06-27T10:30:18.593Z>\n<info added on 2025-06-27T10:30:48.230Z>\nCRITICAL FINDING: PostHog import uses problematic pattern `import * as posthogJs from \"posthog-js\"; const posthog = posthogJs.default;` which can fail in production builds where default export may not exist. This explains why window.posthog never gets created. Root cause identified: the current import pattern assumes posthogJs.default exists, but in production builds this may be undefined, causing the entire initialization to fail silently. Recommended fix: Replace with direct import `import posthog from \"posthog-js\"` or add proper fallback handling `const posthog = posthogJs.default || posthogJs;` to ensure PostHog object is properly instantiated regardless of build environment.\n</info added on 2025-06-27T10:30:48.230Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 17
+          },
+          {
+            "id": 2,
+            "title": "Investigate React component rendering and PostHog provider setup",
+            "description": "Examine app/root.tsx and PostHog provider components to ensure proper context initialization, component tree rendering, and that PostHog provider is correctly mounting and initializing. Verify no rendering issues prevent PostHog initialization.",
+            "details": "<info added on 2025-06-27T10:32:20.895Z>\nReact component structure analysis complete. PHProvider is correctly positioned in component tree and receives env props. However, PHProvider wraps CookieConsentProvider which creates dependency issue - PostHog waits for consent system but consent system is inside PostHog provider. Combined with the import issue found by CodeAnalyst, this confirms the root cause is the problematic posthog import pattern rather than component structure.\n</info added on 2025-06-27T10:32:20.895Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 17
+          },
+          {
+            "id": 3,
+            "title": "Debug PostHog external script integration and timing issues",
+            "description": "Investigate the timing and loading sequence between external PostHog script (us-assets.i.posthog.com) and our internal initialization code. Check for race conditions, script loading order, or timing issues preventing proper initialization sequence.",
+            "details": "",
+            "status": "pending",
+            "dependencies": [],
+            "parentTaskId": 17
+          },
+          {
+            "id": 4,
+            "title": "Implement PostHog initialization fixes and fallback mechanisms",
+            "description": "Based on findings from analysis tasks, implement necessary fixes to PostHog initialization code. This may include timing fixes, import corrections, initialization sequence changes, or fallback mechanisms to ensure PostHog loads reliably.",
+            "details": "<info added on 2025-06-27T10:35:48.125Z>\nIMPLEMENTATION COMPLETE: Fixed critical PostHog import issue by replacing problematic `import * as posthogJs from \"posthog-js\"; const posthog = posthogJs.default;` with direct import `import posthog from \"posthog-js\"`. Added comprehensive null checks and debugging logs. Committed and deployed fixes. This should resolve the missing window.posthog object issue.\n</info added on 2025-06-27T10:35:48.125Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 17
+          },
+          {
+            "id": 5,
+            "title": "Test and validate PostHog functionality across deployment environments",
+            "description": "Validate that PostHog initialization fixes work correctly in both local development and production environments. Test event tracking functionality, verify window.posthog object creation, and ensure proper integration with cookie consent system.",
+            "details": "<info added on 2025-06-27T10:39:07.216Z>\nTESTING RESULTS: Import fix partially successful. PostHog module now imports correctly (log shows \"PostHog: Module imported successfully\"), but PostHog is not initializing properly. Console shows \"PostHog: Consent system failed to initialize, defaulting to opt-out\" repeatedly. The issue is now a timing problem between PostHog initialization and cookie consent system, not the original import issue which has been resolved.\n</info added on 2025-06-27T10:39:07.216Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 17
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "title": "Resolve PostHog-Consent System Timing Dependencies",
+        "description": "Fix the timing issue where PostHog initialization fails because it attempts to initialize before the cookie consent system is ready, causing PostHog to default to opt-out mode even when users accept cookies.",
+        "details": "Restructure the component hierarchy to ensure proper async coordination between PostHog and the consent system. Start by examining the current initialization order in app/root.tsx or entry.client.tsx to identify where PostHog is being initialized relative to the cookie consent banner. Implement a consent state management system using React Context that tracks consent readiness and user preferences. Create a PostHogProvider component that waits for consent system initialization before attempting to initialize PostHog. Add event listeners or callback mechanisms to coordinate between the consent banner (from Task 14) and PostHog initialization. Implement proper error handling and fallback mechanisms when consent system fails to load. Use Promise-based initialization with async/await patterns to ensure PostHog only initializes after consent is determined. Add debugging logs to track the initialization sequence and identify timing issues. Consider implementing a consent queue system that buffers PostHog events until consent is resolved. Update the PostHog configuration to respect the consent state and properly handle opt-in/opt-out scenarios without defaulting to opt-out mode prematurely.",
+        "testStrategy": "Monitor browser console to verify the \"PostHog: Consent system failed to initialize, defaulting to opt-out\" error no longer appears. Test the initialization sequence by adding console logs to track timing between consent system ready state and PostHog initialization attempts. Verify PostHog properly respects user consent choices by testing accept/reject scenarios and confirming PostHog tracking behavior matches consent decisions. Use browser DevTools to inspect the PostHog object creation timing relative to consent banner interactions. Test edge cases including slow network conditions, consent system load failures, and rapid user interactions with consent banner. Verify PostHog events are properly queued or discarded based on consent state. Test across different browsers and devices to ensure consistent behavior. Use PostHog's debug mode to validate proper initialization and event tracking after consent resolution.",
+        "status": "done",
+        "dependencies": [
+          14,
+          17
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Analyze component hierarchy and timing dependencies",
+            "description": "Examine the current component structure where PHProvider wraps CookieConsentProvider but depends on consent system initialization. Analyze the timing of component mounting, context initialization, and identify the circular dependency causing PostHog to initialize before consent system is ready.",
+            "details": "<info added on 2025-06-27T10:45:50.648Z>\nANALYSIS COMPLETE: Identified root cause of timing issue. Current hierarchy has PHProvider wrapping CookieConsentProvider, but PHProvider's useEffect tries to initialize PostHog immediately while CookieConsentProvider (its child) hasn't mounted yet. This creates a circular dependency where PostHog waits for consent system via waitForConsentSystem() but consent system is a child that hasn't initialized. Solution requires inverting the hierarchy or implementing proper initialization coordination.\n</info added on 2025-06-27T10:45:50.648Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 18
+          },
+          {
+            "id": 2,
+            "title": "Restructure component hierarchy to resolve timing issues",
+            "description": "Redesign the component structure to ensure cookie consent system initializes before PostHog. This may involve moving CookieConsentProvider outside PHProvider, implementing proper initialization sequencing, or creating a coordinator component that manages both systems' lifecycle.",
+            "details": "<info added on 2025-06-27T10:46:22.760Z>\nHIERARCHY RESTRUCTURED: Inverted component hierarchy in root.tsx. CookieConsentProvider now wraps PHProvider instead of being wrapped by it. This ensures consent system initializes first, eliminating the circular dependency. The new structure allows PostHog to wait for an already-initialized consent system rather than trying to initialize before consent system exists.\n</info added on 2025-06-27T10:46:22.760Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 18
+          },
+          {
+            "id": 3,
+            "title": "Implement improved async consent waiting mechanism",
+            "description": "Enhance the PostHog initialization code to better handle consent system readiness. Implement more robust retry logic, better error handling for consent system failures, and fallback mechanisms that allow PostHog to recover when consent is granted after initial failure.",
+            "details": "<info added on 2025-06-27T10:47:13.544Z>\nEnhanced consent waiting mechanism with better timeout handling (5 seconds total), improved retry logic using promise-based approach, and added recovery mechanism. PostHog can now recover if consent system becomes available after initial timeout, checking every 2 seconds for up to 30 seconds. Added detailed logging for debugging timing issues.\n</info added on 2025-06-27T10:47:13.544Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 18
+          },
+          {
+            "id": 4,
+            "title": "Add real-time consent status synchronization",
+            "description": "Implement proper event-driven communication between consent system and PostHog to handle consent changes in real-time. Ensure PostHog can respond to consent grant/revoke events after initial page load and properly update its opt-in/opt-out status.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 18
+          },
+          {
+            "id": 5,
+            "title": "Test and validate complete PostHog-consent integration",
+            "description": "Comprehensive testing of the integrated PostHog-consent system including initial page load scenarios, consent acceptance/rejection flows, consent changes after page load, and edge cases like consent system failures. Verify proper event tracking in all scenarios.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 18
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-26T15:43:04.783Z",
+      "updated": "2025-06-27T10:57:39.846Z",
       "description": "Tasks for master context"
     }
   }

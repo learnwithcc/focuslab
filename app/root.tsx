@@ -102,8 +102,8 @@ const App = () => {
   return (
     <NonceProvider nonce={nonce}>
       <Layout nonce={nonce} env={env} theme={theme}>
-        <PHProvider env={env}>
-          <CookieConsentProvider>
+        <CookieConsentProvider>
+          <PHProvider env={env}>
             <Header />
             <main id="main-content">
               <Outlet />
@@ -111,8 +111,8 @@ const App = () => {
             <Footer />
             <CookieManager />
             <VanillaThemeToggle />
-          </CookieConsentProvider>
-        </PHProvider>
+          </PHProvider>
+        </CookieConsentProvider>
       </Layout>
     </NonceProvider>
   );
