@@ -30,9 +30,17 @@ export default defineConfig(({ mode }) => {
     ].filter(Boolean),
     define: {
       // Define minimal process.env object for client-side to prevent hydration errors
-      // while preserving access to actual environment variables on server-side
+      // This is critical for both development and production (Vercel) builds
       'process.env': {
         NODE_ENV: env.NODE_ENV || 'development',
+        POSTHOG_API_KEY: env.POSTHOG_API_KEY || '',
+      },
+      // Also ensure process itself is defined to prevent "process is not defined" errors
+      'process': {
+        env: {
+          NODE_ENV: env.NODE_ENV || 'development',
+          POSTHOG_API_KEY: env.POSTHOG_API_KEY || '',
+        }
       },
     },
     test: {
