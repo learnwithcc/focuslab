@@ -4,6 +4,17 @@
  * For more information, see https://remix.run/file-conventions/entry.client
  */
 
+// CRITICAL: Polyfill process object before any other imports to prevent hydration errors
+if (typeof window !== 'undefined' && typeof process === 'undefined') {
+  (window as any).process = {
+    env: {
+      NODE_ENV: 'production',
+      ...(window.ENV || {})
+    }
+  };
+  (globalThis as any).process = (window as any).process;
+}
+
 import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";

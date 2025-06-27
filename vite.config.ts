@@ -29,19 +29,15 @@ export default defineConfig(({ mode }) => {
       process.env['STORYBOOK'] && react(),
     ].filter(Boolean),
     define: {
-      // Define minimal process.env object for client-side to prevent hydration errors
-      // This is critical for both development and production (Vercel) builds
-      'process.env': {
+      // CRITICAL: Define process polyfill to prevent "process is not defined" errors
+      // This must work for both development and production (Vercel) builds
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || 'development'),
+      'process.env.POSTHOG_API_KEY': JSON.stringify(env.POSTHOG_API_KEY || ''),
+      'process.env': JSON.stringify({
         NODE_ENV: env.NODE_ENV || 'development',
         POSTHOG_API_KEY: env.POSTHOG_API_KEY || '',
-      },
-      // Also ensure process itself is defined to prevent "process is not defined" errors
-      'process': {
-        env: {
-          NODE_ENV: env.NODE_ENV || 'development',
-          POSTHOG_API_KEY: env.POSTHOG_API_KEY || '',
-        }
-      },
+      }),
+      global: 'globalThis',
     },
     test: {
       globals: true,
