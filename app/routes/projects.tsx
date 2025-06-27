@@ -12,6 +12,7 @@ import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO 
 import { getBreadcrumbItems } from '~/utils/structured-data';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { usePageTracking } from '~/hooks/usePageTracking';
 
 export const meta: MetaFunction = () => {
   const breadcrumbKeywords = generateBreadcrumbKeywords('/projects');
@@ -174,6 +175,21 @@ export default function ProjectsPage() {
   const location = useLocation();
   const isLoading = navigation.state === 'loading';
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
+
+  // Track page visit with project metrics
+  usePageTracking({
+    pageName: 'projects',
+    trackEngagement: true,
+    properties: {
+      page_type: 'portfolio',
+      total_projects: data.allProjects.length,
+      filtered_projects: data.projects.length,
+      has_github_data: data.success,
+      sort_field: data.sort.field,
+      sort_direction: data.sort.direction,
+      has_filters: Object.keys(data.filters).length > 0,
+    },
+  });
 
   // Show error state if GitHub data failed to load
   const hasGitHubError = !data.success && 'error' in data;

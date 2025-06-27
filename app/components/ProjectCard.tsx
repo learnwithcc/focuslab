@@ -2,6 +2,7 @@ import { Link } from '@remix-run/react';
 import { ExternalLink, Github, Star, GitFork, Clock, AlertCircle, Loader2 } from 'lucide-react';
 import { Project } from '~/types/project';
 import { useState } from 'react';
+import { trackEvent } from '~/utils/posthog';
 
 interface ProjectCardProps {
   project: Project;
@@ -12,6 +13,20 @@ export function ProjectCard({ project, loading = false }: ProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const handleProjectClick = (action: 'github' | 'demo' | 'docs' | 'detail', url?: string) => {
+    trackEvent('project_interaction', {
+      project_id: project.id,
+      project_title: project.title,
+      action,
+      url,
+      category: project.category,
+      status: project.status,
+      has_github_stats: !!project.githubStats,
+      technologies: project.technologies.map(t => t.name).slice(0, 5), // First 5 technologies
+      timestamp: Date.now(),
+    });
+  };
 
   const statusColors = {
     active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -193,6 +208,7 @@ export function ProjectCard({ project, loading = false }: ProjectCardProps) {
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleProjectClick('github', project.githubUrl)}
               className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <Github className="h-4 w-4" />
@@ -204,6 +220,7 @@ export function ProjectCard({ project, loading = false }: ProjectCardProps) {
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleProjectClick('demo', project.demoUrl)}
               className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <ExternalLink className="h-4 w-4" />
@@ -215,6 +232,7 @@ export function ProjectCard({ project, loading = false }: ProjectCardProps) {
               href={project.docsUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleProjectClick('docs', project.docsUrl)}
               className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <ExternalLink className="h-4 w-4" />
@@ -223,6 +241,7 @@ export function ProjectCard({ project, loading = false }: ProjectCardProps) {
           )}
           <Link
             to={`/projects/${project.id}`}
+            onClick={() => handleProjectClick('detail', `/projects/${project.id}`)}
             className="inline-flex items-center gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Learn More

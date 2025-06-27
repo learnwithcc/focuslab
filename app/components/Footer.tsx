@@ -1,7 +1,25 @@
 import { Link } from '@remix-run/react';
 import { GitHubIcon, EmailIcon, ExternalLinkIcon } from './icons';
+import { trackEvent } from '~/utils/posthog';
 
 export function Footer() {
+  const handleExternalLinkClick = (destination: string, url: string) => {
+    trackEvent('external_link_click', {
+      destination,
+      url,
+      source: 'footer',
+      timestamp: Date.now(),
+    });
+  };
+
+  const handleInternalLinkClick = (destination: string, path: string) => {
+    trackEvent('footer_link_click', {
+      destination,
+      path,
+      timestamp: Date.now(),
+    });
+  };
+
   return (
     <footer
       role="contentinfo"
@@ -21,6 +39,7 @@ export function Footer() {
               href="https://github.com/learnwithcc"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleExternalLinkClick('github', 'https://github.com/learnwithcc')}
               className="flex items-center gap-2 text-gray-700 hover:text-primary-purple dark:text-gray-300 dark:hover:text-white transition-colors duration-200"
               aria-label="Visit our GitHub profile"
             >
@@ -32,6 +51,7 @@ export function Footer() {
               href="https://learnwith.cc"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleExternalLinkClick('learnwithcc', 'https://learnwith.cc')}
               className="flex items-center gap-2 text-gray-700 hover:text-primary-purple dark:text-gray-300 dark:hover:text-white transition-colors duration-200"
               aria-label="Visit LearnWith.cc"
             >
@@ -41,6 +61,7 @@ export function Footer() {
             
             <Link
               to="/contact"
+              onClick={() => handleInternalLinkClick('contact', '/contact')}
               className="flex items-center gap-2 text-gray-700 hover:text-primary-purple dark:text-gray-300 dark:hover:text-white transition-colors duration-200"
               aria-label="Send us an email"
             >
@@ -58,11 +79,19 @@ export function Footer() {
             <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <span>&copy; {new Date().getFullYear()} FocusLab.io</span>
               <div className="flex items-center gap-4">
-                <Link to="/privacy-policy" className="hover:text-primary-purple dark:hover:text-gray-300 transition-colors">
+                <Link 
+                  to="/privacy-policy" 
+                  onClick={() => handleInternalLinkClick('privacy_policy', '/privacy-policy')}
+                  className="hover:text-primary-purple dark:hover:text-gray-300 transition-colors"
+                >
                   Privacy Policy
                 </Link>
                 <span className="text-gray-600">|</span>
-                <Link to="/terms-of-service" className="hover:text-primary-purple dark:hover:text-gray-300 transition-colors">
+                <Link 
+                  to="/terms-of-service" 
+                  onClick={() => handleInternalLinkClick('terms_of_service', '/terms-of-service')}
+                  className="hover:text-primary-purple dark:hover:text-gray-300 transition-colors"
+                >
                   Terms of Service
                 </Link>
               </div>

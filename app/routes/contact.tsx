@@ -4,6 +4,7 @@ import { Section, Container } from "~/components/Layout";
 import { ContactForm, Breadcrumb } from '~/components';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
 import { getBreadcrumbItems } from '~/utils/structured-data';
+import { usePageTracking } from '~/hooks/usePageTracking';
 
 export const meta: MetaFunction = () => {
   const breadcrumbKeywords = generateBreadcrumbKeywords('/contact');
@@ -30,6 +31,16 @@ export const meta: MetaFunction = () => {
 export default function ContactPage() {
   const location = useLocation();
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
+  
+  // Track page visit with engagement timing
+  usePageTracking({
+    pageName: 'contact',
+    trackEngagement: true,
+    properties: {
+      page_type: 'contact',
+      has_form: true,
+    },
+  });
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
