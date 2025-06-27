@@ -896,7 +896,7 @@
         "description": "Redesign the cookie consent banner to be more minimal and brand-consistent, updating fonts, buttons, and overall styling to align with the main design aesthetic.",
         "details": "Update the cookie banner component created in Task 10's GDPR compliance implementation to match the brand design system from Task 2. Replace current fonts with Inter font family and apply the custom color palette (primary-purple, teal-primary, orange-accent). Redesign buttons to use the standardized Button component from Task 3's UI library with proper variants (primary for \"Accept All\", secondary for \"Manage Preferences\", outline for \"Reject All\"). Implement a more minimal layout with reduced visual clutter - use subtle borders, appropriate spacing with Tailwind utilities, and ensure the banner doesn't dominate the page. Apply consistent border-radius, shadows, and hover states that match the overall site aesthetic. Ensure the banner respects the theme switching functionality (light/dark modes) and maintains proper contrast ratios. Update the banner positioning and animation to be less intrusive while remaining compliant with GDPR requirements. Consider using a slide-in animation from bottom or a subtle fade-in that aligns with the site's animation patterns.",
         "testStrategy": "Verify the cookie banner uses the correct brand colors and Inter font family across both light and dark themes. Test button styling matches the design system components with proper hover and focus states. Validate color contrast ratios meet WCAG AA standards using WebAIM tools. Test banner responsiveness across mobile, tablet, and desktop breakpoints. Verify the banner animation is smooth and respects reduced motion preferences. Ensure GDPR compliance functionality remains intact after redesign. Test banner positioning doesn't interfere with main navigation or content. Perform visual regression testing to confirm the banner integrates seamlessly with the overall site design.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           2,
           3,
@@ -968,7 +968,7 @@
         "description": "Fix the critical hydration failure where RemixBrowser component crashes during client-side hydration due to missing routes in __remixContext, preventing the entire React application from functioning properly.",
         "details": "Investigate and resolve the TypeError: Cannot read properties of undefined (reading 'routes') error occurring during client-side hydration in the RemixBrowser component. Start by examining the app/entry.client.tsx file to verify proper RemixBrowser initialization and context setup. Check the server-side rendering in app/entry.server.tsx to ensure __remixContext is properly populated with routes data before being sent to the client. Analyze the root.tsx file for any issues with route configuration or context provider setup that might cause the routes object to be undefined during hydration. Review all route files to ensure they export proper loader/action functions and meta exports that Remix expects. Implement proper error boundaries around the RemixBrowser component to prevent complete application crashes. Add debugging logs to track the __remixContext object structure during both SSR and CSR phases. Consider implementing a fallback mechanism or retry logic for hydration failures. Examine the build process to ensure route manifests are properly generated and accessible to the client-side code. This fix is critical as it affects the entire application's React functionality, including the cookie consent banner and all interactive components.",
         "testStrategy": "Test hydration by disabling JavaScript and re-enabling to simulate the SSR to CSR transition. Use browser DevTools to inspect the __remixContext object in both server-rendered HTML and client-side JavaScript execution. Verify that all routes are properly defined in the context object with expected properties (id, path, module, etc.). Test the application across different browsers and devices to ensure consistent hydration behavior. Monitor browser console for hydration mismatches or React warnings. Implement automated tests that simulate the hydration process and verify RemixBrowser component mounts successfully. Test the cookie consent banner functionality specifically after fixing the hydration issue to ensure it renders and functions correctly. Use React DevTools Profiler to verify component mounting order and identify any remaining hydration issues. Perform end-to-end testing of all interactive features that depend on successful React hydration.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           12,
           15
@@ -982,7 +982,7 @@
         "description": "Debug and resolve the PostHog initialization failure where the external script loads successfully but window.posthog object never gets created, preventing analytics tracking functionality.",
         "details": "Investigate the PostHog initialization sequence to identify why window.posthog remains undefined despite successful script loading. Start by examining the PostHog script loading implementation in app/root.tsx or entry.client.tsx to verify proper script tag placement and timing. Check if the PostHog initialization code is being called before the external script has fully loaded and executed. Implement proper script loading detection using onload event handlers or polling for window.posthog availability. Verify that the PostHog project key and configuration options are correctly passed during initialization. Examine potential conflicts with React hydration timing by ensuring PostHog initialization occurs after client-side hydration is complete. Check for any CSP violations or network errors that might prevent the PostHog script from executing properly. Add proper error handling and fallback mechanisms for when PostHog fails to initialize. Consider implementing a PostHog context provider to manage initialization state and provide loading/error states to components that depend on analytics. Test initialization in both development and production environments to identify environment-specific issues.",
         "testStrategy": "Use browser DevTools Network tab to confirm PostHog script loads with 200 status and verify script content is not blocked by CSP. Check Console for any JavaScript errors during PostHog initialization. Use browser DevTools to inspect window.posthog object availability at different stages of page load. Test PostHog initialization timing by adding console logs before and after initialization calls. Verify PostHog events are properly tracked by checking the PostHog dashboard or network requests to PostHog endpoints. Test across different browsers and devices to ensure consistent initialization. Use React DevTools to verify hydration completion timing relative to PostHog initialization. Test with disabled JavaScript and re-enabled to simulate hydration scenarios.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           12,
           16
@@ -1012,7 +1012,7 @@
             "title": "Debug PostHog external script integration and timing issues",
             "description": "Investigate the timing and loading sequence between external PostHog script (us-assets.i.posthog.com) and our internal initialization code. Check for race conditions, script loading order, or timing issues preventing proper initialization sequence.",
             "details": "",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 17
           },
@@ -1099,7 +1099,7 @@
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-27T10:57:39.846Z",
+      "updated": "2025-06-27T21:10:58.327Z",
       "description": "Tasks for master context"
     }
   }
