@@ -4,9 +4,13 @@ import { PostHogProvider } from "posthog-js/react";
 import { useLocation, useMatches } from "@remix-run/react";
 import type { ReactNode } from "react";
 import { useIsMounted, safeLocalStorage, isBrowser } from "~/utils/ssr";
+import { onCLS, onFCP, onLCP, onTTFB, onINP, type Metric } from "web-vitals";
 
 // Ensure PostHog is properly available with fallback handling
 const posthog = posthogImport || (typeof window !== 'undefined' ? (window as any).posthog : null);
+
+// Track Web Vitals initialization to prevent multiple setups
+let webVitalsInitialized = false;
 
 // Add debugging to verify PostHog is available
 if (isBrowser && !posthog) {
@@ -127,6 +131,75 @@ function updatePostHogConsent() {
   }
 }
 
+// Helper function to initialize Web Vitals tracking
+function initializeWebVitals() {
+  if (!isBrowser || !posthog || !posthog.__loaded) {
+    return;
+  }
+
+  // Only track Web Vitals if analytics consent is granted
+  if (!hasAnalyticsConsent()) {
+    return;
+  }
+
+  // Prevent multiple initializations
+  if (webVitalsInitialized) {
+    console.log('PostHog: Web Vitals already initialized, skipping');
+    return;
+  }
+
+  console.log('PostHog: Initializing Web Vitals tracking');
+  webVitalsInitialized = true;
+
+  // Track Core Web Vitals
+  onCLS((metric: Metric) => {
+    posthog.capture('$web_vitals', {
+      $web_vitals_CLS_value: metric.value,
+      $web_vitals_CLS_rating: metric.rating,
+      $web_vitals_CLS_delta: metric.delta,
+      $web_vitals_CLS_id: metric.id,
+    });
+  });
+
+  onLCP((metric: Metric) => {
+    posthog.capture('$web_vitals', {
+      $web_vitals_LCP_value: metric.value,
+      $web_vitals_LCP_rating: metric.rating,
+      $web_vitals_LCP_delta: metric.delta,
+      $web_vitals_LCP_id: metric.id,
+    });
+  });
+
+  // Track additional Web Vitals
+  onFCP((metric: Metric) => {
+    posthog.capture('$web_vitals', {
+      $web_vitals_FCP_value: metric.value,
+      $web_vitals_FCP_rating: metric.rating,
+      $web_vitals_FCP_delta: metric.delta,
+      $web_vitals_FCP_id: metric.id,
+    });
+  });
+
+  onTTFB((metric: Metric) => {
+    posthog.capture('$web_vitals', {
+      $web_vitals_TTFB_value: metric.value,
+      $web_vitals_TTFB_rating: metric.rating,
+      $web_vitals_TTFB_delta: metric.delta,
+      $web_vitals_TTFB_id: metric.id,
+    });
+  });
+
+  // Track Interaction to Next Paint (INP) - the modern replacement for FID
+  onINP((metric: Metric) => {
+    posthog.capture('$web_vitals', {
+      $web_vitals_INP_value: metric.value,
+      $web_vitals_INP_rating: metric.rating,
+      $web_vitals_INP_delta: metric.delta,
+      $web_vitals_INP_id: metric.id,
+    });
+  });
+}
+
 export function PHProvider({ children, env }: PHProviderProps) {
   const location = useLocation();
   const matches = useMatches();
@@ -187,6 +260,11 @@ export function PHProvider({ children, env }: PHProviderProps) {
                   updatePostHogConsent();
                   setConsentSystemFailed(false);
                   clearInterval(recoveryInterval);
+                  
+                  // Initialize Web Vitals tracking if consent is granted
+                  if (hasAnalyticsConsent()) {
+                    initializeWebVitals();
+                  }
                 }
               }, 2000);
               
@@ -210,6 +288,11 @@ export function PHProvider({ children, env }: PHProviderProps) {
           loaded: (posthogInstance) => {
             setIsInitialized(true);
             console.log('PostHog: Initialization complete with automatic pageview tracking enabled');
+            
+            // Initialize Web Vitals tracking if consent is granted
+            if (hasConsent) {
+              initializeWebVitals();
+            }
           },
         });
       } catch (error) {
@@ -238,6 +321,11 @@ export function PHProvider({ children, env }: PHProviderProps) {
     try {
       updatePostHogConsent();
       console.log('PostHog: Consent state updated successfully');
+      
+      // Initialize Web Vitals tracking if consent is now granted
+      if (hasAnalyticsConsent()) {
+        initializeWebVitals();
+      }
     } catch (error) {
       console.error('PostHog: Error updating consent state:', error);
     }
