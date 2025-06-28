@@ -21,6 +21,8 @@ This project uses Task Master AI for development workflow management. Key comman
 - `task-master set-status --id=<id> --status=done` - Mark task complete
 - `task-master expand --id=<id> --research --force` - Break task into subtasks
 
+**IMPORTANT**: Always check if Task Master is already initialized before attempting to initialize. Use `task-master list` first to verify project status.
+
 ## Architecture Overview
 
 ### Tech Stack

@@ -1286,11 +1286,112 @@
             "parentTaskId": 24
           }
         ]
+      },
+      {
+        "id": 25,
+        "title": "Implement Brand Typography System with Montserrat, Open Sans, and Roboto Mono",
+        "description": "Implement a comprehensive brand typography system using Montserrat Bold for headings, Open Sans Regular for body text, and Roboto Mono for accent/code text with full WCAG compliance and accessibility testing.",
+        "details": "Create a new Git branch 'feature/brand-typography-system' for this implementation. Update Tailwind configuration to replace Inter font with the new typography stack: Montserrat Bold (weights: 700, 800) for all heading elements (h1-h6), Open Sans Regular (weights: 400, 600) for body text, paragraphs, and UI elements, and Roboto Mono (weights: 400, 500) for code blocks, technical content, and accent text. Configure Google Fonts integration with proper font-display: swap for performance. Update the design system theme configuration to include new font family variables and ensure proper fallback fonts (system fonts) are specified. Modify existing components to use the new typography classes, paying special attention to heading hierarchy, body text readability, and code/technical content styling. Implement proper line-height ratios (1.2 for headings, 1.6 for body text, 1.4 for code) and letter-spacing adjustments for optimal readability. Ensure font sizes maintain proper contrast ratios and meet WCAG 2.1 AA standards for both light and dark themes. Test typography rendering across different screen sizes and devices. Take comprehensive before/after screenshots in both light and dark modes for visual comparison and design approval. Iterate on font weights, sizes, and spacing based on accessibility testing results until all WCAG criteria are met.",
+        "testStrategy": "Validate WCAG compliance using automated tools like axe-core and manual testing with screen readers to ensure proper font rendering and readability. Test font loading performance and verify fallback fonts display correctly during loading states. Measure text contrast ratios using WebAIM contrast checker to ensure all text meets WCAG AA standards (4.5:1 for normal text, 3:1 for large text) in both light and dark themes. Test typography scaling across different viewport sizes and zoom levels up to 200%. Verify font rendering consistency across major browsers (Chrome, Firefox, Safari, Edge). Take systematic before/after screenshots of key pages (homepage, about, projects) in both light and dark modes for design review. Test with users who have dyslexia or other reading difficulties to validate improved readability. Validate that code blocks and technical content maintain proper readability with Roboto Mono. Perform performance testing to ensure new fonts don't negatively impact page load times.",
+        "status": "done",
+        "dependencies": [
+          2,
+          11
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create new Git branch for typography testing",
+            "description": "Create a new Git branch specifically for testing the brand typography changes to isolate the work and allow safe experimentation. Branch should be named 'feature/brand-typography' for clear identification.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 25
+          },
+          {
+            "id": 2,
+            "title": "Take comprehensive before screenshots in light and dark modes",
+            "description": "Capture full-page screenshots of the current site in both light and dark modes before implementing typography changes. Screenshots should cover all major pages (homepage, about, projects, contact) to establish baseline for comparison. Save to organized folder structure for easy comparison.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.1"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 3,
+            "title": "Analyze current typography implementation and dependencies",
+            "description": "Examine the current typography system including Tailwind config, CSS files, component usage patterns, and any existing font loading mechanisms. Identify all locations where typography changes need to be applied and document the current implementation for systematic replacement.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.1"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 4,
+            "title": "Implement brand typography system with Google Fonts integration",
+            "description": "Integrate Montserrat Bold for headings, Open Sans Regular for body text, and Roboto Mono for accent/code text via Google Fonts. Update Tailwind configuration, CSS custom properties, and implement proper font loading strategies for optimal performance and user experience.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.3"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 5,
+            "title": "Apply typography changes across all components and optimize sizing",
+            "description": "Systematically update all React components to use the new typography system. Assess and adjust font sizes, weights, and line heights for optimal readability and visual hierarchy. Ensure typography scales properly across different screen sizes and maintains design consistency.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.4"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 6,
+            "title": "Perform comprehensive WCAG accessibility validation",
+            "description": "Validate all typography changes against WCAG 2.1 AA criteria including color contrast ratios, font size minimums, line height requirements, and readability standards. Run automated accessibility tests and perform manual review to ensure compliance across all text elements in both light and dark themes.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.5"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 7,
+            "title": "Capture comprehensive after screenshots and perform visual comparison",
+            "description": "Take full-page screenshots in both light and dark modes after implementing typography changes. Create organized before/after comparison documentation, highlighting the visual improvements and ensuring the new typography meets design standards and enhances user experience.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.6"
+            ],
+            "parentTaskId": 25
+          },
+          {
+            "id": 8,
+            "title": "Iterate and refine typography implementation based on testing results",
+            "description": "Review testing results, accessibility validation, and visual comparisons to identify areas for improvement. Make iterative refinements to typography sizing, spacing, and implementation until the design achieves optimal balance between brand consistency, readability, and WCAG compliance.",
+            "details": "",
+            "status": "done",
+            "dependencies": [
+              "25.7"
+            ],
+            "parentTaskId": 25
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-27T23:59:25.413Z",
+      "updated": "2025-06-28T01:37:51.532Z",
       "description": "Tasks for master context"
     }
   }
