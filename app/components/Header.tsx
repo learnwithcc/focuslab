@@ -86,7 +86,7 @@ export function Header() {
             className="flex items-center"
             onClick={() => handleNavClick('home', 'logo')}
           >
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
+            <span className="font-heading text-xl font-bold text-gray-900 dark:text-white">
               Focus Lab
             </span>
           </Link>

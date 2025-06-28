@@ -112,10 +112,10 @@ export default function Index() {
           <Section spacing="lg">
             <Container maxWidth="7xl">
               <div className="text-center">
-                <h1 className="leading-tight text-6xl font-bold text-primary-purple dark:text-header-primary-text sm:text-7xl lg:text-8xl xl:text-9xl">
+                <h1 className="font-heading leading-tight text-6xl font-bold text-primary-purple dark:text-header-primary-text sm:text-7xl lg:text-8xl xl:text-9xl">
                   Tech Tools
                 </h1>
-                <p className="mt-4 text-3xl font-semibold text-teal-primary dark:text-header-secondary-text sm:text-4xl lg:text-5xl xl:text-6xl">
+                <p className="font-heading mt-4 text-3xl font-semibold text-teal-primary dark:text-header-secondary-text sm:text-4xl lg:text-5xl xl:text-6xl">
                   Built for Your Beautiful Brain!
                 </p>
                 <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-200 sm:text-xl lg:text-2xl">
@@ -152,7 +152,7 @@ export default function Index() {
               <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                 {/* Mission Statement Content */}
                 <div className="order-2 lg:order-1">
-                  <h2 className="mb-6 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
+                  <h2 className="font-heading mb-6 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                     Our Mission
                   </h2>
                   <div className="space-y-6 leading-relaxed text-lg text-gray-600 dark:text-gray-200">
@@ -181,7 +181,7 @@ export default function Index() {
                         F
                       </div>
                       <div className="ml-4">
-                        <h3 className="text-xl font-semibold text-primary-purple dark:text-white">
+                        <h3 className="font-heading text-xl font-semibold text-primary-purple dark:text-white">
                           Founder's Story
                         </h3>
                         <p className="text-gray-600 dark:text-gray-300">
@@ -221,7 +221,7 @@ export default function Index() {
           <Section spacing="lg">
             <Container maxWidth="7xl">
               <div className="text-center">
-                <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
+                <h2 className="font-heading mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
                   Our Flagship Projects
                 </h2>
                 <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-200 sm:text-xl">
@@ -243,7 +243,7 @@ export default function Index() {
                       <Card variant="elevated" className="flex h-full flex-col text-left">
                         <div className="flex-grow">
                           <div className="mb-4 flex items-start justify-between">
-                            <h3 className="text-xl font-bold text-primary-purple dark:text-white">
+                            <h3 className="font-heading text-xl font-bold text-primary-purple dark:text-white">
                               {project.title}
                             </h3>
                             <GitHubIcon className="h-6 w-6 text-gray-400" />

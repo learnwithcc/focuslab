@@ -42,7 +42,7 @@ export default function About() {
             <Container maxWidth="7xl">
               <Breadcrumb items={breadcrumbItems} className="mb-8" />
               <div className="text-center">
-                <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
+                <h1 className="font-heading mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                   Building Tools for{" "}
                   <span className="text-blue-600 dark:text-blue-400">
                     Different Minds
