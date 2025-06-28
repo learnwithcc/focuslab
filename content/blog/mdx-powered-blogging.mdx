@@ -1,0 +1,133 @@
+---
+title: "Building a Modern Blog with MDX and Remix"
+description: "Learn how we built a powerful, flexible blog system using MDX, Remix.js, and TypeScript with future-proofing for Directus integration."
+publishedAt: "2025-06-27"
+author: "FocusLab Development Team"
+category: "development"
+tags: ["mdx", "remix", "typescript", "blog", "content-management"]
+image: "/images/blog/mdx-powered-blogging.jpg"
+imageAlt: "Code editor showing MDX syntax with React components"
+featured: false
+draft: false
+---
+
+# Building a Modern Blog with MDX and Remix
+
+At FocusLab, we believe in using the right tools for the right job. When it came time to build our blog system, we wanted something that would give us the flexibility of React components within our content, while maintaining the simplicity of Markdown for writing.
+
+## Why MDX?
+
+MDX combines the best of both worlds: the simplicity of Markdown for content creation and the power of React components for interactive elements.
+
+```typescript
+// Example: Custom component in MDX
+import { CalloutBox } from '~/components/blog';
+
+<CalloutBox type="info">
+  This is a custom React component embedded directly in our MDX content!
+</CalloutBox>
+```
+
+## Architecture Overview
+
+Our blog system is built with several key architectural decisions:
+
+### 1. File-Based Content Management
+
+We chose to start with a file-based approach for several reasons:
+
+- **Version Control**: Blog posts are versioned alongside our code
+- **Developer Experience**: Writing in familiar markdown syntax
+- **Performance**: Static content compilation at build time
+- **Simplicity**: No additional backend complexity
+
+### 2. Future-Proof Design
+
+While we're starting with files, our architecture includes a `ContentService` interface that abstracts content fetching:
+
+```typescript
+interface ContentService {
+  getAllPosts(): Promise<BlogPost[]>;
+  getPostBySlug(slug: string): Promise<BlogPost | null>;
+  getPostsByCategory(category: string): Promise<BlogPost[]>;
+  // ... more methods
+}
+```
+
+This abstraction allows us to seamlessly migrate to Directus or any other headless CMS in the future without changing our React components.
+
+### 3. Rich Metadata System
+
+Each blog post includes comprehensive frontmatter:
+
+```yaml
+---
+title: "Your Post Title"
+description: "SEO-friendly description"
+publishedAt: "2025-06-27"
+author: "Author Name"
+category: "development"
+tags: ["tag1", "tag2", "tag3"]
+featured: true
+draft: false
+---
+```
+
+## Key Features
+
+### Syntax Highlighting
+
+Code blocks are automatically highlighted using `rehype-highlight`:
+
+```javascript
+// JavaScript example
+function calculateReadingTime(content) {
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+```
+
+### Reading Time Calculation
+
+We automatically calculate estimated reading time for each post using the `reading-time` package.
+
+### Search and Filtering
+
+Our content service includes powerful search and filtering capabilities:
+
+- Full-text search across titles, descriptions, and content
+- Category filtering
+- Tag-based filtering
+- Featured post highlighting
+
+## Performance Considerations
+
+### Build-Time Compilation
+
+MDX content is compiled at build time, ensuring fast page loads and optimal SEO.
+
+### Caching Strategy
+
+We implement intelligent caching with TTL (Time To Live) for development efficiency while maintaining freshness.
+
+### Code Splitting
+
+Dynamic imports ensure that only necessary code is loaded for each blog page.
+
+## What's Next?
+
+In upcoming posts, we'll dive deeper into:
+
+1. **SEO Optimization**: How we handle meta tags and structured data
+2. **Accessibility Features**: Ensuring our blog is accessible to all users
+3. **Migration Strategy**: Planning our eventual move to Directus
+4. **Performance Metrics**: Measuring and optimizing blog performance
+
+## Conclusion
+
+Building a modern blog system requires balancing current needs with future flexibility. Our MDX-powered approach gives us the best of both worlds: powerful content authoring capabilities today, with a clear path for future enhancements.
+
+---
+
+*Want to see the code? Check out our [open source implementation](https://github.com/focus-lab-ltd/focuslab) on GitHub.*

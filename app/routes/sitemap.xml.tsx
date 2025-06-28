@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const baseUrl = `${url.protocol}//${url.host}`;
     
     // Generate all sitemap URLs
-    const sitemapUrls = generateAllSitemapUrls({ 
+    const sitemapUrls = await generateAllSitemapUrls({ 
       baseUrl,
       currentDate: new Date()
     });

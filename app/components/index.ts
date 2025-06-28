@@ -34,4 +34,7 @@ export { HighlightCards } from './HighlightCards';
 export { Footer } from './Footer';
 export { VanillaThemeToggle, MobileThemeToggle } from './VanillaThemeToggle';
 
+// Blog components
+export * from './blog';
+
 // Add component exports here as they are created 

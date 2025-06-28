@@ -1387,11 +1387,116 @@
             "parentTaskId": 25
           }
         ]
+      },
+      {
+        "id": 26,
+        "title": "Develop MDX Blog System with Categories, Tags, and FocusLab Design Integration",
+        "description": "Implement a complete MDX-powered blog system supporting categories and tags, fully integrated with the FocusLab design system and architected for future Directus backend migration.",
+        "details": "1. Set up a dedicated directory (e.g., /content/posts) for MDX blog posts, each with frontmatter supporting title, date, slug, excerpt, categories, tags, and SEO fields. 2. Implement MDX processing using a library such as @mdx-js/react, ensuring support for custom React components and FocusLab design system styles. 3. Build dynamic blog listing and detail pages, leveraging file-based routing and dynamic imports for performance. 4. Create category and tag index pages with filtering and navigation. 5. Integrate search functionality using a static index (e.g., lunr.js or fuse.js) for fast client-side search. 6. Add SEO optimization: generate meta tags, Open Graph data, and structured data from frontmatter. 7. Architect data fetching and content management logic to allow seamless migration to a Directus backend in the future (e.g., abstract content source, use repository pattern). 8. Ensure accessibility and responsive design using the FocusLab system and Tailwind CSS. 9. Implement syntax highlighting for code blocks (e.g., PrismJS). 10. Write comprehensive tests for MDX rendering, navigation, filtering, search, and SEO using Jest and React Testing Library.",
+        "testStrategy": "- Add sample MDX posts with diverse categories and tags, verify correct rendering and navigation.\n- Test category and tag filtering for accuracy and performance.\n- Validate search returns relevant results and handles edge cases (no results, partial matches).\n- Check SEO meta tags and structured data output for each post and listing page.\n- Confirm FocusLab design system styles are applied consistently across all blog components.\n- Test accessibility with screen readers and keyboard navigation.\n- Run unit and integration tests for all major components and data flows.\n- Simulate future backend migration by swapping content source abstraction and verifying no regressions.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          2,
+          3,
+          25
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 27,
+        "title": "Complete MDX Blog System Project and Deploy to Main Branch",
+        "description": "Finalize the MDX blog system implementation, create comprehensive documentation, implement Phase 7 testing, and deploy the completed project to the main branch.",
+        "details": "1. Review and commit all implemented phases of the MDX blog system:\n   - Verify all components from Tasks 1, 6, 7, 8, 18, 22, 23, 24, 25, and 26 are complete and functioning correctly.\n   - Resolve any remaining merge conflicts or integration issues.\n   - Perform a final code review to ensure adherence to project coding standards.\n\n2. Create comprehensive documentation:\n   - Generate API documentation for custom hooks, utilities, and components.\n   - Write user guides for content creators on how to use the MDX blog system.\n   - Document the project architecture, including the relationship between components and data flow.\n   - Create a README.md file with project overview, setup instructions, and contribution guidelines.\n\n3. Implement Phase 7 testing:\n   - Develop and run integration tests covering the entire blog system workflow.\n   - Perform cross-browser testing (Chrome, Firefox, Safari, Edge) to ensure consistency.\n   - Conduct accessibility testing using axe-core and manual screen reader tests.\n   - Execute performance tests using Lighthouse and WebPageTest.\n   - Implement visual regression tests using tools like Percy or Chromatic.\n\n4. Prepare for deployment:\n   - Update environment variables for production settings.\n   - Optimize assets (images, CSS, JavaScript) for production.\n   - Configure proper caching strategies for static assets and API responses.\n\n5. Deploy to main branch:\n   - Create a pull request from the development branch to main.\n   - Have the team review the final changes and approve the PR.\n   - Merge the approved PR into the main branch.\n   - Trigger the CI/CD pipeline to deploy the project to the production environment.\n\n6. Post-deployment tasks:\n   - Verify the live site functionality and performance.\n   - Monitor error logging and analytics for any issues.\n   - Update project status in project management tools.\n   - Communicate project completion to stakeholders.",
+        "testStrategy": "1. Comprehensive system testing:\n   - Verify all blog features: post creation, editing, deletion, categorization, tagging, and search functionality.\n   - Test user flows for both content creators and readers.\n   - Ensure proper rendering of MDX content with custom components.\n\n2. Integration testing:\n   - Validate correct interaction between the blog system and other site components (header, footer, navigation).\n   - Test data flow and state management across the application.\n\n3. Cross-browser and responsive design testing:\n   - Use BrowserStack or similar tools to test on multiple browsers and devices.\n   - Verify responsive design breakpoints and layout consistency.\n\n4. Accessibility testing:\n   - Run automated tests using axe-core or similar tools.\n   - Perform manual testing with screen readers (NVDA, VoiceOver).\n   - Verify keyboard navigation throughout the blog system.\n\n5. Performance testing:\n   - Run Lighthouse tests for Performance, Accessibility, Best Practices, and SEO.\n   - Use WebPageTest for more detailed performance analysis.\n   - Verify lazy loading of images and content works correctly.\n\n6. SEO verification:\n   - Check meta tags, structured data, and sitemap generation.\n   - Validate canonical URLs and proper URL structure.\n   - Test robots.txt file functionality.\n\n7. Security testing:\n   - Perform basic penetration testing on form inputs and API endpoints.\n   - Verify CORS settings and CSP headers.\n\n8. Documentation review:\n   - Have team members follow the documentation to set up the project locally.\n   - Verify all API endpoints and components are properly documented.\n\n9. Post-deployment checks:\n   - Monitor application logs for any errors or warnings.\n   - Verify analytics and tracking tools are functioning correctly.\n   - Test the entire user journey on the live production site.\n\n10. Regression testing:\n    - Re-run key test cases from previous tasks to ensure no regressions occurred during final integration.",
+        "status": "pending",
+        "dependencies": [
+          26,
+          25,
+          24,
+          23,
+          22,
+          18,
+          8,
+          7,
+          6,
+          1
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Commit all implemented blog system phases (1-6)",
+            "description": "Create comprehensive git commit for all implemented MDX blog system phases including foundation, content management, routing, UI components, Directus future-proofing, and SEO/performance optimizations. Agent: DevOpsEngineer",
+            "details": "",
+            "status": "in-progress",
+            "dependencies": [
+              null
+            ],
+            "parentTaskId": 27
+          },
+          {
+            "id": 2,
+            "title": "Create comprehensive documentation for blog system",
+            "description": "Create detailed documentation covering blog system usage, maintenance, architecture, and deployment procedures. Include user guides, developer guides, and operational runbooks. Agent: TechnicalWriter",
+            "details": "",
+            "status": "pending",
+            "dependencies": [
+              "27.1"
+            ],
+            "parentTaskId": 27
+          },
+          {
+            "id": 3,
+            "title": "Commit documentation to repository",
+            "description": "Add and commit all created documentation files to the git repository with appropriate commit messages. Agent: DevOpsEngineer",
+            "details": "",
+            "status": "pending",
+            "dependencies": [
+              "27.2"
+            ],
+            "parentTaskId": 27
+          },
+          {
+            "id": 4,
+            "title": "Implement Phase 7: Testing & Validation",
+            "description": "Create comprehensive test suite including unit tests, integration tests, E2E tests, and accessibility testing for the MDX blog system. Validate all functionality and performance requirements. Agent: QAEngineer",
+            "details": "",
+            "status": "pending",
+            "dependencies": [
+              "27.3"
+            ],
+            "parentTaskId": 27
+          },
+          {
+            "id": 5,
+            "title": "Execute test validation and verification",
+            "description": "Run all tests, validate functionality, check performance metrics, and ensure all requirements are met. Generate test reports and validate system readiness for production. Agent: QAEngineer",
+            "details": "",
+            "status": "pending",
+            "dependencies": [
+              "27.4"
+            ],
+            "parentTaskId": 27
+          },
+          {
+            "id": 6,
+            "title": "Merge feature branch to main and push",
+            "description": "Merge the feature branch containing all blog system implementation to main branch, resolve any conflicts, and push to remote repository. Ensure proper branch management and deployment procedures. Agent: DevOpsEngineer",
+            "details": "",
+            "status": "pending",
+            "dependencies": [
+              "27.5"
+            ],
+            "parentTaskId": 27
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-28T01:37:51.532Z",
+      "updated": "2025-06-28T02:58:58.162Z",
       "description": "Tasks for master context"
     }
   }

@@ -1,5 +1,6 @@
 // Sitemap generation utilities for Focus Lab
 import { projects } from '~/data/projects';
+import { contentService } from '~/services/blog.server';
 
 export interface SitemapUrl {
   loc: string;
@@ -34,6 +35,10 @@ const STATIC_ROUTES: Omit<SitemapUrl, 'loc' | 'lastmod'>[] = [
     priority: 0.9
   }, // Projects
   {
+    changefreq: 'daily',
+    priority: 0.9
+  }, // Blog
+  {
     changefreq: 'yearly',
     priority: 0.3
   }, // Privacy Policy
@@ -52,6 +57,7 @@ const STATIC_PATHS = [
   '/about',
   '/contact', 
   '/projects',
+  '/blog',
   '/privacy-policy',
   '/terms-of-service',
   '/accessibility-statement'
@@ -101,13 +107,70 @@ export function generateProjectUrls(options: SitemapOptions = {}): SitemapUrl[] 
 }
 
 /**
+ * Generate sitemap URLs for blog posts, categories, and tags
+ */
+export async function generateBlogUrls(options: SitemapOptions = {}): Promise<SitemapUrl[]> {
+  const { baseUrl = DEFAULT_BASE_URL } = options;
+  
+  try {
+    const [posts, categories, tags] = await Promise.all([
+      contentService.getPostsForSitemap(),
+      contentService.getAllCategories(),
+      contentService.getAllTags()
+    ]);
+
+    const blogUrls: SitemapUrl[] = [];
+
+    // Add individual blog posts
+    posts.forEach(post => {
+      const lastmod = post.frontmatter.updatedAt || post.frontmatter.publishedAt;
+      blogUrls.push({
+        loc: `${baseUrl}/blog/${post.slug}`,
+        lastmod: new Date(lastmod).toISOString().split('T')[0],
+        changefreq: 'monthly',
+        priority: 0.7
+      });
+    });
+
+    // Add category pages
+    categories.forEach(category => {
+      blogUrls.push({
+        loc: `${baseUrl}/blog?category=${category.slug}`,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: 0.6
+      });
+    });
+
+    // Add tag pages (limit to most popular tags to avoid too many URLs)
+    tags
+      .sort((a, b) => b.postCount - a.postCount)
+      .slice(0, 20) // Limit to top 20 tags
+      .forEach(tag => {
+        blogUrls.push({
+          loc: `${baseUrl}/blog?tag=${tag.slug}`,
+          lastmod: new Date().toISOString().split('T')[0],
+          changefreq: 'weekly',
+          priority: 0.5
+        });
+      });
+
+    return blogUrls;
+  } catch (error) {
+    console.error('Error generating blog URLs for sitemap:', error);
+    return [];
+  }
+}
+
+/**
  * Generate complete sitemap URLs including static and dynamic content
  */
-export function generateAllSitemapUrls(options: SitemapOptions = {}): SitemapUrl[] {
+export async function generateAllSitemapUrls(options: SitemapOptions = {}): Promise<SitemapUrl[]> {
   const staticUrls = generateStaticUrls(options);
   const projectUrls = generateProjectUrls(options);
+  const blogUrls = await generateBlogUrls(options);
   
-  return [...staticUrls, ...projectUrls];
+  return [...staticUrls, ...projectUrls, ...blogUrls];
 }
 
 /**

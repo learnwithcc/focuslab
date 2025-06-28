@@ -1,0 +1,175 @@
+---
+title: "Accessibility-First Design: Building for Every Brain"
+description: "Explore how accessibility-first design principles create better experiences for neurodivergent users and improve usability for everyone."
+publishedAt: "2025-06-26"
+author: "Chris Cameron"
+category: "accessibility"
+tags: ["accessibility", "neurodivergent", "design", "ux", "inclusive-design"]
+image: "/images/blog/accessibility-first-design.jpg"
+imageAlt: "Diverse group of people using various assistive technologies"
+featured: true
+draft: false
+---
+
+# Accessibility-First Design: Building for Every Brain
+
+When we talk about accessibility in web development, the conversation often centers around screen readers and keyboard navigation. While these are crucial, true accessibility goes much deeper—especially when designing for neurodivergent users.
+
+## Understanding Neurodivergent Needs
+
+Neurodivergent individuals—including those with ADHD, autism, dyslexia, and other neurological differences—face unique challenges when interacting with digital interfaces. These challenges often stem from:
+
+### Cognitive Load Issues
+
+High cognitive load can be overwhelming. Consider these design principles:
+
+- **Clear Information Hierarchy**: Use consistent heading structures and visual hierarchy
+- **Reduced Clutter**: Minimize distracting elements and unnecessary visual noise
+- **Predictable Patterns**: Maintain consistent navigation and interaction patterns
+
+### Sensory Sensitivities
+
+Many neurodivergent users experience sensory sensitivities:
+
+```css
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  .button {
+    border: 2px solid currentColor;
+    background-color: ButtonFace;
+    color: ButtonText;
+  }
+}
+```
+
+### Focus and Attention Challenges
+
+Designing for users with attention difficulties requires thoughtful interface design:
+
+- **Clear Focus Indicators**: Make it obvious where the user's focus is
+- **Logical Tab Order**: Ensure keyboard navigation follows a predictable path
+- **Minimal Distractions**: Avoid auto-playing media and excessive animations
+
+## The ADHD-Friendly Checklist
+
+Based on research and user feedback, here's our ADHD-friendly design checklist:
+
+### ✅ Visual Design
+- [ ] High contrast ratios (minimum 4.5:1)
+- [ ] Clear visual hierarchy with consistent typography
+- [ ] Adequate white space between interactive elements
+- [ ] Color coding with additional visual indicators (not color-only)
+
+### ✅ Interaction Design
+- [ ] Large touch targets (minimum 44px)
+- [ ] Clear hover and focus states
+- [ ] Immediate feedback for user actions
+- [ ] Obvious clickable elements
+
+### ✅ Content Structure
+- [ ] Scannable content with clear headings
+- [ ] Bullet points and short paragraphs
+- [ ] Important information highlighted visually
+- [ ] Progress indicators for multi-step processes
+
+## Real-World Implementation
+
+Let's look at how we implement these principles in our components:
+
+```typescript
+interface AccessibleButtonProps {
+  children: React.ReactNode;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+}
+
+function AccessibleButton({ 
+  children, 
+  onClick, 
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  ariaLabel,
+  ariaDescribedBy 
+}: AccessibleButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
+      className={`
+        btn btn-${variant} btn-${size}
+        focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+        transition-colors duration-200
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}
+      `}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+## Testing with Real Users
+
+The most important aspect of accessibility-first design is testing with actual users. We regularly conduct usability testing with neurodivergent individuals to validate our design decisions.
+
+### Key Insights from User Testing
+
+1. **Consistency is King**: Users with autism particularly value predictable interfaces
+2. **Clear Error States**: ADHD users need immediate, clear feedback when something goes wrong
+3. **Customization Options**: Dyslexic users benefit from font and spacing adjustments
+
+## Tools and Resources
+
+### Automated Testing Tools
+- **axe-core**: Comprehensive accessibility testing
+- **Lighthouse**: Performance and accessibility auditing
+- **Color Oracle**: Color blindness simulation
+
+### Manual Testing Approaches
+- **Keyboard-only navigation**: Test all functionality without a mouse
+- **Screen reader testing**: Use NVDA, JAWS, or VoiceOver
+- **Cognitive load assessment**: Time common tasks and identify friction points
+
+## The Business Case
+
+Accessibility isn't just the right thing to do—it's good business:
+
+- **Expanded Market Reach**: 15% of the global population has a disability
+- **Improved SEO**: Accessible markup often improves search rankings
+- **Better Usability**: Accessible design benefits all users
+- **Legal Compliance**: Reduces risk of accessibility lawsuits
+
+## Moving Forward
+
+Creating truly accessible experiences requires ongoing commitment:
+
+1. **Embed in Process**: Make accessibility checks part of your design and development workflow
+2. **Continuous Learning**: Stay updated on accessibility guidelines and best practices
+3. **User Feedback**: Regularly collect feedback from users with disabilities
+4. **Team Training**: Ensure all team members understand accessibility principles
+
+## Conclusion
+
+Accessibility-first design isn't about adding features for a specific group—it's about creating fundamentally better experiences for everyone. When we design for neurodivergent users, we create interfaces that are clearer, more predictable, and more enjoyable for all users.
+
+The extra effort invested in accessibility pays dividends in user satisfaction, broader reach, and often improved conversion rates. Most importantly, it ensures that our digital products truly serve *everyone* in our community.
+
+---
+
+*Have experiences or insights about accessibility in design? We'd love to hear from you—reach out to us on [GitHub](https://github.com/focus-lab-ltd) or [contact us directly](/contact).*

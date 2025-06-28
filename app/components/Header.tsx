@@ -115,6 +115,13 @@ export function Header() {
               Projects
             </Link>
             <Link
+              to="/blog"
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+              onClick={() => handleNavClick('blog', 'desktop')}
+            >
+              Blog
+            </Link>
+            <Link
               to="/contact"
               className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-3 py-2 text-sm font-medium transition-colors"
               onClick={() => handleNavClick('contact', 'desktop')}
@@ -179,6 +186,16 @@ export function Header() {
                 }}
               >
                 Projects
+              </Link>
+              <Link
+                to="/blog"
+                className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                onClick={() => {
+                  handleNavClick('blog', 'mobile');
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Blog
               </Link>
               <Link
                 to="/contact"

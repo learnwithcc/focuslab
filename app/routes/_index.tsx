@@ -1,11 +1,14 @@
-import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
+import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Button, Card, GitHubIcon, HighlightCards } from "~/components";
+import { useLoaderData } from "@remix-run/react";
+import { Button, Card, GitHubIcon, HighlightCards, FeaturedBlogSection } from "~/components";
 import { Section, Container } from "~/components/Layout";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
+import { getFeaturedBlogPosts } from "~/services/blog.server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
 import { Link } from "@remix-run/react";
+import type { BlogPost } from "~/types/blog";
 
 export const meta: MetaFunction = () => {
   return generateMeta({
@@ -16,6 +19,17 @@ export const meta: MetaFunction = () => {
     // includeWebsiteSchema: true,
   });
 };
+
+export async function loader({}: LoaderFunctionArgs) {
+  try {
+    const featuredPosts = await getFeaturedBlogPosts(4);
+    return json({ featuredPosts });
+  } catch (error) {
+    // If blog posts fail to load, continue without them
+    console.error('Failed to load featured blog posts:', error);
+    return json({ featuredPosts: [] });
+  }
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -104,6 +118,7 @@ const featuredProjects = [
 ];
 
 export default function Index() {
+  const { featuredPosts } = useLoaderData<{ featuredPosts: BlogPost[] }>();
   return (
     <div className="min-h-screen bg-white dark:bg-gray-975">
       <main className="w-full">
@@ -271,6 +286,11 @@ export default function Index() {
             </Container>
           </Section>
         </div>
+
+        {/* Featured Blog Posts Section */}
+        {featuredPosts.length > 0 && (
+          <FeaturedBlogSection posts={featuredPosts} />
+        )}
       </main>
     </div>
   );
