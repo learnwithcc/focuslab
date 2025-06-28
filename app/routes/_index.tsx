@@ -1,6 +1,7 @@
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Button, Card, GitHubIcon, HighlightCards } from "~/components";
+import { Section, Container } from "~/components/Layout";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
@@ -107,45 +108,47 @@ export default function Index() {
     <div className="min-h-screen bg-white dark:bg-gray-975">
       <main className="w-full">
         {/* Hero Section */}
-        <section className="relative bg-white dark:bg-header-bg">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-16 text-center lg:py-20">
-              <h1 className="leading-tight text-4xl font-bold text-primary-purple dark:text-header-primary-text sm:text-5xl lg:text-6xl">
-                Development Tools Built for{" "}
-                <span className="text-teal-primary dark:text-header-secondary-text">
-                  Your Beautiful Brain!
-                </span>
-              </h1>
-              <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-200 sm:text-xl lg:text-2xl">
-                Creating accessible, intuitive development solutions that work
-                with your brain, not against it. Empowering neurodivergent
-                developers to build amazing things.
-              </p>
-              <div className="relative isolate">
-                <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                  <Link to="/contact" prefetch="intent">
-                    <Button className="w-full px-8 py-4 text-lg font-semibold sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105">
-                      Get in Touch
-                    </Button>
-                  </Link>
-                  <Link to="/#featured-projects">
-                    <Button
-                      variant="secondary"
-                      className="w-full px-8 py-4 text-lg sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105"
-                    >
-                      View Our Work
-                    </Button>
-                  </Link>
+        <div className="w-full bg-white dark:bg-header-bg">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              <div className="text-center">
+                <h1 className="leading-tight text-6xl font-bold text-primary-purple dark:text-header-primary-text sm:text-7xl lg:text-8xl xl:text-9xl">
+                  Tech Tools
+                </h1>
+                <p className="mt-4 text-3xl font-semibold text-teal-primary dark:text-header-secondary-text sm:text-4xl lg:text-5xl xl:text-6xl">
+                  Built for Your Beautiful Brain!
+                </p>
+                <p className="mx-auto mt-6 max-w-4xl leading-relaxed text-lg text-gray-600 dark:text-gray-200 sm:text-xl lg:text-2xl">
+                  Creating accessible, intuitive development solutions that work
+                  with your brain, not against it. Empowering neurodivergent
+                  developers to build amazing things.
+                </p>
+                <div className="relative isolate">
+                  <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                    <Link to="/contact" prefetch="intent">
+                      <Button className="w-full px-8 py-4 text-lg font-semibold sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105">
+                        Get in Touch
+                      </Button>
+                    </Link>
+                    <Link to="/#featured-projects">
+                      <Button
+                        variant="secondary"
+                        className="w-full px-8 py-4 text-lg sm:w-auto motion-safe:transition-transform motion-reduce:transform-none duration-200 hover:scale-105"
+                      >
+                        View Our Work
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </Container>
+          </Section>
+        </div>
 
         {/* Mission Statement Section */}
-        <section className="bg-gradient-to-r from-teal-50 to-purple-50 dark:from-teal-900/20 dark:to-purple-900/20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-16 lg:py-20">
+        <div className="w-full bg-gradient-to-r from-teal-50 to-purple-50 dark:from-teal-900/20 dark:to-purple-900/20">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
               <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                 {/* Mission Statement Content */}
                 <div className="order-2 lg:order-1">
@@ -206,66 +209,68 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </Container>
+          </Section>
+        </div>
 
         {/* What We're Building Section */}
         <HighlightCards />
 
         {/* Featured Projects Section */}
-        <section className="bg-white dark:bg-projects-bg">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-16 text-center lg:py-20">
-              <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
-                Our Flagship Projects
-              </h2>
-              <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-200 sm:text-xl">
-                We're actively developing open-source tools to make the
-                developer experience more accessible and productive for
-                everyone.
-              </p>
-              <div className="mx-auto max-w-4xl">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                  {featuredProjects.map((project) => (
-                  <a
-                    key={project.title}
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block rounded-lg motion-safe:transition-transform motion-reduce:transform-none duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label={`${project.title} - view on GitHub`}
-                  >
-                    <Card variant="elevated" className="flex h-full flex-col text-left">
-                      <div className="flex-grow">
-                        <div className="mb-4 flex items-start justify-between">
-                          <h3 className="text-xl font-bold text-primary-purple dark:text-white">
-                            {project.title}
-                          </h3>
-                          <GitHubIcon className="h-6 w-6 text-gray-400" />
+        <div className="w-full bg-white dark:bg-projects-bg">
+          <Section spacing="lg">
+            <Container maxWidth="7xl">
+              <div className="text-center">
+                <h2 className="mb-4 text-3xl font-bold text-primary-purple dark:text-white sm:text-4xl">
+                  Our Flagship Projects
+                </h2>
+                <p className="mx-auto mb-12 max-w-3xl text-lg text-gray-600 dark:text-gray-200 sm:text-xl">
+                  We're actively developing open-source tools to make the
+                  developer experience more accessible and productive for
+                  everyone.
+                </p>
+                <div className="mx-auto max-w-4xl">
+                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    {featuredProjects.map((project) => (
+                    <a
+                      key={project.title}
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-lg motion-safe:transition-transform motion-reduce:transform-none duration-300 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      aria-label={`${project.title} - view on GitHub`}
+                    >
+                      <Card variant="elevated" className="flex h-full flex-col text-left">
+                        <div className="flex-grow">
+                          <div className="mb-4 flex items-start justify-between">
+                            <h3 className="text-xl font-bold text-primary-purple dark:text-white">
+                              {project.title}
+                            </h3>
+                            <GitHubIcon className="h-6 w-6 text-gray-400" />
+                          </div>
+                          <p className="text-gray-600 dark:text-gray-200">
+                            {project.description}
+                          </p>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-200">
-                          {project.description}
-                        </p>
-                      </div>
-                      <div className="mt-6 flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </Card>
-                  </a>
-                  ))}
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </Card>
+                    </a>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </Container>
+          </Section>
+        </div>
       </main>
     </div>
   );
