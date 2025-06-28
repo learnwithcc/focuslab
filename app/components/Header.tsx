@@ -1,10 +1,52 @@
 import { Link } from '@remix-run/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MobileThemeToggle } from './VanillaThemeToggle';
 import { trackEvent } from '~/utils/posthog';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
+
+  // Scroll detection for sticky header
+  useEffect(() => {
+    let ticking = false;
+    let lastStickyState = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const newStickyState = scrollTop > 20;
+          
+          // Track state transitions for analytics (avoid excessive events)
+          if (newStickyState !== lastStickyState) {
+            trackEvent('header_sticky_transition', {
+              state: newStickyState ? 'sticky' : 'normal',
+              scrollTop,
+              timestamp: Date.now(),
+            });
+            lastStickyState = newStickyState;
+          }
+          
+          setIsSticky(newStickyState);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Set initial state based on current scroll position
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const initialStickyState = scrollTop > 20;
+    setIsSticky(initialStickyState);
+    lastStickyState = initialStickyState;
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleNavClick = (destination: string, context: 'desktop' | 'mobile' | 'logo') => {
     trackEvent('navigation_click', {
@@ -23,8 +65,19 @@ export function Header() {
       timestamp: Date.now(),
     });
   };
+
+  // Dynamic className logic - always sticky, conditionally glassmorphic
+  const headerClasses = `
+    header-base
+    ${isSticky ? 'header-glassmorphic header-sticky-shadow' : 'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800'}
+  `.trim();
+
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <header 
+        className={headerClasses}
+        role="banner"
+        aria-label={isSticky ? "Main navigation (sticky)" : "Main navigation"}
+      >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -95,7 +148,7 @@ export function Header() {
         
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+          <div className={`md:hidden ${isSticky ? 'mobile-menu-sticky' : 'border-t border-gray-200 dark:border-gray-700'}`}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link
                 to="/"
