@@ -1,10 +1,13 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+import storybookViteConfig from './vite.config';
 
 const config: StorybookConfig = {
   stories: [
     '../app/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../stories/**/*.mdx',
-    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    // Temporarily disable template stories to focus on project components
+    // '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     '@storybook/addon-docs',
@@ -14,23 +17,8 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-  features: {
-    buildStoriesJson: true,
-  },
   viteFinal: async (config) => {
-    // Set environment variable to exclude Remix from main Vite config
-    process.env['STORYBOOK'] = 'true';
-    
-    return {
-      ...config,
-      resolve: {
-        ...config.resolve,
-        alias: {
-          ...config.resolve?.alias,
-          '~': new URL('../app', import.meta.url).pathname,
-        },
-      },
-    };
+    return mergeConfig(config, storybookViteConfig);
   },
   typescript: {
     reactDocgen: 'react-docgen-typescript',

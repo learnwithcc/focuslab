@@ -27,6 +27,12 @@ const preview: Preview = {
         base: 'light',
         colorPrimary: '#8b5cf6',
         colorSecondary: '#6366f1',
+        // Add missing theme properties to prevent color function errors
+        appBg: '#ffffff',
+        appContentBg: '#ffffff',
+        appPreviewBg: '#ffffff',
+        appBorderColor: '#e2e8f0',
+        appBorderRadius: 4,
       },
     },
     viewport: {

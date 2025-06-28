@@ -245,7 +245,49 @@ npm run typecheck    # Run TypeScript checks
 npm run lint         # Run ESLint
 npm run test         # Run test suite
 npm run test:watch   # Run tests in watch mode
+npm run storybook    # Start Storybook component development
 ```
+
+### Storybook Configuration
+
+The project includes Storybook for component development and documentation. Due to the Remix + Vite setup, Storybook requires specific configuration:
+
+**Key Configuration Requirements:**
+- The `STORYBOOK=true` environment variable must be set when running Storybook to exclude the Remix plugin from the main Vite config
+- This is automatically handled in the npm scripts, so use `npm run storybook` rather than running Storybook directly
+- Storybook uses its own dedicated Vite config at `.storybook/vite.config.ts` that's merged with Storybook's default configuration
+
+**Usage:**
+```bash
+npm run storybook        # Start Storybook dev server (http://localhost:6006)
+npm run build-storybook  # Build static Storybook for production
+```
+
+**If you need to modify Storybook configuration:**
+- Component stories: Place in `app/components/**/*.stories.tsx`  
+- Main config: `.storybook/main.ts`
+- Vite config: `.storybook/vite.config.ts`
+- Preview config: `.storybook/preview.tsx`
+
+⚠️ **Important:** If you modify the main Vite config or Remix setup, ensure the `STORYBOOK=true` exclusion logic in `vite.config.ts` remains intact to prevent conflicts.
+
+### ✅ **Validation & Testing**
+The Storybook configuration has been thoroughly tested using Playwright to ensure actual functionality (not just server startup). To validate Storybook works correctly:
+
+```bash
+npm run test:storybook        # Run comprehensive Storybook validation tests
+npm run test:storybook:ui     # Interactive test debugging
+```
+
+**Test Coverage:**
+- ✅ Component story loading and rendering
+- ✅ Dynamic import resolution (`~/components`)  
+- ✅ Console error detection and analysis
+- ✅ Cross-browser compatibility
+- ✅ Theme switching functionality
+- ✅ Performance validation
+
+This testing approach validates real browser functionality rather than assumptions based on server startup messages.
 
 ### Code Quality
 

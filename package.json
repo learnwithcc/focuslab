@@ -15,8 +15,11 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "test:storybook": "playwright test --config=playwright.storybook.config.ts",
+    "test:storybook:ui": "playwright test --config=playwright.storybook.config.ts --ui",
+    "test:storybook:headed": "playwright test --config=playwright.storybook.config.ts --headed",
+    "storybook": "STORYBOOK=true storybook dev -p 6006",
+    "build-storybook": "STORYBOOK=true storybook build",
     "migrate:export": "tsx scripts/migrate-to-directus.ts export",
     "migrate:validate": "tsx scripts/migrate-to-directus.ts validate",
     "migrate:help": "tsx scripts/migrate-to-directus.ts help"
