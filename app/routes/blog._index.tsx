@@ -9,7 +9,7 @@ import { generateBlogSchema, getBlogBreadcrumbItems, generateBreadcrumbSchema, g
 import type { BlogPost, BlogCategory, BlogTag } from "~/types/blog";
 
 export const meta: MetaFunction = ({ location }) => {
-  const baseUrl = 'https://focuslab.dev'; // Use production URL for consistent structured data
+  const baseUrl = 'https://focuslab.io'; // Use production URL for consistent structured data
   
   // Generate structured data
   const blogSchema = generateBlogSchema(baseUrl);
@@ -22,7 +22,7 @@ export const meta: MetaFunction = ({ location }) => {
     title: "Blog - FocusLab | Neurodivergent-Friendly Development Tools",
     description: "Insights, tutorials, and resources about building accessible, neurodivergent-friendly development tools and inclusive technology.",
     url: generatePageUrl('/blog'),
-    canonical: 'https://focuslab.dev/blog',
+    canonical: 'https://focuslab.io/blog',
   });
 
   // Combine basic meta with structured data

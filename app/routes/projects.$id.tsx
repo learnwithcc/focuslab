@@ -39,7 +39,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
     description: `${project.description} Built with ${project.technologies.map((t: { name: string }) => t.name).join(', ')}. A ${project.category} project focused on neurodivergent developer accessibility.`,
     keywords: projectKeywords,
     url: generatePageUrl(`/projects/${project.id}`),
-    canonical: `https://focuslab.dev/projects/${project.id}`,
+    canonical: `https://focuslab.io/projects/${project.id}`,
     image: project.imageUrl || DEFAULT_SEO.image,
     type: 'article',
     includeBreadcrumbSchema: true,

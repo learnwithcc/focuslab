@@ -166,7 +166,7 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
   } = options;
 
   const fullTitle = title === DEFAULT_SEO.title ? title : `${title} | ${siteName}`;
-  const fullImageUrl = image.startsWith('http') ? image : `https://focuslab.dev${image}`;
+  const fullImageUrl = image.startsWith('http') ? image : `https://focuslab.io${image}`;
   const keywordString = keywords.join(', ');
 
   const meta: MetaDescriptor[] = [
@@ -192,8 +192,8 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
     { name: 'twitter:title', content: fullTitle },
     { name: 'twitter:description', content: description },
     { name: 'twitter:image', content: fullImageUrl },
-    { name: 'twitter:creator', content: '@focuslab_dev' },
-    { name: 'twitter:site', content: '@focuslab_dev' },
+    { name: 'twitter:creator', content: '@focuslab_io' },
+    { name: 'twitter:site', content: '@focuslab_io' },
   ];
 
   // Add URL if provided
@@ -237,7 +237,7 @@ export function generateMeta(options: SEOMetaOptions = {}): MetaDescriptor[] {
   return meta;
 }
 
-export function generatePageUrl(path: string, baseUrl = 'https://focuslab.dev'): string {
+export function generatePageUrl(path: string, baseUrl = 'https://focuslab.io'): string {
   return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
 }
 

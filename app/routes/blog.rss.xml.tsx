@@ -67,9 +67,9 @@ function generateRSS({
       <link>${postUrl}</link>
       <guid isPermaLink="true">${postUrl}</guid>
       <pubDate>${pubDate}</pubDate>
-      <author>noreply@focuslab.dev (${post.frontmatter.author})</author>
+              <author>${post.frontmatter.author}</author>
       <category>${post.frontmatter.category}</category>
-      ${post.frontmatter.tags.map(tag => `<category>${tag}</category>`).join('\n      ')}
+              ${post.frontmatter.tags.map((tag: string) => `<category>${tag}</category>`).join('\n      ')}
       ${post.frontmatter.image ? `<enclosure url="${domain}${post.frontmatter.image}" type="image/jpeg" />` : ''}
       <content:encoded><![CDATA[
         ${post.frontmatter.image ? `<img src="${domain}${post.frontmatter.image}" alt="${post.frontmatter.imageAlt || post.frontmatter.title}" />` : ''}
@@ -91,8 +91,8 @@ function generateRSS({
     <language>${language}</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
-    <managingEditor>noreply@focuslab.dev (FocusLab Team)</managingEditor>
-    <webMaster>noreply@focuslab.dev (FocusLab Team)</webMaster>
+    <managingEditor>FocusLab Team</managingEditor>
+    <webMaster>FocusLab Team</webMaster>
     <copyright>Copyright ${new Date().getFullYear()} FocusLab. All rights reserved.</copyright>
     <category>Technology</category>
     <category>Web Development</category>

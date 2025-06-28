@@ -14,7 +14,7 @@ export interface SitemapOptions {
   currentDate?: Date;
 }
 
-const DEFAULT_BASE_URL = 'https://focuslab.dev';
+const DEFAULT_BASE_URL = 'https://focuslab.io';
 
 // Static route configuration
 const STATIC_ROUTES: Omit<SitemapUrl, 'loc' | 'lastmod'>[] = [

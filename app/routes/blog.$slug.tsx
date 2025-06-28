@@ -21,7 +21,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
   }
 
   const { post } = data;
-  const baseUrl = 'https://focuslab.dev'; // Use production URL for consistent structured data
+  const baseUrl = 'https://focuslab.io'; // Use production URL for consistent structured data
   
   // Generate structured data
   const articleSchema = generateArticleSchema(post, baseUrl);
@@ -34,8 +34,8 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
     title: `${post.frontmatter.title} - FocusLab Blog`,
     description: post.frontmatter.description,
     url: generatePageUrl(`/blog/${post.slug}`),
-    canonical: `https://focuslab.dev/blog/${post.slug}`,
-    image: post.frontmatter.image ? `https://focuslab.dev${post.frontmatter.image}` : undefined,
+    canonical: `https://focuslab.io/blog/${post.slug}`,
+    ...(post.frontmatter.image && { image: `https://focuslab.io${post.frontmatter.image}` }),
     type: 'article',
   });
 

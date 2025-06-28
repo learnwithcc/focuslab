@@ -21,7 +21,7 @@ export const meta: MetaFunction = () => {
       'development services'
     ],
     url: generatePageUrl('/contact'),
-    canonical: 'https://focuslab.dev/contact',
+    canonical: 'https://focuslab.io/contact',
     includeOrganizationSchema: true,
     includeBreadcrumbSchema: true,
     pathname: '/contact',

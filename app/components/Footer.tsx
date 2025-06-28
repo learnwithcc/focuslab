@@ -36,10 +36,10 @@ export function Footer() {
           
           <div className="flex justify-center items-center gap-8">
             <a
-              href="https://github.com/learnwithcc"
+              href="https://github.com/focuslab-io"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('github', 'https://github.com/learnwithcc')}
+              onClick={() => handleExternalLinkClick('github', 'https://github.com/focuslab-io')}
               className="flex items-center gap-2 text-gray-700 hover:text-primary-purple dark:text-gray-300 dark:hover:text-white transition-colors duration-200"
               aria-label="Visit our GitHub profile"
             >

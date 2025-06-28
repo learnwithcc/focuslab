@@ -142,9 +142,9 @@ export function generateOrganizationSchema(): OrganizationSchema {
     '@type': 'Organization',
     name: 'Focus Lab',
     description: 'Development consultancy specializing in tools and solutions for neurodivergent developers. Creating accessible, intuitive development environments that work with different thinking styles.',
-    url: 'https://focuslab.dev',
-    logo: 'https://focuslab.dev/logo-light.png',
-    image: 'https://focuslab.dev/logo-light.png',
+    url: 'https://focuslab.io',
+    logo: 'https://focuslab.io/logo-light.png',
+    image: 'https://focuslab.io/logo-light.png',
     sameAs: [
       'https://github.com/focus-lab-ltd',
       'https://twitter.com/focuslab_dev',
@@ -153,8 +153,7 @@ export function generateOrganizationSchema(): OrganizationSchema {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Service',
-      email: 'hello@focuslab.dev',
-      url: 'https://focuslab.dev/contact'
+      url: 'https://focuslab.io/contact'
     },
     address: {
       '@type': 'PostalAddress',
@@ -190,19 +189,19 @@ export function generateWebsiteSchema(): WebsiteSchema {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Focus Lab - Neurodivergent Developer Tools',
-    url: 'https://focuslab.dev',
+    url: 'https://focuslab.io',
     description: 'Development consultancy creating tools and solutions specifically designed for neurodivergent developers. Specializing in ADHD development tools, accessibility solutions, and inclusive software development.',
     publisher: {
       '@type': 'Organization',
       name: 'Focus Lab',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://focuslab.dev/logo-light.png'
+        url: 'https://focuslab.io/logo-light.png'
       }
     },
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://focuslab.dev/projects?search={search_term_string}',
+      target: 'https://focuslab.io/projects?search={search_term_string}',
       'query-input': 'required name=search_term_string'
     },
     about: [
@@ -249,7 +248,7 @@ export function generatePersonSchema(options: {
     worksFor: {
       '@type': 'Organization',
       name: 'Focus Lab',
-      url: 'https://focuslab.dev'
+              url: 'https://focuslab.io'
     },
     knowsAbout: [
       'Web Development',
@@ -273,7 +272,7 @@ export function generateFounderSchema(): PersonSchema {
     name: 'Focus Lab Founder',
     description: 'Neurodivergent developer and founder of Focus Lab, specializing in creating development tools that work with different thinking styles. Passionate about accessibility, inclusive design, and empowering neurodivergent developers.',
     jobTitle: 'Founder & Lead Developer',
-    url: 'https://focuslab.dev/about',
+    url: 'https://focuslab.io/about',
     expertise: [
       'Neurodivergent Development Environments',
       'ADHD-Friendly Tool Design',
@@ -305,7 +304,7 @@ export function generateBreadcrumbSchema(items: BreadcrumbItem[]): BreadcrumbLis
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      ...(item.isCurrentPage ? {} : { item: `https://focuslab.dev${item.path}` })
+      ...(item.isCurrentPage ? {} : { item: `https://focuslab.io${item.path}` })
     }))
   };
 }
@@ -379,7 +378,7 @@ export function generateStructuredDataMeta(schemas: Array<OrganizationSchema | W
 /**
  * Generate Article structured data for individual blog posts
  */
-export function generateArticleSchema(post: BlogPost, baseUrl: string = 'https://focuslab.dev'): ArticleSchema {
+export function generateArticleSchema(post: BlogPost, baseUrl: string = 'https://focuslab.io'): ArticleSchema {
   const postUrl = `${baseUrl}/blog/${post.slug}`;
   
   const images: string[] = [];
@@ -429,7 +428,7 @@ export function generateArticleSchema(post: BlogPost, baseUrl: string = 'https:/
 /**
  * Generate Blog structured data for blog listing pages
  */
-export function generateBlogSchema(baseUrl: string = 'https://focuslab.dev'): BlogSchema {
+export function generateBlogSchema(baseUrl: string = 'https://focuslab.io'): BlogSchema {
   return {
     '@context': 'https://schema.org',
     '@type': 'Blog',

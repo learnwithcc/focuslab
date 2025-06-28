@@ -13,7 +13,7 @@ import type { BlogPost } from "~/types/blog";
 export const meta: MetaFunction = () => {
   return generateMeta({
     url: generatePageUrl('/'),
-    canonical: 'https://focuslab.dev/',
+    canonical: 'https://focuslab.io/',
     // Temporarily disabled to fix React mounting issues
     // includeOrganizationSchema: true,
     // includeWebsiteSchema: true,

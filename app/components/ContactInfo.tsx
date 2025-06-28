@@ -1,5 +1,5 @@
 import React from 'react';
-import { GitHubIcon, LinkedInIcon, TwitterIcon, EmailIcon } from './icons';
+import { GitHubIcon, LinkedInIcon, TwitterIcon } from './icons';
 
 export interface ContactInfoProps {
   className?: string;
@@ -15,25 +15,19 @@ interface SocialLink {
 
 const socialLinks: SocialLink[] = [
   {
-    href: 'mailto:chris@focuslab.dev',
-    label: 'Send us an email',
-    icon: EmailIcon,
-    external: false,
-  },
-  {
-    href: 'https://github.com/focuslab-dev',
+    href: 'https://github.com/focuslab-io',
     label: 'Follow us on GitHub',
     icon: GitHubIcon,
     external: true,
   },
   {
-    href: 'https://linkedin.com/company/focuslab-dev',
+    href: 'https://linkedin.com/company/focuslab-io',
     label: 'Connect with us on LinkedIn',
     icon: LinkedInIcon,
     external: true,
   },
   {
-    href: 'https://twitter.com/focuslab_dev',
+    href: 'https://twitter.com/focuslab_io',
     label: 'Follow us on Twitter',
     icon: TwitterIcon,
     external: true,
@@ -58,26 +52,11 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({
       )}
 
       <div className="space-y-4">
-        {/* Direct Email Contact */}
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
-            <EmailIcon 
-              className="h-5 w-5 text-blue-600 dark:text-blue-400" 
-              size={20} 
-            />
-          </div>
-          <div>
-            <a
-              href="mailto:chris@focuslab.dev"
-              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
-              aria-label="Send email to chris@focuslab.dev"
-            >
-              chris@focuslab.dev
-            </a>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Direct email for inquiries and support
-            </p>
-          </div>
+        {/* Contact Form Message */}
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            <span className="font-medium">Have a question or project in mind?</span> Use our contact form below to get in touch. We respond to all inquiries within 24 hours.
+          </p>
         </div>
 
         {/* Social Media Links */}
@@ -86,7 +65,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({
             Follow Our Work
           </h4>
           <div className="flex space-x-4">
-            {socialLinks.slice(1).map((link) => {
+            {socialLinks.map((link) => {
               const IconComponent = link.icon;
               return (
                 <a
