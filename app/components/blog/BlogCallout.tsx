@@ -98,16 +98,21 @@ export function BlogCallout({
   };
 
   const styles = getStyles();
+  const headingId = title ? `callout-heading-${Math.random().toString(36).substr(2, 9)}` : undefined;
 
   return (
-    <div className={`border-l-4 p-4 my-6 rounded-r-lg ${styles.container} ${className}`}>
+    <div 
+      className={`border-l-4 p-4 my-6 rounded-r-lg ${styles.container} ${type} ${className}`}
+      role="region"
+      aria-labelledby={headingId}
+    >
       <div className="flex items-start">
         <div className={`flex-shrink-0 ${styles.icon}`}>
           {getIcon()}
         </div>
         <div className="ml-3 flex-1">
           {title && (
-            <h4 className={`text-sm font-semibold mb-2 ${styles.title}`}>
+            <h4 id={headingId} className={`text-sm font-semibold mb-2 ${styles.title}`}>
               {title}
             </h4>
           )}
@@ -122,21 +127,21 @@ export function BlogCallout({
 
 // Convenience components for different types
 export const InfoCallout = ({ children, title, className }: Omit<BlogCalloutProps, 'type'>) => (
-  <BlogCallout type="info" title={title} className={className}>{children}</BlogCallout>
+  <BlogCallout type="info" {...(title !== undefined && { title })} {...(className !== undefined && { className })}>{children}</BlogCallout>
 );
 
 export const WarningCallout = ({ children, title, className }: Omit<BlogCalloutProps, 'type'>) => (
-  <BlogCallout type="warning" title={title} className={className}>{children}</BlogCallout>
+  <BlogCallout type="warning" {...(title !== undefined && { title })} {...(className !== undefined && { className })}>{children}</BlogCallout>
 );
 
 export const SuccessCallout = ({ children, title, className }: Omit<BlogCalloutProps, 'type'>) => (
-  <BlogCallout type="success" title={title} className={className}>{children}</BlogCallout>
+  <BlogCallout type="success" {...(title !== undefined && { title })} {...(className !== undefined && { className })}>{children}</BlogCallout>
 );
 
 export const ErrorCallout = ({ children, title, className }: Omit<BlogCalloutProps, 'type'>) => (
-  <BlogCallout type="error" title={title} className={className}>{children}</BlogCallout>
+  <BlogCallout type="error" {...(title !== undefined && { title })} {...(className !== undefined && { className })}>{children}</BlogCallout>
 );
 
 export const TipCallout = ({ children, title, className }: Omit<BlogCalloutProps, 'type'>) => (
-  <BlogCallout type="tip" title={title} className={className}>{children}</BlogCallout>
+  <BlogCallout type="tip" {...(title !== undefined && { title })} {...(className !== undefined && { className })}>{children}</BlogCallout>
 );

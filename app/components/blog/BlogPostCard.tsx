@@ -15,6 +15,8 @@ export function BlogPostCard({
   showExcerpt = true,
   className = '' 
 }: BlogPostCardProps) {
+  const headingId = `blog-post-title-${post.slug}`;
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -25,10 +27,12 @@ export function BlogPostCard({
 
   if (variant === 'compact') {
     return (
-      <Link
-        to={`/blog/${post.slug}`}
-        className={`group block transition-colors ${className}`}
-      >
+      <article className={`compact ${className}`} aria-labelledby={headingId}>
+        <Link
+          to={`/blog/${post.slug}`}
+          className="group block transition-colors"
+          data-testid="blog-post-card"
+        >
         <div className="flex items-start gap-4">
           {post.frontmatter.image && (
             <div className="flex-shrink-0 w-16 h-16 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -41,7 +45,7 @@ export function BlogPostCard({
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors line-clamp-2">
+            <h3 id={headingId} className="font-medium text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors line-clamp-2">
               {post.frontmatter.title}
             </h3>
             <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -57,16 +61,19 @@ export function BlogPostCard({
             </div>
           </div>
         </div>
-      </Link>
+        </Link>
+      </article>
     );
   }
 
   if (variant === 'featured') {
     return (
-      <Link
-        to={`/blog/${post.slug}`}
-        className={`group block transition-transform duration-200 hover:-translate-y-1 ${className}`}
-      >
+      <article className={`featured ${className}`} aria-labelledby={headingId}>
+        <Link
+          to={`/blog/${post.slug}`}
+          className="group block transition-transform duration-200 hover:-translate-y-1"
+          data-testid="blog-post-card"
+        >
         <Card variant="elevated" className="h-full flex flex-col overflow-hidden">
           {post.frontmatter.image && (
             <div className="aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
@@ -96,7 +103,7 @@ export function BlogPostCard({
             </div>
 
             {/* Title */}
-            <h3 className="font-heading text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors mb-3">
+            <h3 id={headingId} className="font-heading text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors mb-3">
               {post.frontmatter.title}
             </h3>
 
@@ -131,16 +138,19 @@ export function BlogPostCard({
             </div>
           </div>
         </Card>
-      </Link>
+        </Link>
+      </article>
     );
   }
 
   // Default variant
   return (
-    <Link
-      to={`/blog/${post.slug}`}
-      className={`group block transition-transform duration-200 hover:-translate-y-1 ${className}`}
-    >
+    <article className={`default ${className}`} aria-labelledby={headingId}>
+      <Link
+        to={`/blog/${post.slug}`}
+        className="group block transition-transform duration-200 hover:-translate-y-1"
+        data-testid="blog-post-card"
+      >
       <Card variant="elevated" className="h-full flex flex-col">
         {post.frontmatter.image && (
           <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gray-100 dark:bg-gray-800">
@@ -165,7 +175,7 @@ export function BlogPostCard({
           </div>
 
           {/* Title */}
-          <h3 className="font-heading text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors">
+          <h3 id={headingId} className="font-heading text-xl font-semibold text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors">
             {post.frontmatter.title}
           </h3>
 
@@ -202,6 +212,7 @@ export function BlogPostCard({
           </div>
         </div>
       </Card>
-    </Link>
+      </Link>
+    </article>
   );
 }
