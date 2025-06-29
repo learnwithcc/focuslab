@@ -5,13 +5,16 @@ import storybookViteConfig from './vite.config';
 const config: StorybookConfig = {
   stories: [
     '../app/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../stories/**/*.mdx',
-    // Temporarily disable template stories to focus on project components
+    // Disable template stories and MDX to focus on project components
+    // '../stories/**/*.mdx',
     // '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     '@storybook/addon-docs',
     '@storybook/addon-onboarding',
+    '@storybook/addon-themes',
+    '@storybook/addon-a11y',
+    'storybook-addon-test-codegen',
   ],
   framework: {
     name: '@storybook/react-vite',

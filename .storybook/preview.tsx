@@ -1,38 +1,30 @@
 import type { Preview } from '@storybook/react-vite';
 import '../app/styles/tailwind.css';
+import { withThemeByClassName } from '@storybook/addon-themes';
+import { themes } from 'storybook/internal/theming';
 
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: 'light',
-      values: [
-        {
-          name: 'light',
-          value: '#ffffff',
-        },
-        {
-          name: 'dark',
-          value: '#0f172a',
-        },
-      ],
+      disable: true, // Use theme addon instead
+    },
+    docs: {
+      theme: {
+        ...themes.light,
+        base: 'light',
+        brandTitle: 'FocusLab Components',
+        brandUrl: 'https://focuslab.dev',
+        appBg: '#ffffff',
+        appContentBg: '#ffffff', 
+        appPreviewBg: '#ffffff',
+        colorPrimary: '#4a0e4e',
+        colorSecondary: '#00b2a9',
+      },
     },
     controls: {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
-      },
-    },
-    docs: {
-      theme: {
-        base: 'light',
-        colorPrimary: '#8b5cf6',
-        colorSecondary: '#6366f1',
-        // Add missing theme properties to prevent color function errors
-        appBg: '#ffffff',
-        appContentBg: '#ffffff',
-        appPreviewBg: '#ffffff',
-        appBorderColor: '#e2e8f0',
-        appBorderRadius: 4,
       },
     },
     viewport: {
@@ -67,48 +59,80 @@ const preview: Preview = {
         },
       },
     },
-  },
-  globalTypes: {
-    theme: {
-      description: 'Global theme for components',
-      defaultValue: 'light',
-      toolbar: {
-        title: 'Theme',
-        icon: 'circlehollow',
-        items: [
-          { value: 'light', icon: 'sun', title: 'Light theme' },
-          { value: 'dark', icon: 'moon', title: 'Dark theme' },
-        ],
-        showName: true,
-        dynamicTitle: true,
+    a11y: {
+      config: {},
+      options: {
+        checks: { 'color-contrast': { options: { noScroll: true } } },
+        restoreScroll: true,
       },
+    },
+    testCodegen: {
+      generatedTestsDestination: './tests/storybook-generated',
+      framework: 'playwright',
     },
   },
   decorators: [
+    // Enhanced theme decorator with automatic system preference detection
+    withThemeByClassName({
+      themes: {
+        light: 'light',
+        dark: 'dark',
+      },
+      defaultTheme: 'light',
+      parentSelector: 'html',
+    }),
+    // Auto-detect system preference decorator
     (Story, context) => {
-      const theme = context.globals.theme || 'light';
+      // Only run system preference detection on first load
+      if (typeof window !== 'undefined' && !window.__storybookThemeInitialized) {
+        window.__storybookThemeInitialized = true;
+        
+        // Check system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Set initial theme based on system preference
+        if (prefersDark && context.globals.theme !== 'dark') {
+          // Use timeout to ensure Storybook is ready
+          setTimeout(() => {
+            const themeSelector = document.querySelector('[title*="theme"]') as HTMLButtonElement;
+            if (themeSelector && !document.documentElement.classList.contains('dark')) {
+              themeSelector.click();
+            }
+          }, 100);
+        }
+        
+        // Listen for system preference changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          const themeSelector = document.querySelector('[title*="theme"]') as HTMLButtonElement;
+          if (themeSelector) {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            if (e.matches && !isDarkMode) {
+              themeSelector.click();
+            } else if (!e.matches && isDarkMode) {
+              themeSelector.click();
+            }
+          }
+        });
+      }
       
-      // Apply theme to the preview iframe
-      const htmlElement = document.documentElement;
-      htmlElement.classList.remove('light', 'dark');
-      htmlElement.classList.add(theme);
-      htmlElement.setAttribute('data-theme', theme);
-      htmlElement.style.colorScheme = theme;
-      
-      // Apply background color
-      document.body.style.backgroundColor = theme === 'dark' ? '#0f172a' : '#ffffff';
-      document.body.style.color = theme === 'dark' ? '#f8fafc' : '#1e293b';
+      return Story();
+    },
+    (Story) => {
+      // Mock context providers for Storybook
+      const MockNonceProvider = ({ children }: { children: React.ReactNode }) => children;
+      const MockCookieConsentProvider = ({ children }: { children: React.ReactNode }) => children;
+      const MockPHProvider = ({ children }: { children: React.ReactNode }) => children;
       
       return (
-        <div 
-          className={`min-h-screen bg-background text-foreground ${theme}`}
-          style={{
-            backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
-            color: theme === 'dark' ? '#f8fafc' : '#1e293b',
-          }}
-        >
-          <Story />
-        </div>
+        <MockNonceProvider>
+          <MockCookieConsentProvider>
+            <MockPHProvider>
+              <div className="min-h-screen bg-background text-foreground">
+                <Story />
+              </div>
+            </MockPHProvider>
+          </MockCookieConsentProvider>
+        </MockNonceProvider>
       );
     },
   ],
