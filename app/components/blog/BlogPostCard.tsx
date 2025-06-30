@@ -1,5 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Card } from "~/components";
+import { BlogImage } from "./BlogImage";
+import { ResponsiveImageContainer } from "./ResponsiveImageContainer";
 import type { BlogPost } from "~/types/blog";
 
 interface BlogPostCardProps {
@@ -34,16 +36,17 @@ export function BlogPostCard({
           data-testid="blog-post-card"
         >
         <div className="flex items-start gap-4">
-          {post.frontmatter.image && (
-            <div className="flex-shrink-0 w-16 h-16 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
-              <img
-                src={post.frontmatter.image}
+          <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+            <ResponsiveImageContainer variant="compact">
+              <BlogImage
+                src={post.frontmatter.image || ''}
                 alt={post.frontmatter.imageAlt || post.frontmatter.title}
-                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                className="w-full h-full group-hover:scale-105 transition-transform duration-200"
+                variant="compact"
                 loading="lazy"
               />
-            </div>
-          )}
+            </ResponsiveImageContainer>
+          </div>
           <div className="flex-1 min-w-0">
             <h3 id={headingId} className="font-medium text-gray-900 dark:text-white group-hover:text-primary-purple transition-colors line-clamp-2">
               {post.frontmatter.title}
@@ -75,16 +78,16 @@ export function BlogPostCard({
           data-testid="blog-post-card"
         >
         <Card variant="elevated" className="h-full flex flex-col overflow-hidden">
-          {post.frontmatter.image && (
-            <div className="aspect-[2/1] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-              <img
-                src={post.frontmatter.image}
-                alt={post.frontmatter.imageAlt || post.frontmatter.title}
-                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-                loading="lazy"
-              />
-            </div>
-          )}
+          <ResponsiveImageContainer variant="featured">
+            <BlogImage
+              src={post.frontmatter.image || ''}
+              alt={post.frontmatter.imageAlt || post.frontmatter.title}
+              className="h-full w-full group-hover:scale-105 transition-transform duration-200"
+              variant="featured"
+              priority={true} // Featured images are above-the-fold
+              loading="eager"
+            />
+          </ResponsiveImageContainer>
           
           <div className="flex-1 p-4">
             {/* Featured Badge */}
@@ -152,16 +155,15 @@ export function BlogPostCard({
         data-testid="blog-post-card"
       >
       <Card variant="elevated" className="h-full flex flex-col">
-        {post.frontmatter.image && (
-          <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gray-100 dark:bg-gray-800">
-            <img
-              src={post.frontmatter.image}
-              alt={post.frontmatter.imageAlt || post.frontmatter.title}
-              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-        )}
+        <ResponsiveImageContainer variant="default" className="rounded-t-lg">
+          <BlogImage
+            src={post.frontmatter.image || ''}
+            alt={post.frontmatter.imageAlt || post.frontmatter.title}
+            className="h-full w-full group-hover:scale-105 transition-transform duration-200"
+            variant="default"
+            loading="lazy"
+          />
+        </ResponsiveImageContainer>
         
         <div className="flex-1 p-6">
           {/* Category and Reading Time */}

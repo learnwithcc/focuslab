@@ -1,0 +1,21 @@
+{
+	"meta": {
+		"generatedAt": "2025-06-29T21:34:17.555Z",
+		"tasksAnalyzed": 1,
+		"totalTasks": 28,
+		"analysisCount": 1,
+		"thresholdScore": 5,
+		"projectName": "FocusLab.io",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 28,
+			"taskTitle": "Fix Blog Image Display Issues on Homepage",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Break down the task into subtasks covering: (1) auditing current image implementation, (2) investigating image display issues (broken links, aspect ratios, lazy loading, optimization), (3) fixing rendering and layout problems (responsive sizing, fallbacks, aspect ratio, overflow), (4) optimizing image functionality (alt text, lazy loading, accessibility, lightbox), (5) integration testing with design and blog systems, (6) performance and accessibility testing, and (7) cross-browser compatibility validation.",
+			"reasoning": "This task is complex due to its broad scope: it requires auditing existing code, diagnosing multiple types of image issues (rendering, layout, performance, accessibility), implementing fixes across several technical domains (frontend, CSS, accessibility, performance), and performing extensive testing (visual, functional, cross-browser, accessibility). The dependencies on other tasks and systems (MDX blog, design system, typography) further increase complexity. The task should be expanded into at least 7 subtasks to ensure each major area—analysis, fixes, and testing—is addressed thoroughly and can be tracked independently."
+		}
+	]
+}
