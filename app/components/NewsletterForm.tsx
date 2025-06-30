@@ -121,7 +121,15 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
         onSubmit={handleSubmit}
         className={`space-y-4 ${className}`}
         noValidate // Disable browser validation to use our custom validation
+        aria-label="Newsletter subscription form"
       >
+        <fieldset className="space-y-4">
+          <legend className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            Subscribe to Our Newsletter
+            <span className="block text-sm font-normal text-gray-600 dark:text-gray-400 mt-1">
+              Get updates on new projects and insights delivered to your inbox
+            </span>
+          </legend>
         {/* Honeypot field */}
         <input type="hidden" name="name" value={values.name} />
         
@@ -148,28 +156,42 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
           </div>
         )}
 
-        <Input
-          type="email"
-          name="email"
-          label="Email address"
-          value={values.email}
-          onChange={(e) => handleChange('email', e.target.value)}
-          onBlur={() => handleBlur('email')}
-          error={touched.email && errors.email ? errors.email : undefined}
-          required
-          aria-label="Subscribe to newsletter"
-          placeholder="Enter your email"
-          className="w-full"
-          disabled={isSubmitting}
-        />
+          <Input
+            type="email"
+            name="email"
+            label="Email address"
+            value={values.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            onBlur={() => handleBlur('email')}
+            error={touched.email && errors.email ? errors.email : undefined}
+            required
+            aria-label="Your email address for newsletter subscription (required)"
+            placeholder="Enter your email address"
+            className="w-full"
+            disabled={isSubmitting}
+            autoComplete="email"
+            helperText="We respect your privacy and will never share your email address"
+          />
 
-        <Button
-          type="submit"
-          disabled={isSubmitting || Object.keys(clientErrors).length > 0}
-          className="w-full"
-        >
-          {isSubmitting ? 'Subscribing...' : 'Subscribe'}
-        </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting || Object.keys(clientErrors).length > 0}
+            className="w-full"
+            aria-describedby="newsletter-submit-help"
+          >
+            {isSubmitting ? (
+              <>
+                <span className="sr-only">Subscribing to newsletter, please wait</span>
+                Subscribing...
+              </>
+            ) : (
+              'Subscribe to Newsletter'
+            )}
+          </Button>
+          <div id="newsletter-submit-help" className="sr-only">
+            Subscribe to receive our newsletter with project updates and insights. Your email will be kept private.
+          </div>
+        </fieldset>
       </Form>
     </div>
   );

@@ -88,19 +88,32 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
     <div className={`space-y-4 ${className}`}>
       {/* Status filter */}
       <div className="flex gap-2 mb-4">
-        <select
-          value={selectedStatus || 'all'}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          disabled={isLoading}
-        >
-          <option value="all">All Subscribers</option>
-          <option value="active">Active</option>
-          <option value="unsubscribed">Unsubscribed</option>
-          <option value="bounced">Bounced</option>
-          <option value="junk">Junk</option>
-          <option value="unconfirmed">Unconfirmed</option>
-        </select>
+        <div className="space-y-1">
+          <label 
+            htmlFor="subscriber-status-filter" 
+            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+          >
+            Filter by Status
+          </label>
+          <select
+            id="subscriber-status-filter"
+            value={selectedStatus || 'all'}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            disabled={isLoading}
+            aria-describedby="status-filter-help"
+          >
+            <option value="all">All Subscribers</option>
+            <option value="active">Active</option>
+            <option value="unsubscribed">Unsubscribed</option>
+            <option value="bounced">Bounced</option>
+            <option value="junk">Junk</option>
+            <option value="unconfirmed">Unconfirmed</option>
+          </select>
+          <div id="status-filter-help" className="sr-only">
+            Filter the subscriber list by subscription status. Changes will automatically reload the list.
+          </div>
+        </div>
       </div>
 
       {/* Error message */}
@@ -112,7 +125,15 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
 
       {/* Subscribers table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table 
+          className="min-w-full divide-y divide-gray-200" 
+          role="table"
+          aria-label="Newsletter subscribers list"
+          aria-describedby="table-description"
+        >
+          <caption id="table-description" className="sr-only">
+            List of newsletter subscribers with their email, status, subscription date, GDPR consent, and available actions.
+          </caption>
           <thead className="bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -169,6 +190,7 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
                         disabled={isLoading}
                         variant="secondary"
                         size="sm"
+                        aria-label={`Unsubscribe ${subscriber.email}`}
                       >
                         Unsubscribe
                       </Button>
@@ -178,9 +200,14 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
                       disabled={isLoading}
                       variant="danger"
                       size="sm"
+                      aria-label={`Delete ${subscriber.email}`}
+                      aria-describedby="delete-warning"
                     >
                       Delete
                     </Button>
+                    <div id="delete-warning" className="sr-only">
+                      This action will permanently delete the subscriber and cannot be undone.
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -191,25 +218,32 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
 
       {/* Pagination */}
       {meta && (
-        <div className="flex justify-between items-center mt-4">
+        <nav 
+          className="flex justify-between items-center mt-4" 
+          role="navigation" 
+          aria-label="Subscriber list pagination"
+        >
           <Button
             onClick={() => setCursor(meta.cursor_prev)}
             disabled={!meta.cursor_prev || isLoading}
             variant="secondary"
+            aria-label="Go to previous page of subscribers"
           >
             Previous
           </Button>
-          <span className="text-sm text-gray-600">
-            Total: {meta.total}
-          </span>
+          <div className="text-sm text-gray-600 dark:text-gray-400" role="status">
+            <span className="sr-only">Showing </span>
+            Total: {meta.total} subscribers
+          </div>
           <Button
             onClick={() => setCursor(meta.cursor_next)}
             disabled={!meta.cursor_next || isLoading}
             variant="secondary"
+            aria-label="Go to next page of subscribers"
           >
             Next
           </Button>
-        </div>
+        </nav>
       )}
 
       {/* Delete confirmation modal */}
@@ -226,23 +260,31 @@ export const SubscriberManagement: React.FC<SubscriberManagementProps> = ({
             Are you sure you want to permanently delete this subscriber? This action cannot be undone
             and is in accordance with GDPR&apos;s right to be forgotten.
           </p>
-          <p className="font-medium">{deleteEmail}</p>
-          <div className="flex justify-end gap-2">
+          <p className="font-medium" id="delete-email-display">{deleteEmail}</p>
+          <div className="flex justify-end gap-2" role="group" aria-label="Deletion confirmation actions">
             <Button
               onClick={() => {
                 setShowDeleteModal(false);
                 setDeleteEmail(undefined);
               }}
               variant="secondary"
+              aria-describedby="cancel-help"
             >
               Cancel
             </Button>
+            <div id="cancel-help" className="sr-only">
+              Cancel the deletion and return to the subscriber list without making changes.
+            </div>
             <Button
               onClick={handleDelete}
               variant="danger"
+              aria-describedby="delete-email-display confirm-delete-help"
             >
-              Delete
+              Delete Permanently
             </Button>
+            <div id="confirm-delete-help" className="sr-only">
+              Confirm permanent deletion of this subscriber. This action cannot be undone.
+            </div>
           </div>
         </div>
       </Modal>

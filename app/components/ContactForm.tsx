@@ -156,7 +156,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         )}
 
         <fieldset className="space-y-6">
-          <legend className="sr-only">Contact Information</legend>
+          <legend className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Contact Information
+            <span className="block text-sm font-normal text-gray-600 dark:text-gray-400 mt-1">
+              Required fields are marked with an asterisk (*)
+            </span>
+          </legend>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <Input
               type="text"
@@ -167,9 +172,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({
               onBlur={() => handleBlur('name')}
               error={touched.name && errors.name ? errors.name : undefined}
               required
-              aria-label="Your name"
-              placeholder="Enter your name"
+              aria-label="Your full name (required)"
+              placeholder="Enter your full name"
               disabled={isSubmitting}
+              autoComplete="name"
             />
 
             <Input
@@ -181,9 +187,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({
               onBlur={() => handleBlur('email')}
               error={touched.email && errors.email ? errors.email : undefined}
               required
-              aria-label="Your email address"
-              placeholder="Enter your email"
+              aria-label="Your email address (required)"
+              placeholder="Enter your email address"
               disabled={isSubmitting}
+              autoComplete="email"
             />
           </div>
 
@@ -198,9 +205,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({
               touched.subject && errors.subject ? errors.subject : undefined
             }
             required
-            aria-label="Message subject"
-            placeholder="Enter message subject"
+            aria-label="Message subject (required)"
+            placeholder="Enter the subject of your message"
             disabled={isSubmitting}
+            autoComplete="off"
           />
 
           {/* Honeypot field for spam protection - hidden from users */}
@@ -230,13 +238,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
           <div className="relative">
             <label
-              htmlFor="message"
+              htmlFor="contact-message"
               className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Message
+              <span className="text-red-500 ml-1" aria-label="required">*</span>
             </label>
             <textarea
-              id="message"
+              id="contact-message"
               name="message"
               rows={6}
               value={values.message}
@@ -247,35 +256,45 @@ export const ContactForm: React.FC<ContactFormProps> = ({
                   ? 'border-red-500 dark:border-red-500'
                   : 'border-gray-300'
               }`}
-              placeholder="Enter your message"
+              placeholder="Please describe your inquiry, project, or how we can help you..."
               required
               disabled={isSubmitting}
-              aria-label="Your message"
+              aria-label="Your message (required)"
               aria-describedby={
-                touched.message && errors.message
-                  ? 'message-error'
-                  : 'message-counter'
+                [touched.message && errors.message ? 'contact-message-error' : null,
+                 'contact-message-counter',
+                 'contact-message-help'].filter(Boolean).join(' ')
               }
               aria-invalid={
                 touched.message && errors.message ? 'true' : 'false'
               }
+              maxLength={1000}
             />
+            <div
+              id="contact-message-help"
+              className="sr-only"
+            >
+              Describe your inquiry or project. Maximum 1000 characters.
+            </div>
             {touched.message && errors.message && (
               <p
-                id="message-error"
+                id="contact-message-error"
                 className="mt-1 text-sm text-red-600"
                 role="alert"
-                aria-live="polite"
+                aria-live="assertive"
               >
+                <span className="sr-only">Error: </span>
                 {errors.message}
               </p>
             )}
             <div
-              id="message-counter"
+              id="contact-message-counter"
               className="mt-1 text-right text-sm text-gray-500"
               aria-live="polite"
+              role="status"
             >
-              {values.message.length}/1000 characters
+              <span className="sr-only">Character count: </span>
+              {values.message.length} of 1000 characters used
             </div>
           </div>
 
@@ -283,9 +302,20 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             type="submit"
             disabled={isSubmitting || Object.keys(clientErrors).length > 0}
             className="w-full"
+            aria-describedby="submit-help"
           >
-            {isSubmitting ? 'Sending...' : 'Send message'}
+            {isSubmitting ? (
+              <>
+                <span className="sr-only">Sending your message, please wait</span>
+                Sending...
+              </>
+            ) : (
+              'Send Message'
+            )}
           </Button>
+          <div id="submit-help" className="sr-only">
+            Submit the contact form to send your message. All required fields must be completed.
+          </div>
         </fieldset>
         </Form>
     </div>

@@ -7,28 +7,34 @@
 
 @layer base {
   :root {
-    /* Light theme colors */
+    /* Light theme colors - WCAG AA compliant */
     --primary-purple: #4a0e4e;
-    --teal-primary: #00b2a9;
-    --orange-accent: #ff6b35;
+    --teal-primary: #006b66;       /* Improved contrast from #00b2a9 */
+    --orange-accent: #c44f00;      /* Improved contrast from #ff6b35 */
     --header-bg: #ffffff;
     --header-primary-text: #4a0e4e;
-    --header-secondary-text: #00b2a9;
-    --header-primary-cta: #00b2a9;
+    --header-secondary-text: #006b66;  /* Updated to match improved teal */
+    --header-primary-cta: #004d4a;     /* Darker for button backgrounds */
     --projects-bg: #ffffff;
+    
+    /* Button-specific colors for proper contrast */
+    --button-teal-primary: #004d4a;    /* White text: 9.72:1 contrast */
   }
 
   .dark {
-    /* Dark theme colors - more dramatic and vibrant */
+    /* Dark theme colors - WCAG AA compliant */
     --primary-purple: #c77dff;
-    --teal-primary: #06ffa5;
+    --teal-primary: #00c896;       /* Improved contrast from #06ffa5 */
     --orange-accent: #ffbe0b;
     /* Specific mockup colors */
     --header-bg: #090D22;
     --header-primary-text: #8934EE;
-    --header-secondary-text: #01D8EE;
-    --header-primary-cta: #01D8EE;
+    --header-secondary-text: #00c896;  /* Updated to match improved teal */
+    --header-primary-cta: #007d5d;     /* Darker for button backgrounds */
     --projects-bg: #0B0F24;
+    
+    /* Button-specific colors for proper contrast */
+    --button-teal-primary: #007d5d;    /* White text: 5.13:1 contrast */
   }
 
   html {

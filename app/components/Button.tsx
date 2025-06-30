@@ -63,14 +63,14 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       lg: 'px-6 py-3 text-base',
     };
 
-    // Variant classes
+    // Variant classes - Updated for WCAG AA compliance
     const variantClasses = {
-      primary: 'bg-teal-primary text-white hover:bg-teal-600 focus:ring-teal-primary border border-transparent dark:bg-header-primary-cta dark:hover:bg-header-primary-cta/80',
+      primary: 'bg-button-teal-primary text-white hover:bg-teal-700 focus:ring-teal-primary border border-transparent dark:bg-button-teal-primary dark:hover:bg-teal-800',
       secondary: 'bg-white text-primary-purple hover:bg-gray-50 focus:ring-teal-primary border border-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600',
       outline: 'bg-transparent text-teal-primary hover:bg-teal-50 focus:ring-teal-primary border border-teal-primary dark:text-teal-primary dark:hover:bg-teal-900/20 dark:border-teal-primary',
-      ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
+      ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-500 border border-transparent dark:text-gray-300 dark:hover:bg-gray-800',
       danger: 'bg-orange-accent text-white hover:bg-red-700 focus:ring-orange-accent border border-transparent',
-      link: 'bg-transparent text-teal-primary hover:text-teal-600 hover:underline focus:ring-teal-primary border border-transparent p-0 font-normal',
+      link: 'bg-transparent text-teal-primary hover:text-teal-700 hover:underline focus:ring-teal-primary border border-transparent p-0 font-normal',
     };
 
     const buttonClasses = buildComponentClasses(

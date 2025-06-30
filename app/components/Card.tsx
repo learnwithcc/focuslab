@@ -99,7 +99,7 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
     const HeaderElement = `h${level}` as keyof JSX.IntrinsicElements;
     
     const headerClasses = buildComponentClasses(
-      'text-lg font-semibold text-gray-900 mb-2',
+      'text-lg font-semibold text-gray-900 dark:text-gray-50 mb-2',
       className
     );
 
@@ -134,7 +134,7 @@ export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
     ref
   ) => {
     const contentClasses = buildComponentClasses(
-      'text-gray-600',
+      'text-gray-600 dark:text-gray-300',
       className
     );
 

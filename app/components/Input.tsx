@@ -106,10 +106,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={internalId}
             className={`block text-sm font-medium ${
-              error ? 'text-red-700' : 'text-gray-700'
+              error ? 'text-red-700 dark:text-red-400' : 'text-gray-700 dark:text-gray-200'
             } ${required ? "after:content-['*'] after:ml-0.5 after:text-red-500" : ''}`}
           >
             {label}
+            {required && (
+              <span className="sr-only"> (required)</span>
+            )}
           </label>
         )}
         
@@ -137,11 +140,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <p
             id={`${internalId}-help`}
             className={`text-sm ${
-              error ? 'text-red-600' : 'text-gray-500'
+              error ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
             }`}
             role={error ? 'alert' : undefined}
-            aria-live={error ? 'polite' : undefined}
+            aria-live={error ? 'assertive' : undefined}
           >
+            {error && <span className="sr-only">Error: </span>}
             {error || helperText}
           </p>
         )}

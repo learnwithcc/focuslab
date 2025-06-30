@@ -30,6 +30,7 @@ export default {
         'header-secondary-text': 'var(--header-secondary-text)',
         'header-primary-cta': 'var(--header-primary-cta)',
         'projects-bg': 'var(--projects-bg)',
+        'button-teal-primary': 'var(--button-teal-primary)',
       },
       fontFamily: {
         sans: [
