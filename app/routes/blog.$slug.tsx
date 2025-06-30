@@ -1,11 +1,8 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
-import { MDXProvider } from '@mdx-js/react';
-import * as runtime from 'react/jsx-runtime';
-import { compile, run } from '@mdx-js/mdx';
 import { Container, Section } from "~/components/Layout";
-import { Card, Button, Breadcrumb, BlogCallout, InfoCallout, WarningCallout, SuccessCallout, ErrorCallout, TipCallout } from "~/components";
+import { Card, Button, Breadcrumb, BlogCallout, InfoCallout, WarningCallout, SuccessCallout, ErrorCallout, TipCallout, MDXRenderer } from "~/components";
 import { getBlogPostBySlug, getFeaturedBlogPosts } from "~/services/blog.server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
 import { generateArticleSchema, getBlogBreadcrumbItems, generateBreadcrumbSchema, generateStructuredDataMeta } from "~/utils/structured-data";
@@ -59,30 +56,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  // Compile MDX content
-  let compiledContent: React.ComponentType | null = null;
-  try {
-    const compiled = await compile(post.content, {
-      outputFormat: 'function-body',
-      development: process.env.NODE_ENV === 'development',
-    });
-    
-    const { default: MDXContent } = await run(compiled, {
-      ...runtime,
-      baseUrl: import.meta.url,
-    });
-    
-    compiledContent = MDXContent;
-  } catch (error) {
-    console.error('Error compiling MDX:', error);
-  }
+  // Note: MDX compilation is now handled client-side by MDXRenderer component
 
   // Get related posts for sidebar
   const relatedPosts = await getFeaturedBlogPosts(3);
 
   return json({
     post,
-    compiledContent: compiledContent ? true : false, // We can't serialize the component
     relatedPosts: relatedPosts.filter(p => p.slug !== post.slug).slice(0, 3),
   });
 }
@@ -151,7 +131,6 @@ const mdxComponents = {
 
 type LoaderData = {
   post: BlogPost;
-  compiledContent: boolean;
   relatedPosts: BlogPost[];
 };
 
@@ -166,28 +145,6 @@ export default function BlogPost() {
     });
   };
 
-  // Simple fallback content rendering without MDX compilation
-  const renderMarkdownContent = (content: string) => {
-    // Basic markdown parsing for fallback
-    const lines = content.split('\n');
-    const elements: React.ReactNode[] = [];
-    
-    lines.forEach((line, index) => {
-      if (line.startsWith('# ')) {
-        elements.push(<h1 key={index} className="font-heading text-3xl font-bold text-gray-900 dark:text-white mb-6">{line.slice(2)}</h1>);
-      } else if (line.startsWith('## ')) {
-        elements.push(<h2 key={index} className="font-heading text-2xl font-semibold text-gray-900 dark:text-white mb-4 mt-8">{line.slice(3)}</h2>);
-      } else if (line.startsWith('### ')) {
-        elements.push(<h3 key={index} className="font-heading text-xl font-semibold text-gray-900 dark:text-white mb-3 mt-6">{line.slice(4)}</h3>);
-      } else if (line.trim() === '') {
-        // Skip empty lines
-      } else {
-        elements.push(<p key={index} className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{line}</p>);
-      }
-    });
-    
-    return elements;
-  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-975">
@@ -280,11 +237,7 @@ export default function BlogPost() {
 
               {/* Article Content */}
               <div className="prose prose-lg dark:prose-invert max-w-none">
-                <MDXProvider components={mdxComponents}>
-                  <div className="space-y-4">
-                    {renderMarkdownContent(post.content)}
-                  </div>
-                </MDXProvider>
+                <MDXRenderer content={post.content} components={mdxComponents} />
               </div>
 
               {/* Article Footer */}
