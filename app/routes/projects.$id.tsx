@@ -7,6 +7,7 @@ import { Project } from '~/types/project';
 import { generateMeta, generatePageUrl, DEFAULT_SEO } from '~/utils/seo';
 import { getBreadcrumbItems } from '~/utils/structured-data';
 import { Breadcrumb } from '~/components';
+import { Section, Container } from "~/components/Layout";
 import { ArrowLeft, ExternalLink, Github, Star, GitFork, Clock, AlertCircle } from 'lucide-react';
 
 type LoaderData = {
@@ -117,178 +118,192 @@ export default function ProjectPage() {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <Breadcrumb items={breadcrumbItems} className="mb-6" />
-      
-      {/* Back Navigation */}
-      <Link 
-        to="/projects" 
-        className="mb-6 inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Projects
-      </Link>
-
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Main Content */}
-        <div className="lg:col-span-2">
-          {/* Header */}
-          <div className="mb-6">
-            <div className="mb-4 flex flex-wrap gap-2">
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[project.status]}`}>
-                {project.status === 'coming-soon' ? 'Coming Soon' : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-              </span>
-              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${categoryColors[project.category]}`}>
-                {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
-              </span>
-            </div>
-            
-            <h1 className="mb-4 text-4xl font-bold">{project.title}</h1>
-            <p className="text-xl text-muted-foreground">{project.description}</p>
-          </div>
-
-          {/* Project Image */}
-          {project.imageUrl && (
-            <div className="mb-8 aspect-video overflow-hidden rounded-lg bg-muted">
-              <img
-                src={project.imageUrl}
-                alt={`${project.title} preview`}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          )}
-
-          {/* Long Description or Details */}
-          <div className="mb-8">
-            <h2 className="mb-4 text-2xl font-semibold">About This Project</h2>
-            <div className="prose prose-gray dark:prose-invert max-w-none">
-              <p>
-                This project demonstrates our commitment to building high-quality solutions 
-                that address real-world problems. We focus on creating tools and applications 
-                that are both powerful and user-friendly.
-              </p>
-              <p>
-                Built with modern technologies and best practices, this project showcases 
-                our expertise in software development and our dedication to delivering 
-                exceptional user experiences.
-              </p>
-            </div>
-          </div>
-
-          {/* Technologies */}
-          <div className="mb-8">
-            <h2 className="mb-4 text-2xl font-semibold">Technologies Used</h2>
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
-                <span
-                  key={tech.name}
-                  className="inline-flex items-center rounded-md border border-border bg-muted px-3 py-2 text-sm font-medium"
-                >
-                  {tech.name}
-                </span>
-              ))}
-            </div>
-          </div>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <main className="w-full">
+        {/* Breadcrumb Section */}
+        <div className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+          <Section spacing="sm">
+            <Container maxWidth="7xl">
+              <Breadcrumb items={breadcrumbItems} />
+            </Container>
+          </Section>
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-8 space-y-6">
-            {/* GitHub Stats */}
-            {project.githubStats && success && (
-              <div className="rounded-lg border border-border bg-card p-6">
-                <h3 className="mb-4 text-lg font-semibold">Repository Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Star className="h-4 w-4 text-yellow-600" />
-                      <span className="text-sm">Stars</span>
-                    </div>
-                    <span className="font-medium">{project.githubStats.stars.toLocaleString()}</span>
+        {/* Main Content Section */}
+        <Section spacing="lg">
+          <Container maxWidth="7xl">
+            {/* Back Navigation */}
+            <Link 
+              to="/projects" 
+              className="mb-6 inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Projects
+            </Link>
+
+            <div className="grid gap-8 lg:grid-cols-3">
+              {/* Main Content */}
+              <div className="lg:col-span-2">
+                {/* Header */}
+                <div className="mb-6">
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[project.status]}`}>
+                      {project.status === 'coming-soon' ? 'Coming Soon' : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                    </span>
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${categoryColors[project.category]}`}>
+                      {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <GitFork className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm">Forks</span>
-                    </div>
-                    <span className="font-medium">{project.githubStats.forks.toLocaleString()}</span>
+                  
+                  <h1 className="mb-4 text-4xl font-bold">{project.title}</h1>
+                  <p className="text-xl text-muted-foreground">{project.description}</p>
+                </div>
+
+                {/* Project Image */}
+                {project.imageUrl && (
+                  <div className="mb-8 aspect-video overflow-hidden rounded-lg bg-muted">
+                    <img
+                      src={project.imageUrl}
+                      alt={`${project.title} preview`}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">Last Updated</span>
-                    </div>
-                    <span className="text-sm">{formatLastUpdated(project.githubStats.lastUpdated)}</span>
+                )}
+
+                {/* Long Description or Details */}
+                <div className="mb-8">
+                  <h2 className="mb-4 text-2xl font-semibold">About This Project</h2>
+                  <div className="prose prose-gray dark:prose-invert max-w-none">
+                    <p>
+                      This project demonstrates our commitment to building high-quality solutions 
+                      that address real-world problems. We focus on creating tools and applications 
+                      that are both powerful and user-friendly.
+                    </p>
+                    <p>
+                      Built with modern technologies and best practices, this project showcases 
+                      our expertise in software development and our dedication to delivering 
+                      exceptional user experiences.
+                    </p>
                   </div>
-                  {project.githubStats.language && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Primary Language</span>
-                      <span className="font-medium">{project.githubStats.language}</span>
-                    </div>
-                  )}
-                  {project.githubStats.openIssues !== undefined && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Open Issues</span>
-                      <span className="font-medium">{project.githubStats.openIssues}</span>
-                    </div>
-                  )}
+                </div>
+
+                {/* Technologies */}
+                <div className="mb-8">
+                  <h2 className="mb-4 text-2xl font-semibold">Technologies Used</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech.name}
+                        className="inline-flex items-center rounded-md border border-border bg-muted px-3 py-2 text-sm font-medium"
+                      >
+                        {tech.name}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            )}
 
-            {/* GitHub Error */}
-            {!success && error && (
-              <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-                <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
-                  <AlertCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">GitHub data unavailable</span>
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <div className="sticky top-8 space-y-6">
+                  {/* GitHub Stats */}
+                  {project.githubStats && success && (
+                    <div className="rounded-lg border border-border bg-card p-6">
+                      <h3 className="mb-4 text-lg font-semibold">Repository Stats</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Star className="h-4 w-4 text-yellow-600" />
+                            <span className="text-sm">Stars</span>
+                          </div>
+                          <span className="font-medium">{project.githubStats.stars.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <GitFork className="h-4 w-4 text-blue-600" />
+                            <span className="text-sm">Forks</span>
+                          </div>
+                          <span className="font-medium">{project.githubStats.forks.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-green-600" />
+                            <span className="text-sm">Last Updated</span>
+                          </div>
+                          <span className="text-sm">{formatLastUpdated(project.githubStats.lastUpdated)}</span>
+                        </div>
+                        {project.githubStats.language && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Primary Language</span>
+                            <span className="font-medium">{project.githubStats.language}</span>
+                          </div>
+                        )}
+                        {project.githubStats.openIssues !== undefined && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Open Issues</span>
+                            <span className="font-medium">{project.githubStats.openIssues}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* GitHub Error */}
+                  {!success && error && (
+                    <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+                      <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="text-sm font-medium">GitHub data unavailable</span>
+                      </div>
+                      <p className="mt-1 text-xs text-yellow-700 dark:text-yellow-300">{error}</p>
+                    </div>
+                  )}
+
+                  {/* Action Links */}
+                  <div className="rounded-lg border border-border bg-card p-6">
+                    <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
+                    <div className="space-y-2">
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                        >
+                          <Github className="h-4 w-4" />
+                          View on GitHub
+                        </a>
+                      )}
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Live Demo
+                        </a>
+                      )}
+                      {project.docsUrl && (
+                        <a
+                          href={project.docsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Documentation
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-1 text-xs text-yellow-700 dark:text-yellow-300">{error}</p>
-              </div>
-            )}
-
-            {/* Action Links */}
-            <div className="rounded-lg border border-border bg-card p-6">
-              <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
-              <div className="space-y-2">
-                {project.githubUrl && (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-                  >
-                    <Github className="h-4 w-4" />
-                    View on GitHub
-                  </a>
-                )}
-                {project.demoUrl && (
-                  <a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Live Demo
-                  </a>
-                )}
-                {project.docsUrl && (
-                  <a
-                    href={project.docsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Documentation
-                  </a>
-                )}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </main>
+          </Container>
+        </Section>
+      </main>
+    </div>
   );
 } 

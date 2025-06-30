@@ -11,7 +11,7 @@ import { json } from '@remix-run/node';
 import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
-import { CookieManager, Header, Footer } from "~/components";
+import { CookieManager, Header, Footer, SkipNavigation } from "~/components";
 import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
@@ -104,6 +104,7 @@ const App = () => {
       <Layout nonce={nonce} env={env} theme={theme}>
         <CookieConsentProvider>
           <PHProvider env={env}>
+            <SkipNavigation />
             <Header />
             <main id="main-content">
               <Outlet />

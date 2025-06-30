@@ -33,6 +33,7 @@ export { Breadcrumb } from './Breadcrumb';
 export { HighlightCards } from './HighlightCards';
 export { Footer } from './Footer';
 export { VanillaThemeToggle, MobileThemeToggle } from './VanillaThemeToggle';
+export { SkipNavigation } from './SkipNavigation';
 
 // Blog components
 export * from './blog';
