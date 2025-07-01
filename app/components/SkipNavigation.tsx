@@ -68,12 +68,20 @@ export function SkipNavigation({
   }, []);
 
   return (
-    <div className="skip-navigation-container">
+    <div className="absolute top-0 left-0 z-[9999]">
       <a
         ref={skipLinkRef}
         href={`#${targetId}`}
         onClick={handleSkipToMain}
-        className={`skip-link ${className}`}
+        className={`
+          sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 
+          focus:z-[10000] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white 
+          focus:font-medium focus:text-sm focus:rounded-md focus:m-2
+          focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+          dark:focus:bg-blue-500 dark:focus:ring-blue-400
+          transition-all duration-200 motion-reduce:transition-none
+          ${className}
+        `}
         aria-label="Skip to main content"
       >
         Skip to main content

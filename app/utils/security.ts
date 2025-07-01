@@ -8,7 +8,7 @@ export const securityHeaders = {
   // Content Security Policy - Restricts resource loading to prevent XSS
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://us-assets.i.posthog.com", // Allow inline scripts for Remix hydration and PostHog
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://us-assets.i.posthog.com https://va.vercel-scripts.com", // Allow inline scripts for Remix hydration, PostHog, and Vercel Analytics
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Allow inline styles and Google Fonts
     "img-src 'self' data: https:", // Allow images from self, data URLs, and HTTPS
     "font-src 'self' data: https://fonts.gstatic.com", // Allow fonts from self, data URLs, and Google Fonts
