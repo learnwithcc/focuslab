@@ -21,6 +21,7 @@ export const securityHeaders = {
     "form-action 'self'", // Restrict form submissions to same origin
     "base-uri 'self'", // Restrict base tag URLs
     "upgrade-insecure-requests", // Upgrade HTTP to HTTPS
+    "report-uri /api/csp-report", // Send violation reports to our endpoint
   ].join("; "),
 
   // HTTP Strict Transport Security - Force HTTPS
@@ -38,8 +39,8 @@ export const securityHeaders = {
   // Control referrer information
   "Referrer-Policy": "strict-origin-when-cross-origin",
 
-  // Disable interest cohort tracking (FLoC)
-  "Permissions-Policy": "interest-cohort=()",
+  // Disable browsing topics tracking (Topics API)
+  "Permissions-Policy": "browsing-topics=()",
 };
 
 /**

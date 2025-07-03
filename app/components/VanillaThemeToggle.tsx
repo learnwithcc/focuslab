@@ -40,23 +40,35 @@ const AutoIcon = () => (
 );
 
 export function VanillaThemeToggle() {
-  // Start with undefined to prevent hydration mismatch
+  // Start with values that match server-rendered state to prevent hydration mismatch
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
-  const [isAuto, setIsAuto] = useState(false);
+  const [theme, setTheme] = useState<ThemeValue>(THEMES.LIGHT); // Default to light like server
+  const [isAuto, setIsAuto] = useState(true); // Default to auto like server
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Only run on client after mount
   useEffect(() => {
-    setMounted(true);
+    // Use same logic as server to prevent hydration mismatch
+    let currentTheme: ThemeValue;
     
-    // Get the actual theme from DOM
-    const currentTheme = document.documentElement.classList.contains(THEMES.DARK) 
-      ? THEMES.DARK 
-      : THEMES.LIGHT;
+    // First check for saved theme (same as server-side getThemeFromRequest)
+    const savedTheme = getSavedTheme();
+    if (savedTheme) {
+      currentTheme = savedTheme;
+    } else {
+      // Use system preference if no override exists
+      currentTheme = getSystemTheme();
+    }
     
+    // Ensure DOM matches our detected theme
+    applyThemeToDocument(currentTheme);
+    
+    const hasOverride = hasThemeOverride();
+    
+    // Update state in one batch to prevent multiple renders
     setTheme(currentTheme);
-    setIsAuto(!hasThemeOverride());
+    setIsAuto(!hasOverride);
+    setMounted(true);
     
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -150,6 +162,7 @@ export function VanillaThemeToggle() {
 
   // Don't render interactive elements until mounted to prevent hydration issues
   if (!mounted) {
+    // Render static version that matches what will be shown after hydration
     return (
       <div 
         className="hidden md:block fixed right-0 z-50 transform -translate-y-1/2"
@@ -168,7 +181,8 @@ export function VanillaThemeToggle() {
             minWidth: '2.5rem'
           }}
         >
-          {/* Empty placeholder during SSR */}
+          {/* Show auto icon as default to match initial state */}
+          <AutoIcon />
         </div>
       </div>
     );
@@ -246,18 +260,30 @@ export function VanillaThemeToggle() {
 // Mobile-friendly theme toggle for header
 export function MobileThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<ThemeValue | undefined>(undefined);
-  const [isAuto, setIsAuto] = useState(false);
+  const [theme, setTheme] = useState<ThemeValue>(THEMES.LIGHT);
+  const [isAuto, setIsAuto] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
+    // Use same logic as server to prevent hydration mismatch
+    let currentTheme: ThemeValue;
     
-    const currentTheme = document.documentElement.classList.contains(THEMES.DARK) 
-      ? THEMES.DARK 
-      : THEMES.LIGHT;
+    // First check for saved theme (same as server-side getThemeFromRequest)
+    const savedTheme = getSavedTheme();
+    if (savedTheme) {
+      currentTheme = savedTheme;
+    } else {
+      // Use system preference if no override exists
+      currentTheme = getSystemTheme();
+    }
+    
+    // Ensure DOM matches our detected theme
+    applyThemeToDocument(currentTheme);
+    
+    const hasOverride = hasThemeOverride();
     
     setTheme(currentTheme);
-    setIsAuto(!hasThemeOverride());
+    setIsAuto(!hasOverride);
+    setMounted(true);
     
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -346,8 +372,9 @@ export function MobileThemeToggle() {
       <button 
         className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white p-2"
         disabled
+        aria-label="Theme toggle loading"
       >
-        <span className="w-6 h-6 block" />
+        <AutoIcon />
       </button>
     );
   }
@@ -378,48 +405,97 @@ export function MobileThemeToggle() {
 }
 
 // Script to prevent FOUC - runs before React hydration
-export const VanillaThemeScript = () => (
+export const VanillaThemeScript = ({ nonce }: { nonce?: string }) => (
   <script
+    nonce={nonce}
     dangerouslySetInnerHTML={{
       __html: `
         (function() {
-          function getCookie(name) {
-            const match = document.cookie.match(new RegExp(name + '=([^;]+)'));
-            return match ? match[1] : null;
-          }
-          
-          function getSystemTheme() {
-            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches 
-              ? 'dark' 
-              : 'light';
-          }
-          
-          // Check for manual override first (session-based)
-          const overrideTheme = getCookie('focuslab-theme-override');
-          
-          // Use override if present, otherwise follow system preference
-          const theme = overrideTheme || getSystemTheme();
-          
-          // Apply theme immediately to prevent flash
-          const root = document.documentElement;
-          root.classList.remove('light', 'dark');
-          root.classList.add(theme);
-          root.setAttribute('data-theme', theme);
-          root.style.colorScheme = theme;
-          
-          // Always listen for system theme changes
-          if (window.matchMedia) {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            mediaQuery.addEventListener('change', (e) => {
-              // Only update if no manual override exists
-              if (!getCookie('focuslab-theme-override')) {
-                const newTheme = e.matches ? 'dark' : 'light';
-                root.classList.remove('light', 'dark');
-                root.classList.add(newTheme);
-                root.setAttribute('data-theme', newTheme);
-                root.style.colorScheme = newTheme;
+          // Enhanced theme script with better error handling and debugging
+          try {
+            function getCookie(name) {
+              try {
+                const match = document.cookie.match(new RegExp(name + '=([^;]+)'));
+                return match ? match[1] : null;
+              } catch (e) {
+                console.warn('Theme: Cookie parsing error:', e);
+                return null;
               }
-            });
+            }
+            
+            function getSystemTheme() {
+              try {
+                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches 
+                  ? 'dark' 
+                  : 'light';
+              } catch (e) {
+                console.warn('Theme: System preference detection error:', e);
+                return 'light'; // Fallback to light theme
+              }
+            }
+            
+            function applyTheme(theme) {
+              try {
+                const root = document.documentElement;
+                root.classList.remove('light', 'dark');
+                root.classList.add(theme);
+                root.setAttribute('data-theme', theme);
+                root.style.colorScheme = theme;
+                console.log('Theme: Applied', theme);
+              } catch (e) {
+                console.error('Theme: Application error:', e);
+              }
+            }
+            
+            // Check for manual override first (session-based)
+            const overrideTheme = getCookie('focuslab-theme-override');
+            
+            // Use override if present, otherwise follow system preference
+            const theme = overrideTheme || getSystemTheme();
+            
+            // Apply theme immediately to prevent flash
+            applyTheme(theme);
+            
+            // Always listen for system theme changes with fallback support
+            try {
+              if (window.matchMedia) {
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                
+                const handleSystemChange = (e) => {
+                  try {
+                    // Only update if no manual override exists
+                    if (!getCookie('focuslab-theme-override')) {
+                      const newTheme = e.matches ? 'dark' : 'light';
+                      applyTheme(newTheme);
+                    }
+                  } catch (err) {
+                    console.warn('Theme: System change handler error:', err);
+                  }
+                };
+                
+                // Use modern addEventListener if available, fallback to addListener
+                if (mediaQuery.addEventListener) {
+                  mediaQuery.addEventListener('change', handleSystemChange);
+                } else if (mediaQuery.addListener) {
+                  mediaQuery.addListener(handleSystemChange);
+                }
+              }
+            } catch (e) {
+              console.warn('Theme: Media query listener setup error:', e);
+            }
+            
+            // Theme script execution completed
+            
+          } catch (e) {
+            console.error('Theme: Critical script error:', e);
+            // Fallback: apply light theme
+            try {
+              document.documentElement.classList.add('light');
+              document.documentElement.setAttribute('data-theme', 'light');
+              document.documentElement.style.colorScheme = 'light';
+            } catch (fallbackError) {
+              console.error('Theme: Fallback failed:', fallbackError);
+            }
           }
         })();
       `,

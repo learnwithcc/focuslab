@@ -1,7 +1,7 @@
 import { MetaFunction } from '@remix-run/node';
 import { useLocation } from '@remix-run/react';
 import { Section, Container } from "~/components/Layout";
-import { ContactForm, Breadcrumb } from '~/components';
+import { ContactForm, Breadcrumb, FormErrorBoundary } from '~/components';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
 import { getBreadcrumbItems } from '~/utils/structured-data';
 import { usePageTracking } from '~/hooks/usePageTracking';
@@ -44,7 +44,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <main className="w-full">
         {/* Hero Section */}
         <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Section spacing="lg">
@@ -67,12 +66,13 @@ export default function ContactPage() {
           <Section spacing="lg">
             <Container maxWidth="7xl">
               <div className="mx-auto max-w-2xl">
-                <ContactForm />
+                <FormErrorBoundary formName="contact">
+                  <ContactForm />
+                </FormErrorBoundary>
               </div>
             </Container>
           </Section>
         </div>
-      </main>
     </div>
   );
 } 

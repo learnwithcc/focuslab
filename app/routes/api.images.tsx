@@ -110,22 +110,42 @@ export async function loader({ request }: LoaderFunctionArgs) {
   } catch (error) {
     console.error('Image processing error:', error);
     
-    // Return a placeholder image on error
+    // For missing images, return a 200 status with placeholder to prevent hydration errors
+    const isNotFound = error instanceof Error && (
+      error.message.includes('not found') || 
+      error.message.includes('ENOENT') ||
+      error.message.includes('no such file')
+    );
+    // Use 200 for missing images to prevent browser errors that cause hydration issues
+    const statusCode = isNotFound ? 200 : 500;
+    
+    // Return a dynamic placeholder SVG based on requested dimensions
+    const url = new URL(request.url);
+    const width = url.searchParams.get('w');
+    const height = url.searchParams.get('h');
+    const errorWidth = width ? parseInt(width, 10) : 400;
+    const errorHeight = height ? parseInt(height, 10) : 300;
+    
     const placeholderSvg = `
-      <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="400" height="300" fill="#f3f4f6"/>
-        <path d="M200 120c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 60c-11.046 0-20-8.954-20-20s8.954-20 20-20 20 8.954 20 20-8.954 20-20 20z" fill="#9ca3af"/>
-        <path d="M180 140h40v20h-40z" fill="#9ca3af"/>
+      <svg width="${errorWidth}" height="${errorHeight}" viewBox="0 0 ${errorWidth} ${errorHeight}" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${errorWidth}" height="${errorHeight}" fill="#f3f4f6"/>
+        <circle cx="${errorWidth/2}" cy="${errorHeight/2 - 20}" r="30" fill="#e5e7eb"/>
+        <path d="M${errorWidth/2 - 15} ${errorHeight/2 - 30}h30v20h-30z" fill="#9ca3af"/>
+        <circle cx="${errorWidth/2 - 8}" cy="${errorHeight/2 - 22}" r="3" fill="#6b7280"/>
+        <circle cx="${errorWidth/2 + 8}" cy="${errorHeight/2 - 22}" r="3" fill="#6b7280"/>
+        <text x="${errorWidth/2}" y="${errorHeight/2 + 30}" text-anchor="middle" fill="#9ca3af" font-family="system-ui, sans-serif" font-size="14">
+          ${isNotFound ? 'Image not found' : 'Error loading image'}
+        </text>
       </svg>
     `;
 
     return new Response(placeholderSvg, {
-      status: 200,
+      status: statusCode,
       headers: {
         ...Object.fromEntries(getSecurityHeadersWithSEO('api').entries()),
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, max-age=300', // Shorter cache for errors
       },
     });
   }
-} 
+}

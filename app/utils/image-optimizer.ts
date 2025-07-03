@@ -153,10 +153,33 @@ export class ImageOptimizer {
     contentType: string;
     cacheKey: string;
   }> {
-    const originalPath = join(this.publicDir, src.startsWith('/') ? src.slice(1) : src);
+    // Extract the actual image path if this is an API URL
+    let imagePath = src;
+    if (src.includes('/api/images?')) {
+      // This is likely a recursive call, extract the src parameter
+      try {
+        const url = new URL(src, 'http://localhost');
+        const srcParam = url.searchParams.get('src');
+        if (srcParam) {
+          imagePath = decodeURIComponent(srcParam);
+        }
+      } catch (error) {
+        console.error('Failed to parse image URL:', src, error);
+        throw new Error(`Invalid image URL: ${src}`);
+      }
+    }
 
-    // Generate cache key
-    const cacheKey = this.generateCacheKey(src, config);
+    const originalPath = join(this.publicDir, imagePath.startsWith('/') ? imagePath.slice(1) : imagePath);
+
+    // Check if original file exists
+    try {
+      await fs.access(originalPath);
+    } catch {
+      throw new Error(`Image file not found: ${originalPath}`);
+    }
+
+    // Generate cache key using the actual image path
+    const cacheKey = this.generateCacheKey(imagePath, config);
     const format = config.format || 'jpeg';
     const cachePath = this.getCachePath(cacheKey, format);
 

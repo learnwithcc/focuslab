@@ -3,7 +3,10 @@ import {
   generateSrcSet, 
   generateSizesAttribute, 
   isOptimizableImage,
-  trackImagePerformance 
+  trackImagePerformance,
+  getFallbackPlaceholder,
+  generateSVGPlaceholder,
+  getImageUrlWithFallback 
 } from '~/utils/imageOptimization';
 
 interface BlogImageProps {
@@ -31,6 +34,7 @@ export function BlogImage({
   const [imageLoading, setImageLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loadStartTime] = useState(() => Date.now());
+  const [currentSrc, setCurrentSrc] = useState(() => getImageUrlWithFallback(src, variant));
 
   // Preload critical images for better performance
   useEffect(() => {
@@ -112,24 +116,46 @@ export function BlogImage({
     />
   );
 
-  // Image event handlers with performance monitoring
+  // Update src when prop changes
+  useEffect(() => {
+    const newSrc = getImageUrlWithFallback(src, variant);
+    if (newSrc !== currentSrc) {
+      setCurrentSrc(newSrc);
+      setImageError(false);
+      setImageLoading(true);
+      setImageLoaded(false);
+    }
+  }, [src, variant, currentSrc]);
+
+  // Image event handlers with performance monitoring and fallback
   const handleImageLoad = () => {
     const loadTime = Date.now() - loadStartTime;
     setImageLoading(false);
     setImageLoaded(true);
-    trackImagePerformance(src, variant, loadTime, true);
+    trackImagePerformance(currentSrc, variant, loadTime, true);
     onLoad?.();
   };
 
   const handleImageError = () => {
     const loadTime = Date.now() - loadStartTime;
+    
+    // If this is the original image, try fallback
+    if (currentSrc === src || currentSrc === getImageUrlWithFallback(src, variant, true)) {
+      const fallbackSrc = getFallbackPlaceholder(variant);
+      setCurrentSrc(fallbackSrc);
+      setImageError(false); // Reset error state for fallback attempt
+      trackImagePerformance(currentSrc, variant, loadTime, false);
+      return;
+    }
+    
+    // If fallback also failed, show placeholder
     setImageError(true);
     setImageLoading(false);
-    trackImagePerformance(src, variant, loadTime, false);
+    trackImagePerformance(currentSrc, variant, loadTime, false);
     onError?.();
   };
 
-  // Don't render image if no source provided
+  // Show SVG placeholder if no source provided or final error state
   if (!src || imageError) {
     return (
       <div className={className}>
@@ -142,7 +168,7 @@ export function BlogImage({
     <div className={className}>
       {imageLoading && <LoadingSkeleton />}
       <img
-        src={src}
+        src={currentSrc}
         alt={alt}
         className={`h-full w-full object-cover transition-all duration-300 ease-in-out ${
           imageLoading ? 'opacity-0 absolute' : 'opacity-100'
@@ -158,7 +184,7 @@ export function BlogImage({
         // Enhanced accessibility
         role="img"
         tabIndex={-1}
-        // Responsive image optimization
+        // Responsive image optimization - use original src for srcSet generation
         {...(isOptimizableImage(src) && {
           srcSet: generateSrcSet(src, variant),
           sizes: generateSizesAttribute(variant),

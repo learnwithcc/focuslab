@@ -3,8 +3,7 @@ import { Form, useActionData, useNavigation } from '@remix-run/react';
 import { z } from 'zod';
 import { Input } from './Input';
 import { Button } from './Button';
-// Temporarily removed ErrorBoundary to fix RefreshRuntime conflicts
-// import { ErrorBoundary } from './ErrorBoundary';
+// FormErrorBoundary is now used at the route level
 import { useFormValidation } from '~/hooks/useFormValidation';
 import { contactSchema } from '~/utils/validation';
 import { trackEvent } from '~/utils/posthog';

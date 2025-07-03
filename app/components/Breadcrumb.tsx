@@ -39,7 +39,7 @@ export function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
               
               {isLast ? (
                 <span 
-                  className="font-medium text-neutral-900 dark:text-neutral-100"
+                  className="font-medium text-neutral-900 dark:text-neutral-100 py-2"
                   aria-current="page"
                   itemProp="name"
                 >
@@ -48,7 +48,7 @@ export function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
               ) : (
                 <Link
                   to={item.path}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-1 min-h-[44px] flex items-center"
                   itemProp="item"
                 >
                   <span itemProp="name">{item.name}</span>

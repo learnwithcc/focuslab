@@ -16,8 +16,7 @@ export interface ResponsiveImageSizes {
 
 /**
  * Generate optimized image URLs with query parameters for size and quality
- * This is a placeholder implementation - in production, you'd integrate with
- * services like Cloudinary, ImageKit, or implement server-side image processing
+ * Uses our internal image optimization API for local images
  */
 export function generateOptimizedImageUrl(
   baseUrl: string,
@@ -31,13 +30,20 @@ export function generateOptimizedImageUrl(
     return baseUrl;
   }
 
+  // Skip optimization if this is already an API URL (prevents recursive calls)
+  if (baseUrl.includes('/api/images?')) {
+    return baseUrl;
+  }
+
+  // Use our image optimization API for local images
   const params = new URLSearchParams();
+  params.set('src', baseUrl);
   params.set('w', sizes.width.toString());
   params.set('h', sizes.height.toString());
   params.set('q', (sizes.quality || 80).toString());
   params.set('f', format);
 
-  return `${baseUrl}?${params.toString()}`;
+  return `/api/images?${params.toString()}`;
 }
 
 /**
@@ -153,6 +159,82 @@ export function preloadImage(src: string, variant: 'featured' | 'default' | 'com
 }
 
 /**
+ * Get fallback placeholder images for different variants
+ */
+export function getFallbackPlaceholder(variant: 'featured' | 'default' | 'compact'): string {
+  switch (variant) {
+    case 'featured':
+      return '/images/blog/placeholder-featured.jpg';
+    case 'compact':
+      return '/images/blog/placeholder-default.jpg';
+    case 'default':
+    default:
+      return '/images/blog/placeholder-default.jpg';
+  }
+}
+
+/**
+ * Generate SVG placeholder for immediate display
+ */
+export function generateSVGPlaceholder(
+  width: number, 
+  height: number, 
+  text: string = 'Loading...',
+  bgColor: string = '#f3f4f6',
+  textColor: string = '#9ca3af'
+): string {
+  const svg = `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${width}" height="${height}" fill="${bgColor}"/>
+      <text x="${width / 2}" y="${height / 2}" text-anchor="middle" dominant-baseline="middle" 
+            fill="${textColor}" font-family="system-ui, -apple-system, sans-serif" 
+            font-size="${Math.min(width, height) / 8}">
+        ${text}
+      </text>
+    </svg>
+  `;
+  
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
+/**
+ * Check if image URL is available (non-empty and not a placeholder)
+ */
+export function isValidImageUrl(url?: string | null): boolean {
+  if (!url) return false;
+  if (url.trim().length === 0) return false;
+  if (url.includes('placeholder')) return false;
+  return true;
+}
+
+/**
+ * Get optimized image URL or fallback
+ */
+export function getImageUrlWithFallback(
+  imageUrl: string | undefined | null,
+  variant: 'featured' | 'default' | 'compact',
+  useOptimization: boolean = true
+): string {
+  // If no image URL provided, use fallback immediately
+  if (!isValidImageUrl(imageUrl)) {
+    return getFallbackPlaceholder(variant);
+  }
+
+  // If optimization is disabled or this is an external URL, return as-is
+  if (!useOptimization || imageUrl!.startsWith('http')) {
+    return imageUrl!;
+  }
+
+  // For local images, optionally use optimization
+  if (isOptimizableImage(imageUrl!)) {
+    const sizes = getResponsiveImageSizes(variant);
+    return generateOptimizedImageUrl(imageUrl!, sizes.desktop, 'webp');
+  }
+
+  return imageUrl!;
+}
+
+/**
  * Image loading performance monitoring
  */
 export function trackImagePerformance(
@@ -164,5 +246,14 @@ export function trackImagePerformance(
   // In a real application, you'd send this to your analytics service
   if (typeof window !== 'undefined' && window.console) {
     console.debug(`Image Performance: ${imageUrl} (${variant}) - ${loadTime}ms - ${success ? 'Success' : 'Failed'}`);
+    
+    // Track failures for debugging
+    if (!success) {
+      console.warn(`Image load failed: ${imageUrl}`, {
+        variant,
+        loadTime,
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 }

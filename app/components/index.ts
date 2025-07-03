@@ -13,8 +13,15 @@ export * from './Navigation';
 export * from './Layout';
 export * from './Card';
 export * from './Modal';
-// Temporarily disabled ErrorBoundary to fix RefreshRuntime conflicts
-// export * from './ErrorBoundary';
+// Error Boundary Components
+export { ErrorBoundary } from './ErrorBoundary';
+export { RouteErrorBoundary } from './RouteErrorBoundary';
+export { FeatureErrorBoundary } from './FeatureErrorBoundary';
+export { FormErrorBoundary } from './FormErrorBoundary';
+export { AsyncErrorBoundary } from './AsyncErrorBoundary';
+export { AnalyticsErrorBoundary } from './AnalyticsErrorBoundary';
+export { withErrorBoundary, withErrorBoundaryPresets } from './withErrorBoundary';
+export { ErrorBoundaryDemo } from './ErrorBoundaryDemo';
 export * from './icons';
 export * from './NewsletterForm';
 export * from './ContactForm';
@@ -34,6 +41,7 @@ export { HighlightCards } from './HighlightCards';
 export { Footer } from './Footer';
 export { VanillaThemeToggle, MobileThemeToggle } from './VanillaThemeToggle';
 export { SkipNavigation } from './SkipNavigation';
+export { ResponsiveImage } from './ResponsiveImage';
 
 // Blog components
 export * from './blog';

@@ -4,7 +4,7 @@ import { useLoaderData, useNavigation, useSearchParams, useLocation } from '@rem
 import { Section, Container } from "~/components/Layout";
 import { ProjectCard } from '~/components/ProjectCard';
 import { ProjectFilters } from '~/components/ProjectFilters';
-import { Breadcrumb } from '~/components';
+import { Breadcrumb, AsyncErrorBoundary, FeatureErrorBoundary } from '~/components';
 import { projects, filterAndSortProjects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
@@ -196,7 +196,6 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <main className="w-full">
         {/* Hero Section */}
         <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Section spacing="lg">
@@ -232,7 +231,9 @@ export default function ProjectsPage() {
             <Container maxWidth="7xl">
               {/* Project Filters */}
               <div className="mb-8">
-                <ProjectFilters projects={data.allProjects} />
+                <FeatureErrorBoundary featureName="Project Filters">
+                  <ProjectFilters projects={data.allProjects} />
+                </FeatureErrorBoundary>
               </div>
 
               {/* Loading State */}
@@ -255,15 +256,17 @@ export default function ProjectsPage() {
 
               {/* Projects Grid */}
               {!isLoading && (
-                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                  {data.projects.map((project: Project) => (
-                    <ProjectCard 
-                      key={project.id} 
-                      project={project} 
-                      loading={false}
-                    />
-                  ))}
-                </div>
+                <AsyncErrorBoundary operationName="Project Grid" resetKeys={[data.projects.length]}>
+                  <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {data.projects.map((project: Project) => (
+                      <ProjectCard 
+                        key={project.id} 
+                        project={project} 
+                        loading={false}
+                      />
+                    ))}
+                  </div>
+                </AsyncErrorBoundary>
               )}
 
               {/* No Results */}
@@ -280,7 +283,6 @@ export default function ProjectsPage() {
             </Container>
           </Section>
         </div>
-      </main>
     </div>
   );
 } 

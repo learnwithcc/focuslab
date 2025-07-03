@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 
 export default function AccessibilityStatement() {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="mb-4 text-4xl font-bold">Accessibility Statement</h1>
       <div className="prose dark:prose-invert max-w-none">
         <p>
@@ -73,6 +73,6 @@ export default function AccessibilityStatement() {
           accessibility standards used.
         </p>
       </div>
-    </main>
+    </div>
   );
 } 

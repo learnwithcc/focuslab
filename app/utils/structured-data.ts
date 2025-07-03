@@ -452,7 +452,7 @@ export function generateBlogSchema(baseUrl: string = 'https://focuslab.io'): Blo
 }
 
 /**
- * Update breadcrumb items generation to handle blog routes
+ * Update breadcrumb items generation to handle blog routes with simplified navigation
  */
 export function getBlogBreadcrumbItems(pathname: string, postTitle?: string): BreadcrumbItem[] {
   const segments = pathname.split('/').filter(Boolean);
@@ -460,35 +460,65 @@ export function getBlogBreadcrumbItems(pathname: string, postTitle?: string): Br
     { name: 'Home', path: '/' }
   ];
 
-  let currentPath = '';
-  
-  for (let i = 0; i < segments.length; i++) {
-    currentPath += `/${segments[i]}`;
-    const isCurrentPage = i === segments.length - 1;
+  // For blog routes, we want simplified breadcrumbs: Home > Blog > Post Title
+  if (segments[0] === 'blog') {
+    // Always add Blog section
+    items.push({
+      name: 'Blog',
+      path: '/blog',
+      isCurrentPage: segments.length === 1
+    });
+
+    // If we're on a specific blog post, add the post title
+    if (segments.length === 2 && postTitle) {
+      items.push({
+        name: postTitle,
+        path: pathname,
+        isCurrentPage: true
+      });
+    }
+  } else {
+    // Fallback to original logic for non-blog routes
+    let currentPath = '';
     
-    // Generate human-readable names for routes
-    let name = segments[i];
-    switch (segments[i]) {
-      case 'blog':
-        name = isCurrentPage ? 'Blog' : 'Blog';
-        break;
-      default:
-        // For blog post slugs, use the post title if provided
-        if (i === segments.length - 1 && segments[0] === 'blog' && postTitle) {
-          name = postTitle;
-        } else {
-          // Capitalize and format slug
+    for (let i = 0; i < segments.length; i++) {
+      currentPath += `/${segments[i]}`;
+      const isCurrentPage = i === segments.length - 1;
+      
+      // Generate human-readable names for routes
+      let name = segments[i];
+      switch (segments[i]) {
+        case 'about':
+          name = 'About Us';
+          break;
+        case 'contact':
+          name = 'Contact';
+          break;
+        case 'projects':
+          name = 'Projects';
+          break;
+        case 'privacy-policy':
+          name = 'Privacy Policy';
+          break;
+        case 'terms-of-service':
+          name = 'Terms of Service';
+          break;
+        case 'accessibility-statement':
+          name = 'Accessibility Statement';
+          break;
+        default:
+          // For dynamic segments like project IDs, capitalize and format
           name = segments[i].split('-').map(word => 
             word.charAt(0).toUpperCase() + word.slice(1)
           ).join(' ');
-        }
+      }
+      
+      items.push({
+        name,
+        path: currentPath,
+        isCurrentPage
+      });
     }
-    
-    items.push({
-      name,
-      path: currentPath,
-      isCurrentPage
-    });
   }
 
   return items;

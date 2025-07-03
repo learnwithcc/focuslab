@@ -35,7 +35,6 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <main className="w-full">
         {/* Hero Section */}
         <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Section spacing="lg">
@@ -198,7 +197,6 @@ export default function About() {
             </Container>
           </Section>
         </div>
-      </main>
     </div>
   );
 } 

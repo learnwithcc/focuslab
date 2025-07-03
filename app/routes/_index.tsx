@@ -1,7 +1,7 @@
 import type { MetaFunction, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Button, Card, GitHubIcon, HighlightCards, FeaturedBlogSection } from "~/components";
+import { Button, Card, GitHubIcon, HighlightCards, FeaturedBlogSection, FeatureErrorBoundary, AsyncErrorBoundary } from "~/components";
 import { Section, Container } from "~/components/Layout";
 import { validateForm, newsletterSchema } from "~/utils/validation";
 import { checkRateLimit, subscribeToNewsletter } from "~/utils/server";
@@ -121,7 +121,6 @@ export default function Index() {
   const { featuredPosts } = useLoaderData<{ featuredPosts: BlogPost[] }>();
   return (
     <div className="min-h-screen bg-white dark:bg-gray-975">
-      <main className="w-full">
         {/* Hero Section */}
         <div className="w-full bg-white dark:bg-header-bg">
           <Section spacing="lg">
@@ -229,7 +228,9 @@ export default function Index() {
         </div>
 
         {/* What We're Building Section */}
-        <HighlightCards />
+        <FeatureErrorBoundary featureName="Highlight Cards">
+          <HighlightCards />
+        </FeatureErrorBoundary>
 
         {/* Featured Projects Section */}
         <div className="w-full bg-white dark:bg-projects-bg">
@@ -289,9 +290,10 @@ export default function Index() {
 
         {/* Featured Blog Posts Section */}
         {featuredPosts.length > 0 && (
-          <FeaturedBlogSection posts={featuredPosts} />
+          <AsyncErrorBoundary operationName="Featured Blog Posts" resetKeys={[featuredPosts.length]}>
+            <FeaturedBlogSection posts={featuredPosts} />
+          </AsyncErrorBoundary>
         )}
-      </main>
     </div>
   );
 }

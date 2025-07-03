@@ -119,7 +119,6 @@ export default function ProjectPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      <main className="w-full">
         {/* Breadcrumb Section */}
         <div className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
           <Section spacing="sm">
@@ -303,7 +302,6 @@ export default function ProjectPage() {
             </div>
           </Container>
         </Section>
-      </main>
     </div>
   );
 } 

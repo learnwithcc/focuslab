@@ -5,12 +5,12 @@ import { Button } from './Button';
 // Simple debug utility
 const debug = {
   log: (component: string, message: string, data?: any) => {
-    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.ENV?.NODE_ENV === 'development') {
       console.log(`[${component}] ${message}`, data);
     }
   },
   mark: (name: string) => {
-    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && window.performance) {
+    if (typeof window !== 'undefined' && window.ENV?.NODE_ENV === 'development' && window.performance) {
       window.performance.mark(name);
     }
   }

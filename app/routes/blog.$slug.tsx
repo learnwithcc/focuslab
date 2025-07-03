@@ -2,7 +2,7 @@ import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import { Container, Section } from "~/components/Layout";
-import { Card, Button, Breadcrumb, BlogCallout, InfoCallout, WarningCallout, SuccessCallout, ErrorCallout, TipCallout, MDXRenderer } from "~/components";
+import { Card, Button, Breadcrumb, BlogCallout, InfoCallout, WarningCallout, SuccessCallout, ErrorCallout, TipCallout, MDXRenderer, AsyncErrorBoundary } from "~/components";
 import { getBlogPostBySlug, getFeaturedBlogPosts } from "~/services/blog.server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
 import { generateArticleSchema, getBlogBreadcrumbItems, generateBreadcrumbSchema, generateStructuredDataMeta } from "~/utils/structured-data";
@@ -156,7 +156,6 @@ export default function BlogPost() {
               items={[
                 { name: 'Home', path: '/' },
                 { name: 'Blog', path: '/blog' },
-                { name: post.frontmatter.category, path: `/blog?category=${post.frontmatter.category}` },
                 { name: post.frontmatter.title, path: `/blog/${post.slug}`, isCurrentPage: true },
               ]}
             />
@@ -236,9 +235,11 @@ export default function BlogPost() {
               </header>
 
               {/* Article Content */}
-              <div className="prose prose-lg dark:prose-invert max-w-none">
-                <MDXRenderer content={post.content} components={mdxComponents} />
-              </div>
+              <AsyncErrorBoundary operationName="Blog Content" resetKeys={[post.slug]}>
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <MDXRenderer content={post.content} components={mdxComponents} />
+                </div>
+              </AsyncErrorBoundary>
 
               {/* Article Footer */}
               <footer className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-800">

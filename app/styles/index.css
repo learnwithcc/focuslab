@@ -1,2 +1,83 @@
 /* Global styles and custom CSS */
-/* Import this file in components that need custom styling beyond Tailwind */ 
+/* Import this file in components that need custom styling beyond Tailwind */
+
+/* Syntax Highlighting Styles for rehype-highlight */
+/* Using locally hosted highlight.js themes to avoid CSP violations */
+
+/* Light theme for syntax highlighting - GitHub style for consistency */
+@import url('highlight.js/styles/github.css');
+
+/* Dark theme for syntax highlighting - only apply in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hljs-bg: #0d1117;
+    --hljs-color: #e6edf3;
+  }
+}
+
+/* Dark mode syntax highlighting overrides */
+.dark .hljs {
+  background: var(--hljs-bg, #0d1117) !important;
+  color: var(--hljs-color, #e6edf3) !important;
+}
+
+.dark .hljs-comment,
+.dark .hljs-quote {
+  color: #7d8590 !important;
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-built_in,
+.dark .hljs-name,
+.dark .hljs-tag {
+  color: #ff7b72 !important;
+}
+
+.dark .hljs-string,
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-attribute,
+.dark .hljs-literal,
+.dark .hljs-template-tag,
+.dark .hljs-template-variable,
+.dark .hljs-type,
+.dark .hljs-addition {
+  color: #a5d6ff !important;
+}
+
+.dark .hljs-number,
+.dark .hljs-symbol,
+.dark .hljs-variable,
+.dark .hljs-params,
+.dark .hljs-meta,
+.dark .hljs-link {
+  color: #79c0ff !important;
+}
+
+.dark .hljs-title.class_,
+.dark .hljs-class .hljs-title {
+  color: #ffa657 !important;
+}
+
+.dark .hljs-deletion {
+  color: #ffa198 !important;
+}
+
+.dark .hljs-subst {
+  color: #e6edf3 !important;
+}
+
+/* Ensure syntax highlighting works well with the existing pre styling */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0; /* Remove default padding since we handle it in the pre element */
+  background: transparent !important; /* Use the pre element's background */
+}
+
+/* Ensure code blocks maintain proper styling */
+pre code.hljs {
+  background: transparent !important;
+  color: inherit;
+} 

@@ -13,7 +13,7 @@ import { json } from '@remix-run/node';
 import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
-import { CookieManager, Header, Footer, SkipNavigation, ErrorBoundary, AnalyticsErrorBoundary } from "~/components";
+import { CookieManager, Header, Footer, SkipNavigation, ErrorBoundary as CustomErrorBoundary, AnalyticsErrorBoundary } from "~/components";
 import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
@@ -98,17 +98,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const env = loaderData?.env || null;
   const theme = loaderData?.theme || '';
   
-  // Don't apply theme class on server if following system preference
-  const themeClass = theme || '';
+  // Don't apply theme class on server to prevent hydration mismatch
+  // The VanillaThemeScript will handle theme application
   
   return (
-    <html lang="en" className={themeClass} data-theme={themeClass || undefined}>
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* <VanillaThemeScript /> */}
+        <VanillaThemeScript nonce={nonce} />
         {env && (
           <script
             nonce={nonce}
@@ -148,8 +148,6 @@ function App() {
   const nonce = loaderData?.nonce || 'fallback-nonce';
   const env = loaderData?.env || null;
   const theme = loaderData?.theme || '';
-  
-  console.log('🚀 App: Loaded data', { env: env ? Object.keys(env) : 'none', theme, hasLoaderData: !!loaderData });
   useAxe();
 
   // Safe environment object for PHProvider
@@ -159,30 +157,30 @@ function App() {
   } : undefined;
 
   return (
-    <ErrorBoundary level="app" name="root-app">
+    <CustomErrorBoundary level="app" name="root-app">
       <NonceProvider nonce={nonce}>
         <CookieConsentProvider>
           <AnalyticsErrorBoundary service="posthog">
             <PHProvider env={safeEnv}>
             <SkipNavigation />
-            <ErrorBoundary level="component" name="header" enableRetry={true}>
+            <CustomErrorBoundary level="component" name="header" enableRetry={true}>
               <Header />
-            </ErrorBoundary>
+            </CustomErrorBoundary>
             <main id="main-content">
               <Outlet />
             </main>
-            <ErrorBoundary level="component" name="footer" enableRetry={true}>
+            <CustomErrorBoundary level="component" name="footer" enableRetry={true}>
               <Footer />
-            </ErrorBoundary>
+            </CustomErrorBoundary>
             <CookieManager />
-            <ErrorBoundary level="component" name="theme-toggle" enableRetry={false}>
+            <CustomErrorBoundary level="component" name="theme-toggle" enableRetry={false}>
               <VanillaThemeToggle />
-            </ErrorBoundary>
+            </CustomErrorBoundary>
             </PHProvider>
           </AnalyticsErrorBoundary>
         </CookieConsentProvider>
       </NonceProvider>
-    </ErrorBoundary>
+    </CustomErrorBoundary>
   );
 }
 
@@ -219,7 +217,7 @@ export function ErrorBoundary() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Error - FocusLab</title>
         <Links />
-        {/* <VanillaThemeScript /> */}
+        <VanillaThemeScript nonce={nonce} />
       </head>
       <body className="bg-background text-foreground">
         <div className="min-h-screen flex items-center justify-center px-4">

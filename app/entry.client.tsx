@@ -4,16 +4,8 @@
  * For more information, see https://remix.run/file-conventions/entry.client
  */
 
-// CRITICAL: Polyfill process object before any other imports to prevent hydration errors
-if (typeof window !== 'undefined' && typeof process === 'undefined') {
-  (window as any).process = {
-    env: {
-      NODE_ENV: 'production',
-      ...(window.ENV || {})
-    }
-  };
-  (globalThis as any).process = (window as any).process;
-}
+// Process environment variables are handled by Vite's define config
+// No client-side polyfill needed to prevent hydration mismatches
 
 import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
@@ -41,7 +33,7 @@ if (typeof window !== 'undefined' && window.ENV?.SENTRY_DSN && window.ENV.SENTRY
 console.log('🚀 entry.client.tsx: Starting hydration...');
 
 // In development, expose PostHog debugging functions to global scope
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+if (typeof window !== 'undefined' && window.ENV?.NODE_ENV === 'development') {
   // Import debug functions and expose them globally after hydration
   import('~/utils/posthog').then((posthogModule) => {
     (window as any).debugPostHog = {
@@ -63,15 +55,27 @@ window.addEventListener('error', (event) => {
   console.error('❌ Error stack:', event.error?.stack);
 });
 
+// Enhanced hydration mismatch debugging
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  if (args[0] && typeof args[0] === 'string' && args[0].includes('Hydration failed')) {
+    console.error('🔍 HYDRATION DEBUG: Full error details:', args);
+    console.error('🔍 HYDRATION DEBUG: DOM state at error:', {
+      bodyClasses: document.body?.className,
+      htmlClasses: document.documentElement?.className,
+      headChildren: Array.from(document.head?.children || []).map(child => child.outerHTML.substring(0, 100)),
+    });
+  }
+  return originalConsoleError.apply(console, args);
+};
+
 startTransition(() => {
   console.log('🚀 entry.client.tsx: Inside startTransition');
   
   try {
     hydrateRoot(
       document,
-      <StrictMode>
-        <RemixBrowser />
-      </StrictMode>
+      <RemixBrowser />
     );
     
     console.log('🚀 entry.client.tsx: hydrateRoot called successfully');

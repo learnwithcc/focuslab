@@ -28,9 +28,17 @@ export const useIsomorphicLayoutEffect = isBrowser ? useLayoutEffect : useEffect
  */
 let isHydrated = false;
 
-// Mark hydration complete immediately when this module loads on client
+// Mark hydration complete only after DOM is ready on client
 if (isBrowser) {
-  isHydrated = true;
+  // Use a more reliable check for hydration readiness
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      isHydrated = true;
+    });
+  } else {
+    // Document already loaded
+    isHydrated = true;
+  }
 }
 
 /**
@@ -531,13 +539,13 @@ export function whenHydratedOr<T>(fn: () => T, fallback: T): T {
 export const initTimer = {
   log: (component: string, event: string, data?: any) => {
     // No-op in production, could be enabled for debugging
-    if (process.env.NODE_ENV === 'development') {
+    if (isBrowser && (window as any).ENV?.NODE_ENV === 'development') {
       console.log(`[${component}] ${event}`, data);
     }
   },
   mark: (label: string) => {
     // No-op in production, could be enabled for debugging
-    if (process.env.NODE_ENV === 'development') {
+    if (isBrowser && (window as any).ENV?.NODE_ENV === 'development') {
       console.log(`[MARK] ${label}`);
     }
   },

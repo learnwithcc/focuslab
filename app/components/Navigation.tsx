@@ -228,7 +228,7 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
     );
 
     return (
-      <header role="banner">
+      <div>
         <nav
           ref={combinedRef}
           className={navClasses}
@@ -290,7 +290,7 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
             </div>
           )}
         </nav>
-      </header>
+      </div>
     );
   }
 );
