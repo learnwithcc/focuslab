@@ -17,7 +17,7 @@
 
 import { test, expect, Page, BrowserContext } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 
 // Browser-specific configuration for testing different scenarios
 const BROWSER_CONFIGS = {

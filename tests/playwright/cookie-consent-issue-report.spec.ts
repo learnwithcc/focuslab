@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 
 test.describe('Cookie Consent Banner Loading Issue - Final Report', () => {
   test('Comprehensive evidence collection of the banner loading issue', async ({ page }) => {

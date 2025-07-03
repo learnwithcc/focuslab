@@ -16,7 +16,7 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 const DEBUG_URL = `${BASE_URL}/debug/posthog`;
 
 // Helper to clear all consent data

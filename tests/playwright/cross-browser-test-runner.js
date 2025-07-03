@@ -14,7 +14,7 @@ const path = require('path');
 // Test configuration
 const BROWSERS = ['chromium', 'firefox', 'webkit', 'edge'];
 const MOBILE_BROWSERS = ['mobile-chrome', 'mobile-safari'];
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 const SCREENSHOTS_DIR = path.join(__dirname, 'screenshots');
 const REPORTS_DIR = path.join(__dirname, 'reports');
 

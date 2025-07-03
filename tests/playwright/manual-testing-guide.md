@@ -195,7 +195,7 @@ This guide covers manual testing scenarios that complement the automated cross-b
 
 ### Pre-Testing Setup
 - [ ] Latest browser versions installed
-- [ ] Development server running on localhost:3000
+- [ ] Development server running on localhost:3600
 - [ ] Browser dev tools available
 - [ ] Screen readers installed (if testing accessibility)
 - [ ] Network throttling tools available

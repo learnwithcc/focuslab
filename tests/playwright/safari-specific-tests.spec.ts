@@ -11,7 +11,7 @@
 
 import { test, expect, webkit } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 
 // Safari-specific test configuration
 test.use({ 

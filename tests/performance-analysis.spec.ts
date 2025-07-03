@@ -385,7 +385,7 @@ test.describe('Cookie Consent Performance Analysis', () => {
 
       // Navigate to homepage with performance monitoring
       const navigationStart = performance.now();
-      await page.goto('http://localhost:3000', {
+      await page.goto('http://localhost:3600', {
         waitUntil: 'domcontentloaded'
       });
 
@@ -486,7 +486,7 @@ test.describe('Cookie Consent Performance Analysis', () => {
 
   test('Generate Performance Report', async ({ page }) => {
     // This test runs last and generates a comprehensive report
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3600');
     
     const performanceReport = await page.evaluate(() => {
       const results = (window as any).performanceResults || [];
@@ -631,7 +631,7 @@ test.describe('Performance Under Different Network Conditions', () => {
       const analyzer = new PerformanceAnalyzer(page);
       const navigationStart = performance.now();
 
-      await page.goto('http://localhost:3000', {
+      await page.goto('http://localhost:3600', {
         waitUntil: 'domcontentloaded'
       });
 
@@ -683,7 +683,7 @@ test.describe('Mobile Performance Analysis', () => {
     const analyzer = new PerformanceAnalyzer(page);
     const navigationStart = performance.now();
 
-    await page.goto('http://localhost:5173', {
+    await page.goto('http://localhost:3600', {
       waitUntil: 'domcontentloaded'
     });
 

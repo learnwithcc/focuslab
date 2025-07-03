@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 
 test.describe('Cookie Banner Hydration Timing Issue', () => {
   test('Demonstrates the banner flash/loading issue with extensive timing analysis', async ({ page }) => {

@@ -19,7 +19,7 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3600';
 
 test.describe('🚨 DELIVERABLE: Cookie Consent Banner Loading Issue', () => {
   
