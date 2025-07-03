@@ -54,10 +54,25 @@ export default defineConfig(({ mode }) => {
       include: ['./app/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     },
     server: {
-      port: 3000,
+      port: 3600,
     },
     ssr: {
       noExternal: ['remix-themes', 'posthog-js', 'posthog-js/react'],
+      external: ['sharp', '@remix-run/node/dist/stream', 'node:stream', 'node:crypto', 'node:fs', 'node:path'],
+    },
+    optimizeDeps: {
+      exclude: ['sharp', '@remix-run/node'],
+    },
+    build: {
+      rollupOptions: {
+        external: (id) => {
+          // Externalize server-only modules from client bundles
+          return id.includes('node:') || 
+                 id.includes('@remix-run/node') || 
+                 id === 'sharp' ||
+                 id.includes('entry.server');
+        },
+      },
     },
   };
 });

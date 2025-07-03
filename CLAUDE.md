@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Essential Commands
 
 ### Development Commands
-- `npm run dev` - Start development server (runs on port 5173, fallback to 3001)
+- `npm run dev` - Start development server (runs on port 3600, fallback to 3601)
 - `npm run build` - Build for production using Remix + Vite
 - `npm run start` - Start production server
 - `npm run typecheck` - Run TypeScript strict mode checks

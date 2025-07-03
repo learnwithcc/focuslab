@@ -1,0 +1,55 @@
+
+## PROJECT RULES & CODING STANDARDS
+
+### GENERAL GUIDELINES
+
+### CODE STYLE
+
+### NAMING CONVENTIONS
+
+### ERROR HANDLING
+
+### SECURITY
+
+## TECH STACK
+
+### LANGUAGES
+
+### FRAMEWORKS/LIBRARIES
+
+### DATABASES
+
+### DEPLOYMENT
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+### README
+
+### ARCHITECTURE
+
+### API DOCUMENTATION
+
+## WORKFLOW & RELEASE RULES
+
+### BRANCHING
+
+### COMMIT MESSAGES
+
+### PULL REQUESTS
+
+### CODE REVIEWS
+
+### TESTING
+
+### DEPLOYMENT
+
+## DEBUGGING
+
+## VITE CONFIGURATION
+
+- To avoid port conflicts during parallel development, Vite should be configured to start on port 3600.
+- When running the development server with `npm run dev` or `pnpm dev`, it will start on port 3600.
+- The application will now be available at `http://localhost:3600` instead of the default port.
+- To temporarily use a different port, override with the `--port` flag: `pnpm dev --port <new_port>`
+- Update any documentation or README files that reference the port number.
+- If you have any scripts or tools that reference `localhost:3000`, update those to use `localhost:3600`.

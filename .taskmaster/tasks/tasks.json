@@ -1581,11 +1581,152 @@
             "testStrategy": ""
           }
         ]
+      },
+      {
+        "id": 29,
+        "title": "FocusLab Website Technical Repair and Optimization",
+        "description": "Resolve critical technical issues including React hydration errors, image loading failures, CSP violations, and UX improvements to ensure proper site functionality and performance.",
+        "details": "1. **React Hydration Error Resolution:**\n   - Investigate and fix any remaining hydration mismatches between server-side and client-side rendering\n   - Audit all components for hydration-safe patterns, ensuring useState, useEffect, and browser-specific APIs are properly handled\n   - Implement proper error boundaries and fallback mechanisms for hydration failures\n   - Review and fix any dynamic content that might cause hydration mismatches\n\n2. **Image Loading Failure Fixes:**\n   - Audit all image sources and paths for broken links or incorrect references\n   - Implement proper error handling for failed image loads with fallback images\n   - Optimize image loading performance using proper lazy loading and preloading strategies\n   - Fix any issues with responsive image sizing and aspect ratios\n   - Ensure proper integration with the existing image optimization system\n\n3. **Content Security Policy (CSP) Violations:**\n   - Audit current CSP headers and identify all violation sources\n   - Fix inline styles and scripts that violate CSP directives\n   - Implement proper nonce or hash-based CSP for necessary inline content\n   - Update third-party integrations (Google Fonts, analytics) to comply with CSP\n   - Configure proper CSP directives for development and production environments\n\n4. **UX Improvements and Bug Fixes:**\n   - Fix any layout shifts or visual glitches affecting user experience\n   - Resolve accessibility issues identified through automated and manual testing\n   - Optimize page load performance and Core Web Vitals metrics\n   - Fix any broken navigation or interactive elements\n   - Ensure proper mobile responsiveness across all viewport sizes\n\n5. **Performance Optimization:**\n   - Implement code splitting and lazy loading for improved initial page load\n   - Optimize bundle sizes and eliminate unused dependencies\n   - Fix any memory leaks or performance bottlenecks\n   - Implement proper caching strategies for static assets and API responses",
+        "testStrategy": "1. **Hydration Testing:**\n   - Use React DevTools Profiler to identify hydration issues\n   - Test SSR/CSR transitions by disabling and re-enabling JavaScript\n   - Verify no hydration warnings appear in browser console\n   - Test all interactive components function correctly after hydration\n\n2. **Image Loading Verification:**\n   - Use browser DevTools Network tab to verify all images load successfully\n   - Test image fallbacks by temporarily breaking image URLs\n   - Validate responsive image behavior across different viewport sizes\n   - Measure image loading performance using Lighthouse and WebPageTest\n\n3. **CSP Compliance Testing:**\n   - Use browser DevTools Security tab to identify CSP violations\n   - Test with strict CSP headers in development environment\n   - Validate all third-party integrations work without CSP violations\n   - Use online CSP validators to verify policy configuration\n\n4. **Cross-browser and Device Testing:**\n   - Test functionality across Chrome, Firefox, Safari, and Edge browsers\n   - Verify mobile responsiveness on various device sizes\n   - Use automated testing tools like Playwright for regression testing\n   - Perform manual accessibility testing with screen readers\n\n5. **Performance Validation:**\n   - Run Lighthouse audits to verify improved Core Web Vitals scores\n   - Use WebPageTest to measure real-world loading performance\n   - Monitor bundle sizes and ensure no regression in build optimization\n   - Test page load speeds across different network conditions",
+        "status": "pending",
+        "dependencies": [
+          16,
+          9,
+          28,
+          25,
+          19
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Fix React Hydration Errors - Critical Blocking Issue",
+            "description": "Investigate and resolve severe React hydration errors (Error #418 and #423) causing functionality problems. Examine SSR configuration, identify server/client rendering mismatches, fix hydration inconsistencies. Agent: ReactSpecialist",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 29
+          },
+          {
+            "id": 2,
+            "title": "Repair Image Loading System",
+            "description": "Fix blog featured images failing with 404 errors and connection timeouts. Audit image optimization pipeline, verify asset locations, check build process, implement fallbacks. Agent: AssetSpecialist",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 29
+          },
+          {
+            "id": 3,
+            "title": "Resolve Content Security Policy Violations",
+            "description": "Fix external resources being blocked (highlight.js from cdnjs.cloudflare.com). Review CSP configuration, add allowed sources or host locally, ensure code highlighting works. Agent: SecuritySpecialist",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 29
+          },
+          {
+            "id": 4,
+            "title": "Simplify Navigation Breadcrumbs",
+            "description": "Simplify overly complex blog breadcrumbs from 'Home > Blog > announcements > Post Title' to 'Home > Blog > Post Title'. Locate breadcrumb logic, test across all blog posts. Agent: UXSpecialist",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 29
+          },
+          {
+            "id": 5,
+            "title": "Verify Theme Switching Functionality",
+            "description": "Test and verify theme switching between light/dark/auto modes. Check persistence across navigation, styling consistency, cross-device functionality. Agent: ThemeSpecialist",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 29
+          },
+          {
+            "id": 6,
+            "title": "Quality Assurance and Integration Testing",
+            "description": "Perform comprehensive testing of all fixes across browsers, verify no new issues introduced, test accessibility preservation, validate mobile responsiveness. Agent: QASpecialist",
+            "details": "",
+            "status": "pending",
+            "dependencies": [],
+            "parentTaskId": 29
+          }
+        ]
+      },
+      {
+        "id": 30,
+        "title": "Resolve Critical React Hydration, SSR, and Error Boundary Failures",
+        "description": "Fix critical React hydration errors, server-side rendering (SSR) failures, useLoaderData issues in errorElement contexts, image loading failures, Chrome DevTools route errors, and process polyfill problems. Implement robust error boundaries and recovery mechanisms to prevent hydration cascade failures.",
+        "details": "1. **Audit and Fix Hydration Mismatches:**\n   - Identify components causing hydration errors by comparing server-rendered HTML with client-rendered output. Use React DevTools and browser console warnings to pinpoint mismatches.\n   - Refactor components to ensure deterministic rendering between server and client. Avoid using browser-only APIs (like window or document) during SSR; instead, use useEffect or dynamic imports to defer client-only logic[1][2][4].\n   - For volatile data (random numbers, timestamps), use suppressHydrationWarning or move rendering to the client side only when necessary[1][4].\n   - Audit conditional rendering and ensure all branches produce consistent markup between SSR and CSR.\n2. **Resolve useLoaderData and errorElement Issues:**\n   - Investigate error boundaries and errorElement usage in Remix routes. Ensure useLoaderData is not called in error boundaries or outside valid loader contexts.\n   - Refactor errorElement components to gracefully handle missing loader data and fallback to safe UI states.\n3. **Fix Image Loading and Polyfill Issues:**\n   - Audit image components for SSR compatibility. Ensure images are not using browser-only APIs during SSR and that all images have valid src and alt attributes.\n   - Address process polyfill issues by conditionally polyfilling process.env or other Node globals only on the server, or using environment-safe shims for the browser.\n4. **Address Chrome DevTools Route Errors:**\n   - Use DevTools to trace route-related errors and ensure all routes are properly defined and available in the Remix context during both SSR and CSR.\n5. **Implement Comprehensive Error Boundaries:**\n   - Add global and route-level error boundaries to catch and display errors during hydration and rendering. Ensure error boundaries do not themselves trigger hydration mismatches.\n   - Provide user-friendly fallback UIs and recovery options to prevent cascade failures.\n6. **Testing and Monitoring:**\n   - Add logging and monitoring for hydration and SSR errors to catch regressions early.\n   - Document all fixes and patterns for future maintainability.",
+        "testStrategy": "- Use React DevTools and browser console to verify that no hydration warnings or errors appear during initial page load and SSR/CSR transitions.\n- Simulate SSR/CSR transitions by disabling and re-enabling JavaScript, ensuring the UI remains consistent and interactive.\n- Test error boundaries by forcing errors in loaders, components, and routes; verify fallback UIs render and no hydration cascade occurs.\n- Use Chrome DevTools to inspect route definitions and ensure no route-related errors are present.\n- Test image loading on all routes, including edge cases (broken URLs, slow networks), and verify graceful fallback behavior.\n- Validate that process polyfills or environment variables do not cause runtime errors in either SSR or CSR contexts.\n- Perform regression testing on all major browsers and devices to ensure robust error handling and hydration stability.",
+        "status": "done",
+        "dependencies": [
+          16,
+          29
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Fix Critical useLoaderData Errors in Error Boundaries",
+            "description": "Resolve the TypeError where useLoaderData is called in errorElement context causing 'Cannot destructure property nonce of undefined' errors. Implement proper error boundary patterns that don't depend on loader data. Agent: ReactSSR",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          },
+          {
+            "id": 2,
+            "title": "Resolve Image Loading Failures and Missing Assets",
+            "description": "Fix blog image 404 errors by validating asset paths, implementing proper fallback mechanisms, and ensuring image optimization pipeline works correctly. Address missing blog images causing hydration cascade failures. Agent: AssetPipeline",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          },
+          {
+            "id": 3,
+            "title": "Fix Chrome DevTools Route Errors and Unhandled Requests",
+            "description": "Address 'No route matches URL /.well-known/appspecific/com.chrome.devtools.json' errors that are causing server-side rendering failures. Implement proper 404 handling for development tool requests. Agent: BuildConfig",
+            "details": "<info added on 2025-07-01T03:30:41.500Z>\n✅ COMPLETED: Chrome DevTools route error fix implemented successfully!\n\n**Solution Implemented:**\n1. **Root Cause Analysis**: Chrome DevTools makes requests to `/.well-known/appspecific/com.chrome.devtools.json` for its \"Automatic Workspace Folders\" feature. Remix was treating this as an unmatched route, causing router errors.\n\n2. **Implementation**: Created a catch-all route (`app/routes/$.ts`) that:\n   - Specifically handles Chrome DevTools workspace configuration requests\n   - Serves proper DevTools JSON config in development mode only\n   - Gracefully handles other .well-known requests with proper 404s\n   - Maintains security by only serving config to localhost in development\n\n3. **Key Features**:\n   - Returns proper workspace configuration enabling DevTools file sync\n   - Only active in development (NODE_ENV !== 'production')  \n   - Only serves to localhost/127.0.0.1 origins (security requirement)\n   - Generates consistent UUIDs for workspace identification\n   - Provides proper HTTP headers and caching policies\n   - Logs requests for debugging\n\n4. **Testing Results**:\n   ✅ Chrome DevTools endpoint now returns proper JSON: `{\"workspace\": {\"root\": \"/Users/cryophobic/dev/projects/focuslab\", \"uuid\": \"53b029bb-c989-4dca-969b-835fececL1Vz\"}}`\n   ✅ Other .well-known requests return proper 404s without router errors\n   ✅ No more \"No route matches URL\" errors in server logs\n   ✅ Router errors eliminated, preventing SSR cascade failures\n\n**Files Created:**\n- `/Users/cryophobic/dev/projects/focuslab/app/routes/$.ts` - Catch-all route handling Chrome DevTools and other unmatched requests\n\n**Benefits Achieved:**\n- Eliminates recurring Chrome DevTools route errors from logs\n- Enables actual DevTools workspace functionality for developers  \n- Prevents SSR error cascades from unhandled routes\n- Maintains proper security boundaries (dev-only, localhost-only)\n- Future-proofs against other development tool requests\n</info added on 2025-07-01T03:30:41.500Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          },
+          {
+            "id": 4,
+            "title": "Implement Comprehensive Error Boundaries and Recovery Mechanisms",
+            "description": "Create robust error boundary components that prevent hydration cascade failures. Implement error isolation, graceful degradation, and recovery mechanisms to contain errors and maintain site functionality. Agent: ErrorHandling",
+            "details": "<info added on 2025-07-01T03:43:01.220Z>\n✅ COMPREHENSIVE ERROR BOUNDARY SYSTEM IMPLEMENTED\n\n## Implementation Completed\n\n### 🔧 Error Boundary Components Created\n- **ErrorBoundary**: Core comprehensive error boundary with multiple levels (app, route, feature, component)\n- **RouteErrorBoundary**: Page-level error containment\n- **FeatureErrorBoundary**: Feature section error boundaries with graceful degradation\n- **FormErrorBoundary**: Form-specific error handling with contact support options\n- **AsyncErrorBoundary**: For async operations with retry mechanisms\n- **AnalyticsErrorBoundary**: Silent failures for analytics components\n- **withErrorBoundary**: HOC for easy error boundary wrapping\n\n### 🎯 Strategic Placement Implemented\n- **App Level**: Root app wrapped with comprehensive error boundary\n- **Component Level**: Header, Footer, Theme Toggle individually wrapped\n- **Route Level**: Contact form wrapped with FormErrorBoundary\n- **Feature Level**: Homepage sections (HighlightCards, Project Grid, Blog sections)\n- **Analytics**: PostHog and Vercel Analytics wrapped with AnalyticsErrorBoundary\n\n### 🛡️ Error Containment Features\n- **Hierarchical Error Handling**: Errors caught at appropriate levels\n- **Automatic Retry**: Exponential backoff for transient errors\n- **Manual Retry**: User-initiated retry buttons\n- **Reset on Props Change**: Error boundaries reset when conditions change\n- **Development vs Production**: Different error displays for each environment\n- **Silent Analytics Failures**: Analytics errors don't affect user experience\n\n### 🧪 Testing & Validation\n- **Comprehensive Test Suite**: 17 passing tests covering all boundary types\n- **ErrorBoundaryDemo**: Development-only component for testing error scenarios\n- **Debug Route**: `/debug/error-boundaries` for manual testing (dev only)\n- **Error Logging**: Console warnings and Sentry integration\n\n### 📊 Error Boundary Hierarchy\n```\nApp ErrorBoundary\n├── Header ErrorBoundary\n├── Main Content (Route-specific boundaries)\n│   ├── FeatureErrorBoundary (HighlightCards)\n│   ├── AsyncErrorBoundary (Blog Posts)\n│   ├── FormErrorBoundary (Contact Form)\n│   └── AsyncErrorBoundary (Project Grid)\n├── Footer ErrorBoundary\n├── Theme Toggle ErrorBoundary\n└── Analytics ErrorBoundary (PostHog, Vercel)\n```\n\n### 🎨 User Experience\n- **Graceful Degradation**: Different fallback UIs for different error types\n- **Clear Recovery Options**: Retry buttons, home links, support contacts\n- **Accessibility**: ARIA labels and proper error announcements\n- **Responsive Design**: Error UIs work on all screen sizes\n\n### 🔄 Recovery Mechanisms\n- **Automatic Retry**: With exponential backoff (1s, 2s, 4s...)\n- **Manual Retry**: User-triggered retry buttons\n- **Navigation Recovery**: \"Go Home\" and \"Contact Support\" options\n- **Page Refresh**: Full page reload for critical errors\n- **Silent Fallbacks**: Analytics components fail without user notice\n\nThe error boundary system now provides comprehensive protection against hydration cascade failures and ensures robust error containment throughout the application. Any component failure will be isolated and provide appropriate recovery options without affecting the entire site functionality.\n</info added on 2025-07-01T03:43:01.220Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          },
+          {
+            "id": 5,
+            "title": "Conduct Playwright Testing and Error Discovery",
+            "description": "Use Playwright to browse the live site, identify additional hydration errors, document frontend issues not visible in backend logs, and create comprehensive test scenarios for validation. Agent: PlaywrightTesting",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          },
+          {
+            "id": 6,
+            "title": "Coordinate Integration Testing and Final Validation",
+            "description": "Coordinate all agent fixes, perform comprehensive integration testing, validate hydration stability across all routes, and ensure no regression in existing functionality. Agent: Integration",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 30
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-21T19:45:52.930Z",
-      "updated": "2025-06-30T00:45:04.261Z",
+      "updated": "2025-07-01T04:25:58.892Z",
       "description": "Tasks for master context"
     }
   }
