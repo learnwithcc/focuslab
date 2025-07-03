@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
-import { MobileThemeToggle } from './ui/theme-toggle';
+import { MobileThemeToggle, ThemeToggle } from './ui/theme-toggle';
 import { trackEvent } from '~/utils/posthog';
 
 export function Header() {
@@ -234,7 +234,7 @@ export function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex space-x-8" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center space-x-8" aria-label="Main navigation">
             {navigationItems.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -255,6 +255,11 @@ export function Header() {
                 </Link>
               );
             })}
+            
+            {/* Desktop Theme Toggle */}
+            <div className="pl-4 border-l border-gray-200 dark:border-gray-700">
+              <ThemeToggle />
+            </div>
           </nav>
 
           {/* Mobile menu and theme toggle */}
