@@ -12,6 +12,7 @@ export function ThemeToggle() {
 
   // Prevent hydration mismatch
   React.useEffect(() => {
+    console.log('ThemeToggle: useEffect mounting')
     setMounted(true)
   }, [])
 
@@ -54,6 +55,7 @@ export function MobileThemeToggle() {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    console.log('MobileThemeToggle: useEffect mounting')
     setMounted(true)
   }, [])
 

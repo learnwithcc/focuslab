@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
-import { MobileThemeToggle, ThemeToggle } from './ui/theme-toggle';
+import { SimpleThemeToggle } from './SimpleThemeToggle';
 import { trackEvent } from '~/utils/posthog';
 
 export function Header() {
@@ -32,8 +32,11 @@ export function Header() {
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
           const newStickyState = scrollTop > 20;
           
+          console.log('Header scroll:', { scrollTop, newStickyState, lastStickyState });
+          
           // Track state transitions for analytics (avoid excessive events)
           if (newStickyState !== lastStickyState) {
+            console.log('Header sticky state changed:', newStickyState ? 'sticky' : 'normal');
             trackEvent('header_sticky_transition', {
               state: newStickyState ? 'sticky' : 'normal',
               scrollTop,
@@ -213,6 +216,8 @@ export function Header() {
     header-base
     ${isSticky ? 'header-glassmorphic header-sticky-shadow' : 'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800'}
   `.trim();
+  
+  console.log('Header render:', { isSticky, headerClasses });
 
   return (
       <header 
@@ -258,13 +263,13 @@ export function Header() {
             
             {/* Desktop Theme Toggle */}
             <div className="pl-4 border-l border-gray-200 dark:border-gray-700">
-              <ThemeToggle />
+              <SimpleThemeToggle />
             </div>
           </nav>
 
           {/* Mobile menu and theme toggle */}
           <div className="md:hidden flex items-center space-x-2">
-            <MobileThemeToggle />
+            <SimpleThemeToggle />
             <button
               ref={mobileToggleRef}
               type="button"

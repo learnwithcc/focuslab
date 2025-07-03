@@ -9,12 +9,12 @@ import {
   isRouteErrorResponse,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from '@remix-run/node';
+import { json } from "@remix-run/node";
 import * as Sentry from "@sentry/remix";
 import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager, Header, Footer, SkipNavigation, ErrorBoundary as CustomErrorBoundary, AnalyticsErrorBoundary } from "~/components";
-import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
+
 import { ThemeProvider } from "~/components/theme-provider";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
@@ -109,7 +109,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <VanillaThemeScript nonce={nonce} />
         {env && (
           <script
             nonce={nonce}
@@ -180,9 +179,7 @@ function App() {
                 <Footer />
               </CustomErrorBoundary>
               <CookieManager />
-              <CustomErrorBoundary level="component" name="theme-toggle" enableRetry={false}>
-                <VanillaThemeToggle />
-              </CustomErrorBoundary>
+
               </PHProvider>
             </AnalyticsErrorBoundary>
           </CookieConsentProvider>
@@ -225,7 +222,6 @@ export function ErrorBoundary() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Error - FocusLab</title>
         <Links />
-        <VanillaThemeScript nonce={nonce} />
       </head>
       <body className="bg-background text-foreground">
         <div className="min-h-screen flex items-center justify-center px-4">
