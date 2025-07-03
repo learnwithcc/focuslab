@@ -15,6 +15,7 @@ import { createSecurityHeaders } from "~/utils/security";
 import { CookieConsentProvider } from "~/contexts";
 import { CookieManager, Header, Footer, SkipNavigation, ErrorBoundary as CustomErrorBoundary, AnalyticsErrorBoundary } from "~/components";
 import { VanillaThemeToggle, VanillaThemeScript } from "~/components/VanillaThemeToggle";
+import { ThemeProvider } from "~/components/theme-provider";
 import { NonceProvider } from '~/utils/nonce-provider';
 import { useAxe } from '~/utils/axe';
 import { generateNonce } from '~/utils/nonce-generator';
@@ -159,26 +160,33 @@ function App() {
   return (
     <CustomErrorBoundary level="app" name="root-app">
       <NonceProvider nonce={nonce}>
-        <CookieConsentProvider>
-          <AnalyticsErrorBoundary service="posthog">
-            <PHProvider env={safeEnv}>
-            <SkipNavigation />
-            <CustomErrorBoundary level="component" name="header" enableRetry={true}>
-              <Header />
-            </CustomErrorBoundary>
-            <main id="main-content">
-              <Outlet />
-            </main>
-            <CustomErrorBoundary level="component" name="footer" enableRetry={true}>
-              <Footer />
-            </CustomErrorBoundary>
-            <CookieManager />
-            <CustomErrorBoundary level="component" name="theme-toggle" enableRetry={false}>
-              <VanillaThemeToggle />
-            </CustomErrorBoundary>
-            </PHProvider>
-          </AnalyticsErrorBoundary>
-        </CookieConsentProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CookieConsentProvider>
+            <AnalyticsErrorBoundary service="posthog">
+              <PHProvider env={safeEnv}>
+              <SkipNavigation />
+              <CustomErrorBoundary level="component" name="header" enableRetry={true}>
+                <Header />
+              </CustomErrorBoundary>
+              <main id="main-content">
+                <Outlet />
+              </main>
+              <CustomErrorBoundary level="component" name="footer" enableRetry={true}>
+                <Footer />
+              </CustomErrorBoundary>
+              <CookieManager />
+              <CustomErrorBoundary level="component" name="theme-toggle" enableRetry={false}>
+                <VanillaThemeToggle />
+              </CustomErrorBoundary>
+              </PHProvider>
+            </AnalyticsErrorBoundary>
+          </CookieConsentProvider>
+        </ThemeProvider>
       </NonceProvider>
     </CustomErrorBoundary>
   );

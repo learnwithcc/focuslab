@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
-import { MobileThemeToggle } from './VanillaThemeToggle';
+import { MobileThemeToggle } from './ui/theme-toggle';
 import { trackEvent } from '~/utils/posthog';
 
 export function Header() {
@@ -311,7 +311,7 @@ export function Header() {
             mobile-menu-container md:hidden
             motion-safe:transition-all motion-reduce:transition-none duration-300 ease-in-out
             ${isMobileMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'}
-            ${isSticky ? 'mobile-menu-glassmorphic' : 'border-t border-gray-200 dark:border-gray-700'}
+            ${isSticky ? 'mobile-menu-sticky' : 'border-t border-gray-200 dark:border-gray-700'}
           `}
           id="mobile-menu"
           ref={mobileMenuRef}
