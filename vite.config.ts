@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
     },
     ssr: {
       noExternal: ['remix-themes', 'posthog-js', 'posthog-js/react'],
-      external: ['sharp', '@remix-run/node/dist/stream', 'node:stream', 'node:crypto', 'node:fs', 'node:path'],
+      external: ['sharp', '@remix-run/node', '@remix-run/node/dist/stream', 'node:stream', 'node:crypto', 'node:fs', 'node:path'],
     },
     optimizeDeps: {
       exclude: ['sharp', '@remix-run/node'],

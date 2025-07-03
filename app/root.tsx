@@ -165,24 +165,24 @@ function App() {
           enableSystem
           disableTransitionOnChange
         >
-          <CookieConsentProvider>
-            <AnalyticsErrorBoundary service="posthog">
-              <PHProvider env={safeEnv}>
-              <SkipNavigation />
-              <CustomErrorBoundary level="component" name="header" enableRetry={true}>
-                <Header />
-              </CustomErrorBoundary>
-              <main id="main-content">
-                <Outlet />
-              </main>
-              <CustomErrorBoundary level="component" name="footer" enableRetry={true}>
-                <Footer />
-              </CustomErrorBoundary>
-              <CookieManager />
+        <CookieConsentProvider>
+          <AnalyticsErrorBoundary service="posthog">
+            <PHProvider env={safeEnv}>
+            <SkipNavigation />
+            <CustomErrorBoundary level="component" name="header" enableRetry={true}>
+              <Header />
+            </CustomErrorBoundary>
+            <main id="main-content">
+              <Outlet />
+            </main>
+            <CustomErrorBoundary level="component" name="footer" enableRetry={true}>
+              <Footer />
+            </CustomErrorBoundary>
+            <CookieManager />
 
-              </PHProvider>
-            </AnalyticsErrorBoundary>
-          </CookieConsentProvider>
+            </PHProvider>
+          </AnalyticsErrorBoundary>
+        </CookieConsentProvider>
         </ThemeProvider>
       </NonceProvider>
     </CustomErrorBoundary>

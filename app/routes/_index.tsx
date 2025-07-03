@@ -9,6 +9,7 @@ import { getFeaturedBlogPosts } from "~/services/blog.server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
 import { Link } from "@remix-run/react";
 import type { BlogPost } from "~/types/blog";
+import { TestHydration } from "~/components/TestHydration";
 
 export const meta: MetaFunction = () => {
   return generateMeta({
@@ -294,6 +295,11 @@ export default function Index() {
             <FeaturedBlogSection posts={featuredPosts} />
           </AsyncErrorBoundary>
         )}
+
+        {/* React Hydration Test - Temporary */}
+        <div className="w-full bg-yellow-50 dark:bg-yellow-900/20 p-8">
+          <TestHydration />
+        </div>
     </div>
   );
 }
