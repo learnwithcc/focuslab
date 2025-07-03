@@ -5,7 +5,7 @@ import { Input } from './Input';
 import { Button } from './Button';
 import { FormErrorBoundary } from './FormErrorBoundary';
 import { useFormValidation } from '~/hooks/useFormValidation';
-import { newsletterSchema } from '~/utils/validation';
+import { newsletterSchema } from '~/utils/validation.client';
 import { trackEvent } from '~/utils/posthog';
 
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;

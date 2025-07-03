@@ -5,7 +5,7 @@ import { Input } from './Input';
 import { Button } from './Button';
 // FormErrorBoundary is now used at the route level
 import { useFormValidation } from '~/hooks/useFormValidation';
-import { contactSchema } from '~/utils/validation';
+import { contactSchema } from '~/utils/validation.client';
 import { trackEvent } from '~/utils/posthog';
 
 type ContactFormValues = z.infer<typeof contactSchema>;

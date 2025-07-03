@@ -1,8 +1,11 @@
 import { json } from '@remix-run/node';
-import { ZodSchema, z } from 'zod';
+import { ZodSchema } from 'zod';
+// Re-export client-safe schemas and types
+export { newsletterSchema, contactSchema, validateFormData } from './validation.client';
 
 type FormErrors<T> = { [K in keyof T]?: string };
 
+// Server-only validation function that returns json responses
 export async function validateForm<T>(
   formData: FormData,
   schema: ZodSchema<T>,
@@ -21,17 +24,4 @@ export async function validateForm<T>(
   }
 
   return callback(result.data);
-}
-
-export const newsletterSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  name: z.string().optional(), // Honeypot
-});
-
-export const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  subject: z.string().min(5, 'Subject must be at least 5 characters'),
-  message: z.string().min(20, 'Message must be at least 20 characters'),
-  website: z.string().optional(), // Honeypot
-}); 
+} 

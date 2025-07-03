@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
-import { SimpleThemeToggle } from './SimpleThemeToggle';
+import { NavbarThemeToggle, MobileNavbarThemeToggle } from './NavbarThemeToggle';
 import { trackEvent } from '~/utils/posthog';
 
 export function Header() {
@@ -263,13 +263,13 @@ export function Header() {
             
             {/* Desktop Theme Toggle */}
             <div className="pl-4 border-l border-gray-200 dark:border-gray-700">
-              <SimpleThemeToggle />
+              <NavbarThemeToggle />
             </div>
           </nav>
 
           {/* Mobile menu and theme toggle */}
           <div className="md:hidden flex items-center space-x-2">
-            <SimpleThemeToggle />
+            <MobileNavbarThemeToggle />
             <button
               ref={mobileToggleRef}
               type="button"
