@@ -1,0 +1,63 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## PROJECT RULES & CODING STANDARDS
+
+### GENERAL GUIDELINES
+
+### CODE STYLE
+
+### NAMING CONVENTIONS
+
+### ERROR HANDLING
+
+### SECURITY
+
+## TECH STACK
+
+### LANGUAGES
+
+### FRAMEWORKS/LIBRARIES
+
+### DATABASES
+
+### DEPLOYMENT
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+### README
+
+### ARCHITECTURE
+
+### API DOCUMENTATION
+
+## WORKFLOW & RELEASE RULES
+
+### BRANCHING
+
+### COMMIT MESSAGES
+
+### PULL REQUESTS
+
+### CODE REVIEWS
+
+### TESTING
+
+### DEPLOYMENT
+
+- **Before committing:** Always review uncommitted changes using `git status` and `git diff` to understand the scope and impact of the changes. This is especially crucial when a large number of files have been modified.
+- **Commit Strategy:** Organize changes into logical commits. Group related functional changes together and commit AI rule deletions separately, if intended.
+- **Untracked Files:** Ensure all new files are added to be tracked using `git add`.
+
+## DEBUGGING
+
+## VITE CONFIGURATION
+
+- To avoid port conflicts during parallel development, Vite should be configured to start on port 3600.
+- When running the development server with `npm run dev` or `pnpm dev`, it will start on port 3600.
+- The application will now be available at `http://localhost:3600` instead of the default port.
+- To temporarily use a different port, override with the `--port` flag: `pnpm dev --port <new_port>`
+- Update any documentation or README files that reference the port number.
+- If you have any scripts or tools that reference `localhost:3000`, update those to use `localhost:3600`.
