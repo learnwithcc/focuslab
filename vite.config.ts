@@ -69,8 +69,7 @@ export default defineConfig(({ mode }) => {
           // Externalize server-only modules from client bundles
           return id.includes('node:') || 
                  id.includes('@remix-run/node') || 
-                 id === 'sharp' ||
-                 id.includes('entry.server');
+                 id === 'sharp';
         },
       },
     },
