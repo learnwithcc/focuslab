@@ -2,8 +2,10 @@ import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
 import { NavbarThemeToggle, MobileNavbarThemeToggle } from './NavbarThemeToggle';
 import { trackEvent } from '~/utils/posthog';
+import { Breadcrumb } from './Breadcrumb';
+import type { BreadcrumbItem } from '~/utils/structured-data';
 
-export function Header() {
+export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[] }) {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -227,96 +229,109 @@ export function Header() {
       >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center"
-            onClick={() => handleNavClick('home', 'logo')}
-          >
-            <span className="font-heading text-xl font-bold text-gray-900 dark:text-white">
-              Focus Lab
-            </span>
-          </Link>
+          <div className="flex items-center">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center"
+              onClick={() => handleNavClick('home', 'logo')}
+            >
+              <span className="font-heading text-xl font-bold text-gray-900 dark:text-white">
+                Focus Lab
+              </span>
+            </Link>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8" aria-label="Main navigation">
-            {navigationItems.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`
-                    px-3 py-2 text-sm font-medium transition-colors
-                    ${isActive 
-                      ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' 
-                      : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+            {/* Navigation */}
+            <nav
+              className="hidden md:flex items-center space-x-8 ml-8"
+              aria-label="Main navigation"
+            >
+              {navigationItems.map(item => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => handleNavClick(item.href, 'desktop')}
+                    className={`
+                    font-medium
+                    ${
+                      isActive
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                     }
                   `}
-                  aria-current={isActive ? 'page' : undefined}
-                  onClick={() => handleNavClick(item.label.toLowerCase(), 'desktop')}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            
-            {/* Desktop Theme Toggle */}
-            <div className="pl-4 border-l border-gray-200 dark:border-gray-700">
-              <NavbarThemeToggle />
-            </div>
-          </nav>
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
-          {/* Mobile menu and theme toggle */}
-          <div className="md:hidden flex items-center space-x-2">
-            <MobileNavbarThemeToggle />
-            <button
-              ref={mobileToggleRef}
-              type="button"
-              className="
-                relative inline-flex items-center justify-center p-2 rounded-md
-                text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white
-                hover:bg-gray-100 dark:hover:bg-gray-800
-                focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500
-                motion-safe:transition-colors motion-reduce:transition-none duration-200
-              "
-              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-              aria-haspopup="true"
-              onClick={handleMobileMenuToggle}
-            >
-              <span className="sr-only">
-                {isMobileMenuOpen ? "Close main menu" : "Open main menu"}
-              </span>
-              
-              {/* Hamburger/Close Icon with smooth animation */}
-              <div className="relative w-6 h-6" aria-hidden="true">
-                <span 
-                  className={`
-                    hamburger-line
-                    ${isMobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-1.5'}
-                  `}
-                />
-                <span 
-                  className={`
-                    hamburger-line
-                    ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}
-                  `}
-                />
-                <span 
-                  className={`
-                    hamburger-line
-                    ${isMobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-1.5'}
-                  `}
-                />
+          {/* Right side: Breadcrumbs and Controls */}
+          <div className="flex items-center">
+            {/* Breadcrumbs - hidden on mobile */}
+            {breadcrumbItems && breadcrumbItems.length > 0 && (
+              <div className="hidden md:block mr-4">
+                <Breadcrumb items={breadcrumbItems} />
               </div>
-            </button>
+            )}
+
+            {/* Theme Toggle and Mobile Menu Button */}
+            <NavbarThemeToggle />
+            <div className="md:hidden">
+              <button
+                ref={mobileToggleRef}
+                onClick={handleMobileMenuToggle}
+                type="button"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 dark:text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-800"
+                aria-controls="mobile-menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                <span className="sr-only">Open main menu</span>
+                {/* Icon for menu (hamburger) */}
+                <svg
+                  className={`${isMobileMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+                {/* Icon for close (X) */}
+                <svg
+                  className={`${isMobileMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
-        
-        {/* Enhanced Mobile Menu with Slide Animation */}
-        <div 
+      </div>
+
+      {/* Mobile menu, show/hide based on menu state. */}
+      {isMobileMenuOpen && (
+        <div
           className={`
             mobile-menu-container md:hidden
             motion-safe:transition-all motion-reduce:transition-none duration-300 ease-in-out
@@ -371,7 +386,7 @@ export function Header() {
             })}
           </nav>
         </div>
-      </div>
+      )}
     </header>
   );
 } 

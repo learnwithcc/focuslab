@@ -37,6 +37,8 @@ globs: *
 
 ### BRANCHING
 
+- When implementing critical changes, always create a new branch from the current one as a backup.
+
 ### COMMIT MESSAGES
 
 ### PULL REQUESTS

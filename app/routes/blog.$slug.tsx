@@ -5,7 +5,7 @@ import { Container, Section } from "~/components/Layout";
 import { Card, Button, Breadcrumb, BlogCallout, InfoCallout, WarningCallout, SuccessCallout, ErrorCallout, TipCallout, MDXRenderer, AsyncErrorBoundary } from "~/components";
 import { getBlogPostBySlug, getFeaturedBlogPosts } from "~/services/blog.server";
 import { generateMeta, generatePageUrl } from "~/utils/seo";
-import { generateArticleSchema, getBlogBreadcrumbItems, generateBreadcrumbSchema, generateStructuredDataMeta } from "~/utils/structured-data";
+import { generateArticleSchema, getBlogBreadcrumbItems, generateBreadcrumbSchema, generateStructuredDataMeta, type BreadcrumbItem } from "~/utils/structured-data";
 import type { BlogPost } from "~/types/blog";
 
 export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
@@ -56,7 +56,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  // Note: MDX compilation is now handled client-side by MDXRenderer component
+  // Get breadcrumb items for the page
+  const breadcrumbItems = getBlogBreadcrumbItems(`/blog/${slug}`, post.frontmatter.title);
 
   // Get related posts for sidebar
   const relatedPosts = await getFeaturedBlogPosts(3);
@@ -64,8 +65,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return json({
     post,
     relatedPosts: relatedPosts.filter(p => p.slug !== post.slug).slice(0, 3),
+    breadcrumbItems,
   });
 }
+
+export const handle = {
+  breadcrumb: (data: { breadcrumbItems: BreadcrumbItem[] }) => data.breadcrumbItems,
+};
 
 // MDX Components for custom rendering
 const mdxComponents = {
@@ -132,6 +138,7 @@ const mdxComponents = {
 type LoaderData = {
   post: BlogPost;
   relatedPosts: BlogPost[];
+  breadcrumbItems: BreadcrumbItem[];
 };
 
 export default function BlogPost() {
@@ -148,21 +155,6 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-975">
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-        <Section spacing="sm">
-          <Container maxWidth="7xl">
-            <Breadcrumb
-              items={[
-                { name: 'Home', path: '/' },
-                { name: 'Blog', path: '/blog' },
-                { name: post.frontmatter.title, path: `/blog/${post.slug}`, isCurrentPage: true },
-              ]}
-            />
-          </Container>
-        </Section>
-      </div>
-
       <Section spacing="lg">
         <Container maxWidth="7xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

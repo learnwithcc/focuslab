@@ -7,6 +7,7 @@ import {
   useLoaderData,
   useRouteError,
   isRouteErrorResponse,
+  useMatches,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -22,6 +23,7 @@ import { generateNonce } from '~/utils/nonce-generator';
 import { Analytics } from "@vercel/analytics/react";
 import { PHProvider } from '~/utils/posthog';
 import { getThemeFromRequest } from '~/utils/theme';
+import type { BreadcrumbItem } from '~/utils/structured-data';
 
 import "./styles/tailwind.css";
 import "./styles/index.css";
@@ -144,6 +146,17 @@ function App() {
     }
   })();
 
+  const breadcrumbItems = useMatches()
+    .map((match) => {
+      const handle = match.handle as { breadcrumb?: (data: unknown) => BreadcrumbItem[] };
+      if (handle && typeof handle.breadcrumb === 'function') {
+        return handle.breadcrumb(match.data);
+      }
+      return null;
+    })
+    .filter((items): items is BreadcrumbItem[] => items !== null)
+    .pop();
+
   // Provide safe defaults when loader data is unavailable
   const nonce = loaderData?.nonce || 'fallback-nonce';
   const env = loaderData?.env || null;
@@ -154,7 +167,7 @@ function App() {
   const safeEnv = env ? {
     POSTHOG_API_KEY: env.POSTHOG_API_KEY,
     POSTHOG_API_HOST: env.POSTHOG_API_HOST
-  } : undefined;
+  } : {};
 
   return (
     <CustomErrorBoundary level="app" name="root-app">
@@ -170,7 +183,7 @@ function App() {
             <PHProvider env={safeEnv}>
             <SkipNavigation />
             <CustomErrorBoundary level="component" name="header" enableRetry={true}>
-              <Header />
+              <Header breadcrumbItems={breadcrumbItems || []} />
             </CustomErrorBoundary>
             <main id="main-content">
               <Outlet />
