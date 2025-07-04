@@ -21,23 +21,28 @@ type DisplayItem = {
 
 // A dedicated component for rendering the breadcrumb trail within the nav
 function BreadcrumbTrail({ trail, handleNavClick }: { trail: BreadcrumbItem[], handleNavClick: (path: string, context: 'desktop' | 'mobile') => void; }) {
+  // Filter out "Home" breadcrumb since it's already in the main navigation
+  const filteredTrail = trail.filter(crumb => crumb.path !== '/');
+  
   return (
-    <div className="flex items-center text-sm font-medium text-primary-600 dark:text-primary-400">
-      {trail.map((crumb, index) => (
+    <div className="flex items-center space-x-2">
+      {filteredTrail.map((crumb, index) => (
         <Fragment key={crumb.path ?? crumb.name}>
-          {index > 0 && <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>}
-          
-          {!crumb.isCurrentPage && crumb.path ? (
+          {index > 0 && (
+            <span className="text-gray-400 dark:text-gray-500 mx-1">
+              &gt;
+            </span>
+          )}
+          {crumb.path && !crumb.isCurrentPage ? (
             <Link
               to={crumb.path}
-              className="hover:underline transition-colors text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              onClick={() => handleNavClick(crumb.path!, 'desktop')}
+              onClick={() => handleNavClick(crumb.path, 'desktop')}
+              className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
             >
               {crumb.name}
             </Link>
           ) : (
-            // Current page text - styled like an active nav item
-            <span className="font-medium">{crumb.name}</span>
+            <span className="font-medium text-gray-900 dark:text-white">{crumb.name}</span>
           )}
         </Fragment>
       ))}
@@ -409,11 +414,13 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
               const isFocused = focusedItemIndex === index;
 
               if (type === 'breadcrumb') {
+                // Filter out "Home" breadcrumb since it's already in the main navigation
+                const filteredTrail = displayItem.trail.filter(crumb => crumb.path !== '/');
                 return (
                    <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
-                     {displayItem.trail.map((b, i) => (
+                     {filteredTrail.map((b, i) => (
                        <Fragment key={b.path ?? b.name}>
-                         {i > 0 && <span className="mx-1 text-gray-400 dark:text-gray-500">/</span>}
+                         {i > 0 && <span className="mx-1 text-gray-400 dark:text-gray-500">&gt;</span>}
                          {b.path && !b.isCurrentPage ? (
                            <Link 
                              to={b.path} 
