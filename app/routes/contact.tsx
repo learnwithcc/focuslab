@@ -1,9 +1,7 @@
 import { MetaFunction } from '@remix-run/node';
-import { useLocation } from '@remix-run/react';
 import { Section, Container } from "~/components/Layout";
-import { ContactForm, Breadcrumb, FormErrorBoundary } from '~/components';
+import { ContactForm, FormErrorBoundary } from '~/components';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
-import { getBreadcrumbItems } from '~/utils/structured-data';
 import { usePageTracking } from '~/hooks/usePageTracking';
 
 export const meta: MetaFunction = () => {
@@ -29,9 +27,6 @@ export const meta: MetaFunction = () => {
 };
 
 export default function ContactPage() {
-  const location = useLocation();
-  const breadcrumbItems = getBreadcrumbItems(location.pathname);
-  
   // Track page visit with engagement timing
   usePageTracking({
     pageName: 'contact',
@@ -48,7 +43,6 @@ export default function ContactPage() {
         <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Section spacing="lg">
             <Container maxWidth="7xl">
-              <Breadcrumb items={breadcrumbItems} className="mb-8" />
               <div className="text-center">
                 <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                   Contact Us
