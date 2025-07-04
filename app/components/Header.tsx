@@ -6,6 +6,16 @@ import { Breadcrumb } from './Breadcrumb';
 import type { BreadcrumbItem } from '~/utils/structured-data';
 import { Fragment } from 'react';
 
+type DisplayItem = {
+  href: string;
+  label: string;
+} & ({
+  type: 'breadcrumb';
+  breadcrumb: BreadcrumbItem[];
+} | {
+  type: 'link';
+});
+
 export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[] }) {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,6 +33,17 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
   ];
+
+  const displayItems: DisplayItem[] = navigationItems.map(item => {
+    const breadcrumbIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
+    if (breadcrumbIndex !== -1 && breadcrumbItems) {
+      const breadcrumbSegment = breadcrumbItems.slice(breadcrumbIndex);
+      if (breadcrumbSegment.length > 1) {
+        return { ...item, type: 'breadcrumb', breadcrumb: breadcrumbSegment };
+      }
+    }
+    return { ...item, type: 'link' };
+  });
 
   // Scroll detection for sticky header
   useEffect(() => {
@@ -247,72 +268,50 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
               className="hidden md:flex items-center space-x-8 ml-8"
               aria-label="Main navigation"
             >
-              {navigationItems.map(item => {
-                // Find if this nav item appears in the breadcrumb trail
-                const breadcrumbIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
-                
-                if (breadcrumbIndex !== -1 && breadcrumbItems) {
-                  // This nav item is part of the current breadcrumb trail
-                  const breadcrumbSegment = breadcrumbItems.slice(breadcrumbIndex);
-                  
-                  if (breadcrumbSegment.length > 1) {
-                    // We're on a sub-page, show breadcrumb replacement
-                    return (
-                      <div key={item.href} className="flex items-center text-sm font-medium">
-                        {breadcrumbSegment.map((b, index) => (
-                          <Fragment key={b.path ?? b.name}>
-                            {index > 0 && <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>}
-                            {b.path && !b.isCurrentPage ? (
-                              <Link
-                                to={b.path}
-                                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors"
-                                onClick={() => handleNavClick(b.path!, 'desktop')}
-                              >
-                                {b.name}
-                              </Link>
-                            ) : (
-                              <span className="text-primary-600 dark:text-primary-400 font-medium">{b.name}</span>
-                            )}
-                          </Fragment>
-                        ))}
-                      </div>
-                    );
-                  } else {
-                    // We're exactly on this page, show highlighted nav item
-                    return (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        onClick={() => handleNavClick(item.href, 'desktop')}
-                        className="font-medium text-primary-600 dark:text-primary-400"
-                        aria-current="page"
-                      >
-                        {item.label}
-                      </Link>
-                    );
-                  }
-                } else {
-                  // This nav item is not part of current breadcrumb, show normal nav item
-                  const isActive = location.pathname === item.href;
+              {displayItems.map(item => {
+                if (item.type === 'breadcrumb') {
                   return (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      onClick={() => handleNavClick(item.href, 'desktop')}
-                      className={`
-                        font-medium transition-colors
-                        ${
-                          isActive
-                            ? 'text-primary-600 dark:text-primary-400'
-                            : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                        }
-                      `}
-                      aria-current={isActive ? 'page' : undefined}
-                    >
-                      {item.label}
-                    </Link>
+                    <div key={item.href} className="flex items-center text-sm font-medium">
+                      {item.breadcrumb.map((b, index) => (
+                        <Fragment key={b.path ?? b.name}>
+                          {index > 0 && <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>}
+                          {b.path && !b.isCurrentPage ? (
+                            <Link
+                              to={b.path}
+                              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors"
+                              onClick={() => handleNavClick(b.path!, 'desktop')}
+                            >
+                              {b.name}
+                            </Link>
+                          ) : (
+                            <span className="text-primary-600 dark:text-primary-400 font-medium">{b.name}</span>
+                          )}
+                        </Fragment>
+                      ))}
+                    </div>
                   );
                 }
+                
+                const isActive = item.href === '/' ? location.pathname === item.href : location.pathname.startsWith(item.href);
+
+                return (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => handleNavClick(item.href, 'desktop')}
+                    className={`
+                      font-medium transition-colors
+                      ${
+                        isActive
+                          ? 'text-primary-600 dark:text-primary-400'
+                          : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      }
+                    `}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                );
               })}
             </nav>
           </div>
@@ -386,107 +385,66 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
             role="navigation"
             aria-label="Mobile navigation"
           >
-            {navigationItems.map((item, index) => {
+            {displayItems.map((item, index) => {
               const isFocused = focusedItemIndex === index;
-              // Find if this nav item appears in the breadcrumb trail
-              const breadcrumbIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
-              
-              if (breadcrumbIndex !== -1 && breadcrumbItems) {
-                // This nav item is part of the current breadcrumb trail
-                const breadcrumbSegment = breadcrumbItems.slice(breadcrumbIndex);
-                
-                if (breadcrumbSegment.length > 1) {
-                  // We're on a sub-page, show breadcrumb replacement
-                  return (
-                    <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
-                      {breadcrumbSegment.map((b, i) => (
-                         <Fragment key={b.path ?? b.name}>
-                           {i > 0 && <span className="mx-1 text-gray-400 dark:text-gray-500">/</span>}
-                           {b.path && !b.isCurrentPage ? (
-                             <Link 
-                               to={b.path} 
-                               className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white" 
-                               onClick={() => setIsMobileMenuOpen(false)}
-                             >
-                               {b.name}
-                             </Link>
-                           ) : (
-                             <span className="font-semibold text-primary-600 dark:text-primary-400">{b.name}</span>
-                           )}
-                         </Fragment>
-                      ))}
-                    </div>
-                  )
-                } else {
-                  // We're exactly on this page, show highlighted nav item
-                  return (
-                    <Link
-                      key={item.href}
-                      ref={(el) => {
-                        menuItemRefs.current[index] = el;
-                      }}
-                      to={item.href}
-                      className={`
-                        mobile-nav-item active
-                        ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
-                      `}
-                      role="menuitem"
-                      tabIndex={isMobileMenuOpen ? 0 : -1}
-                      aria-current="page"
-                      onClick={() => {
-                        handleNavClick(item.label.toLowerCase(), 'mobile');
-                        setIsMobileMenuOpen(false);
-                        setFocusedItemIndex(-1);
-                      }}
-                      onKeyDown={(e) => handleMenuKeyDown(e, index)}
-                      onFocus={() => setFocusedItemIndex(index)}
-                    >
-                      <span className="flex items-center justify-between">
-                        {item.label}
-                        <span className="text-sm text-blue-600 dark:text-blue-400" aria-hidden="true">
-                          ●
-                        </span>
-                      </span>
-                    </Link>
-                  );
-                }
-              } else {
-                // This nav item is not part of current breadcrumb, show normal nav item
-                const isActive = location.pathname === item.href;
+
+              if (item.type === 'breadcrumb') {
                 return (
-                <Link
-                  key={item.href}
-                  ref={(el) => {
-                    menuItemRefs.current[index] = el;
-                  }}
-                  to={item.href}
-                  className={`
-                    mobile-nav-item
-                    ${isActive ? 'active' : ''}
-                    ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
-                  `}
-                  role="menuitem"
-                  tabIndex={isMobileMenuOpen ? 0 : -1}
-                  aria-current={isActive ? 'page' : undefined}
-                  onClick={() => {
-                    handleNavClick(item.label.toLowerCase(), 'mobile');
-                    setIsMobileMenuOpen(false);
-                    setFocusedItemIndex(-1);
-                  }}
-                  onKeyDown={(e) => handleMenuKeyDown(e, index)}
-                  onFocus={() => setFocusedItemIndex(index)}
-                >
-                  <span className="flex items-center justify-between">
-                    {item.label}
-                    {isActive && (
-                      <span className="text-sm text-blue-600 dark:text-blue-400" aria-hidden="true">
-                        ●
-                      </span>
-                    )}
-                  </span>
-                </Link>
-                );
+                  <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
+                    {item.breadcrumb.map((b, i) => (
+                       <Fragment key={b.path ?? b.name}>
+                         {i > 0 && <span className="mx-1 text-gray-400 dark:text-gray-500">/</span>}
+                         {b.path && !b.isCurrentPage ? (
+                           <Link 
+                             to={b.path} 
+                             className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white" 
+                             onClick={() => setIsMobileMenuOpen(false)}
+                           >
+                             {b.name}
+                           </Link>
+                         ) : (
+                           <span className="font-semibold text-primary-600 dark:text-primary-400">{b.name}</span>
+                         )}
+                       </Fragment>
+                    ))}
+                  </div>
+                )
               }
+
+              const isActive = item.href === '/' ? location.pathname === item.href : location.pathname.startsWith(item.href);
+              return (
+              <Link
+                key={item.href}
+                ref={(el) => {
+                  menuItemRefs.current[index] = el;
+                }}
+                to={item.href}
+                className={`
+                  mobile-nav-item
+                  ${isActive ? 'active' : ''}
+                  ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
+                `}
+                role="menuitem"
+                tabIndex={isMobileMenuOpen ? 0 : -1}
+                aria-current={isActive ? 'page' : undefined}
+                onClick={() => {
+                  handleNavClick(item.label.toLowerCase(), 'mobile');
+                  setIsMobileMenuOpen(false);
+                  setFocusedItemIndex(-1);
+                }}
+                onKeyDown={(e) => handleMenuKeyDown(e, index)}
+                onFocus={() => setFocusedItemIndex(index)}
+              >
+                <span className="flex items-center justify-between">
+                  {item.label}
+                  {isActive && (
+                    <span className="text-sm text-blue-600 dark:text-blue-400" aria-hidden="true">
+                      ●
+                    </span>
+                  )}
+                </span>
+              </Link>
+              );
             })}
           </nav>
         </div>
