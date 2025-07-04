@@ -69,15 +69,14 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
   ];
 
   const displayItems: DisplayItem[] = navigationItems.map(navItem => {
-    if (!breadcrumbItems || breadcrumbItems.length <= 1) {
-      return { type: 'link', item: navItem };
-    }
-
-    const breadcrumbRootIndex = breadcrumbItems.findIndex(b => b.path === navItem.href);
-
-    if (breadcrumbRootIndex !== -1) {
-      const trail = breadcrumbItems.slice(breadcrumbRootIndex);
-      if (trail.length > 1) {
+    // Check if we're on a sub-page of this nav item
+    const isOnSubPage = location.pathname.startsWith(navItem.href) && location.pathname !== navItem.href && navItem.href !== '/';
+    
+    if (isOnSubPage && breadcrumbItems) {
+      // Find the breadcrumb segment that starts from this nav item
+      const breadcrumbRootIndex = breadcrumbItems.findIndex(b => b.path === navItem.href);
+      if (breadcrumbRootIndex !== -1) {
+        const trail = breadcrumbItems.slice(breadcrumbRootIndex);
         return { type: 'breadcrumb', item: navItem, trail };
       }
     }
