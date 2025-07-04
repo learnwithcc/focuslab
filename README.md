@@ -345,6 +345,40 @@ All components support className overrides and custom styling:
 </Button>
 ```
 
+## 🚨 Troubleshooting
+
+### Common Build Issues
+
+#### Production Build Failing with Entry Server Module Error
+
+**Error:** `Error: Cannot find module '/app/entry.server.tsx'`
+
+**Cause:** Vite configuration incorrectly externalizing the entry server module.
+
+**Solution:** In `vite.config.ts`, ensure the `build.rollupOptions.external` function does NOT include `entry.server`:
+
+```typescript
+// ✅ CORRECT Configuration
+build: {
+  rollupOptions: {
+    external: (id) => {
+      return id.includes('node:') || 
+             id.includes('@remix-run/node') || 
+             id === 'sharp';
+      // DO NOT include: id.includes('entry.server')
+    },
+  },
+},
+```
+
+**Why:** The entry server module needs to be bundled with the application for proper server-side rendering. Externalizing it breaks module resolution in production environments like Vercel.
+
+#### Development Server Port Conflicts
+
+**Issue:** Port 3000 conflicts with other services.
+
+**Solution:** The project is configured to use port 3600 by default. Access the development server at `http://localhost:3600`.
+
 ## 🔮 Future Roadmap
 
 ### Planned Features
