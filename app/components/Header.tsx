@@ -2,19 +2,48 @@ import { Link, useLocation } from '@remix-run/react';
 import { useState, useEffect, useRef } from 'react';
 import { NavbarThemeToggle, MobileNavbarThemeToggle } from './NavbarThemeToggle';
 import { trackEvent } from '~/utils/posthog';
-import { Breadcrumb } from './Breadcrumb';
 import type { BreadcrumbItem } from '~/utils/structured-data';
 import { Fragment } from 'react';
 
-type DisplayItem = {
+type NavigationItem = {
   href: string;
   label: string;
-} & ({
-  type: 'breadcrumb';
-  breadcrumb: BreadcrumbItem[];
-} | {
+};
+
+type DisplayItem = {
   type: 'link';
-});
+  item: NavigationItem;
+} | {
+  type: 'breadcrumb';
+  item: NavigationItem;
+  trail: BreadcrumbItem[];
+};
+
+// A dedicated component for rendering the breadcrumb trail within the nav
+function BreadcrumbTrail({ trail, handleNavClick }: { trail: BreadcrumbItem[], handleNavClick: (path: string, context: 'desktop' | 'mobile') => void; }) {
+  return (
+    <div className="flex items-center text-sm font-medium text-primary-600 dark:text-primary-400">
+      {trail.map((crumb, index) => (
+        <Fragment key={crumb.path ?? crumb.name}>
+          {index > 0 && <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>}
+          
+          {!crumb.isCurrentPage && crumb.path ? (
+            <Link
+              to={crumb.path}
+              className="hover:underline transition-colors text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              onClick={() => handleNavClick(crumb.path!, 'desktop')}
+            >
+              {crumb.name}
+            </Link>
+          ) : (
+            // Current page text - styled like an active nav item
+            <span className="font-medium">{crumb.name}</span>
+          )}
+        </Fragment>
+      ))}
+    </div>
+  );
+}
 
 export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[] }) {
   const location = useLocation();
@@ -34,15 +63,21 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
     { href: '/contact', label: 'Contact' },
   ];
 
-  const displayItems: DisplayItem[] = navigationItems.map(item => {
-    const breadcrumbIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
-    if (breadcrumbIndex !== -1 && breadcrumbItems) {
-      const breadcrumbSegment = breadcrumbItems.slice(breadcrumbIndex);
-      if (breadcrumbSegment.length > 1) {
-        return { ...item, type: 'breadcrumb', breadcrumb: breadcrumbSegment };
+  const displayItems: DisplayItem[] = navigationItems.map(navItem => {
+    if (!breadcrumbItems || breadcrumbItems.length <= 1) {
+      return { type: 'link', item: navItem };
+    }
+
+    const breadcrumbRootIndex = breadcrumbItems.findIndex(b => b.path === navItem.href);
+
+    if (breadcrumbRootIndex !== -1) {
+      const trail = breadcrumbItems.slice(breadcrumbRootIndex);
+      if (trail.length > 1) {
+        return { type: 'breadcrumb', item: navItem, trail };
       }
     }
-    return { ...item, type: 'link' };
+
+    return { type: 'link', item: navItem };
   });
 
   // Scroll detection for sticky header
@@ -268,31 +303,15 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
               className="hidden md:flex items-center space-x-8 ml-8"
               aria-label="Main navigation"
             >
-              {displayItems.map(item => {
-                if (item.type === 'breadcrumb') {
-                  return (
-                    <div key={item.href} className="flex items-center text-sm font-medium">
-                      {item.breadcrumb.map((b, index) => (
-                        <Fragment key={b.path ?? b.name}>
-                          {index > 0 && <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>}
-                          {b.path && !b.isCurrentPage ? (
-                            <Link
-                              to={b.path}
-                              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors"
-                              onClick={() => handleNavClick(b.path!, 'desktop')}
-                            >
-                              {b.name}
-                            </Link>
-                          ) : (
-                            <span className="text-primary-600 dark:text-primary-400 font-medium">{b.name}</span>
-                          )}
-                        </Fragment>
-                      ))}
-                    </div>
-                  );
+              {displayItems.map((displayItem) => {
+                const { type, item } = displayItem;
+                if (type === 'breadcrumb') {
+                  return <BreadcrumbTrail key={item.href} trail={displayItem.trail} handleNavClick={handleNavClick} />;
                 }
                 
-                const isActive = item.href === '/' ? location.pathname === item.href : location.pathname.startsWith(item.href);
+                const isActive = item.href === '/' 
+                  ? location.pathname === item.href 
+                  : location.pathname.startsWith(item.href);
 
                 return (
                   <Link
@@ -385,13 +404,14 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
             role="navigation"
             aria-label="Mobile navigation"
           >
-            {displayItems.map((item, index) => {
+            {displayItems.map((displayItem, index) => {
+              const { type, item } = displayItem;
               const isFocused = focusedItemIndex === index;
 
-              if (item.type === 'breadcrumb') {
+              if (type === 'breadcrumb') {
                 return (
-                  <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
-                    {item.breadcrumb.map((b, i) => (
+                   <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
+                     {displayItem.trail.map((b, i) => (
                        <Fragment key={b.path ?? b.name}>
                          {i > 0 && <span className="mx-1 text-gray-400 dark:text-gray-500">/</span>}
                          {b.path && !b.isCurrentPage ? (
