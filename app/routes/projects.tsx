@@ -1,15 +1,15 @@
 import { MetaFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useNavigation, useSearchParams, useLocation } from '@remix-run/react';
+import { useLoaderData, useNavigation, useSearchParams } from '@remix-run/react';
 import { Section, Container } from "~/components/Layout";
 import { ProjectCard } from '~/components/ProjectCard';
 import { ProjectFilters } from '~/components/ProjectFilters';
-import { Breadcrumb, AsyncErrorBoundary, FeatureErrorBoundary } from '~/components';
+import { AsyncErrorBoundary, FeatureErrorBoundary } from '~/components';
 import { projects, filterAndSortProjects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project, ProjectFilters as ProjectFiltersType, ProjectSortOption } from '~/types/project';
 import { generateMeta, generatePageUrl, generateBreadcrumbKeywords, DEFAULT_SEO } from '~/utils/seo';
-import { getBreadcrumbItems } from '~/utils/structured-data';
+
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { usePageTracking } from '~/hooks/usePageTracking';
@@ -172,9 +172,7 @@ function ProjectCardSkeleton() {
 export default function ProjectsPage() {
   const data = useLoaderData<LoaderData>();
   const navigation = useNavigation();
-  const location = useLocation();
   const isLoading = navigation.state === 'loading';
-  const breadcrumbItems = getBreadcrumbItems(location.pathname);
 
   // Track page visit with project metrics
   usePageTracking({
@@ -200,7 +198,6 @@ export default function ProjectsPage() {
         <div className="w-full bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
           <Section spacing="lg">
             <Container maxWidth="7xl">
-              <Breadcrumb items={breadcrumbItems} className="mb-8" />
               <div className="text-center">
                 <h1 className="mb-6 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
                   Our Projects

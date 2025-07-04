@@ -70,7 +70,10 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
 
   const displayItems: DisplayItem[] = navigationItems.map(navItem => {
     // Check if we're on a sub-page of this nav item
-    const isOnSubPage = location.pathname.startsWith(navItem.href) && location.pathname !== navItem.href && navItem.href !== '/';
+    // For sub-pages, the path should be longer than the nav item path
+    const isOnSubPage = location.pathname.startsWith(navItem.href) && 
+                        location.pathname.length > navItem.href.length &&
+                        navItem.href !== '/';
     
     if (isOnSubPage && breadcrumbItems) {
       // Find the breadcrumb segment that starts from this nav item

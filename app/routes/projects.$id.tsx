@@ -1,12 +1,11 @@
 import { MetaFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link, useLocation } from '@remix-run/react';
+import { useLoaderData, Link } from '@remix-run/react';
 import { projects } from '~/data/projects';
 import { githubService } from '~/services/github.server';
 import { Project } from '~/types/project';
 import { generateMeta, generatePageUrl, DEFAULT_SEO } from '~/utils/seo';
-import { getBreadcrumbItems } from '~/utils/structured-data';
-import { Breadcrumb } from '~/components';
+
 import { Section, Container } from "~/components/Layout";
 import { ArrowLeft, ExternalLink, Github, Star, GitFork, Clock, AlertCircle } from 'lucide-react';
 
@@ -86,10 +85,19 @@ export async function loader({ params }: LoaderFunctionArgs): Promise<Response> 
   }
 }
 
+export const handle = {
+  breadcrumb: (data: LoaderData) => {
+    if (!data?.project) return [];
+    return [
+      { name: 'Home', path: '/' },
+      { name: 'Projects', path: '/projects' },
+      { name: data.project.title, path: `/projects/${data.project.id}`, isCurrentPage: true }
+    ];
+  }
+};
+
 export default function ProjectPage() {
   const { project, success, error } = useLoaderData<LoaderData>();
-  const location = useLocation();
-  const breadcrumbItems = getBreadcrumbItems(location.pathname);
 
   const statusColors = {
     active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -119,15 +127,6 @@ export default function ProjectPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-        {/* Breadcrumb Section */}
-        <div className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-          <Section spacing="sm">
-            <Container maxWidth="7xl">
-              <Breadcrumb items={breadcrumbItems} />
-            </Container>
-          </Section>
-        </div>
-
         {/* Main Content Section */}
         <Section spacing="lg">
           <Container maxWidth="7xl">
