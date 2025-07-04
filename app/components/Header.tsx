@@ -4,6 +4,7 @@ import { NavbarThemeToggle, MobileNavbarThemeToggle } from './NavbarThemeToggle'
 import { trackEvent } from '~/utils/posthog';
 import { Breadcrumb } from './Breadcrumb';
 import type { BreadcrumbItem } from '~/utils/structured-data';
+import { Fragment } from 'react';
 
 export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[] }) {
   const location = useLocation();
@@ -247,21 +248,48 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
               aria-label="Main navigation"
             >
               {navigationItems.map(item => {
-                const isActive = location.pathname === item.href;
+                const isActive = location.pathname.startsWith(item.href);
+                const breadcrumbRootIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
+                const isBreadcrumbRoot = breadcrumbItems && breadcrumbRootIndex !== -1 && breadcrumbItems.length > breadcrumbRootIndex + 1;
+
+                if (isBreadcrumbRoot) {
+                  const relevantBreadcrumbs = breadcrumbItems.slice(breadcrumbRootIndex);
+                  return (
+                    <div key={item.href} className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {relevantBreadcrumbs.map((b, index) => (
+                        <Fragment key={b.path ?? b.name}>
+                          {index > 0 && <span className="mx-2">/</span>}
+                          {b.path && !b.isCurrentPage ? (
+                            <Link
+                              to={b.path}
+                              className="hover:text-gray-900 dark:hover:text-white"
+                              onClick={() => handleNavClick(b.path!, 'desktop')}
+                            >
+                              {b.name}
+                            </Link>
+                          ) : (
+                            <span className="text-gray-700 dark:text-white">{b.name}</span>
+                          )}
+                        </Fragment>
+                      ))}
+                    </div>
+                  );
+                }
+                
                 return (
                   <Link
                     key={item.href}
                     to={item.href}
                     onClick={() => handleNavClick(item.href, 'desktop')}
                     className={`
-                    font-medium
-                    ${
-                      isActive
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                    }
-                  `}
-                    aria-current={isActive ? 'page' : undefined}
+                      font-medium
+                      ${
+                        isActive && !isBreadcrumbRoot
+                          ? 'text-primary-600 dark:text-primary-400'
+                          : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      }
+                    `}
+                    aria-current={isActive && !isBreadcrumbRoot ? 'page' : undefined}
                   >
                     {item.label}
                   </Link>
@@ -270,15 +298,8 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
             </nav>
           </div>
 
-          {/* Right side: Breadcrumbs and Controls */}
+          {/* Right side: Controls */}
           <div className="flex items-center">
-            {/* Breadcrumbs - hidden on mobile */}
-            {breadcrumbItems && breadcrumbItems.length > 0 && (
-              <div className="hidden md:block mr-4">
-                <Breadcrumb items={breadcrumbItems} />
-              </div>
-            )}
-
             {/* Theme Toggle and Mobile Menu Button */}
             <NavbarThemeToggle />
             <div className="md:hidden">
@@ -347,8 +368,28 @@ export function Header({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItem[]
             aria-label="Mobile navigation"
           >
             {navigationItems.map((item, index) => {
-              const isActive = location.pathname === item.href;
+              const isActive = location.pathname.startsWith(item.href);
               const isFocused = focusedItemIndex === index;
+              const breadcrumbRootIndex = breadcrumbItems?.findIndex(b => b.path === item.href) ?? -1;
+              const isBreadcrumbRoot = breadcrumbItems && breadcrumbRootIndex !== -1 && breadcrumbItems.length > breadcrumbRootIndex + 1;
+
+              if (isBreadcrumbRoot) {
+                const relevantBreadcrumbs = breadcrumbItems.slice(breadcrumbRootIndex);
+                return (
+                  <div key={item.href} className={`mobile-nav-item ${isFocused ? 'ring-2 ring-blue-500 ring-offset-2' : ''} text-sm`}>
+                    {relevantBreadcrumbs.map((b, i) => (
+                       <Fragment key={b.path ?? b.name}>
+                         {i > 0 && <span className="mx-1 text-gray-400">/</span>}
+                         {b.path && !b.isCurrentPage ? (
+                           <Link to={b.path} className="text-gray-700 dark:text-gray-200" onClick={() => setIsMobileMenuOpen(false)}>{b.name}</Link>
+                         ) : (
+                           <span className="font-semibold text-gray-900 dark:text-white">{b.name}</span>
+                         )}
+                       </Fragment>
+                    ))}
+                  </div>
+                )
+              }
               
               return (
                 <Link
