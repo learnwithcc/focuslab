@@ -409,7 +409,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: Check the [docs](./docs/) directory
 - **Issues**: Report bugs via GitHub Issues
 - **Discussions**: Join GitHub Discussions for questions
-- **Email**: Contact us at hello@focuslab.dev
 
 ### Community
 

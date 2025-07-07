@@ -103,6 +103,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
 const featuredProjects = [
   {
+    title: "Directus Marketplace Search MCP Server",
+    description:
+      "AI-powered extension discovery for Directus CMS through the Model Context Protocol. Search and discover Directus extensions directly from your AI assistant with intelligent filtering, popularity indicators, and conversational search results. Features global edge deployment on Cloudflare Workers for sub-second response times and comprehensive extension categorization to streamline development workflows.",
+    href: "https://github.com/learnwithcc/directus-marketplace-search-mcp",
+    tags: ["MCP", "TypeScript", "Directus", "Cloudflare Workers"],
+  },
+  {
     title: "Tally MCP Server",
     description:
       "A powerful form management integration that connects Tally.so directly to AI assistants through the Model Context Protocol, enabling natural language form creation and management without context switching. It features intelligent bulk operations with safety-first workflows, real-time response analytics, and automated form lifecycle management designed to streamline workflows for content creators and developers.",
@@ -113,7 +120,7 @@ const featuredProjects = [
     title: "FocusLab Website",
     description:
       "The official website for FocusLab, built with Remix, Tailwind CSS, and TypeScript. It serves as a central hub for our tools, resources, and community, showcasing our commitment to accessible and neurodivergent-friendly design.",
-    href: "https://github.com/focus-lab-ltd/focuslab",
+    href: "https://github.com/learnwithcc/focuslab",
     tags: ["Remix", "React", "Tailwind CSS", "TypeScript"],
   },
 ];
@@ -246,8 +253,8 @@ export default function Index() {
                   developer experience more accessible and productive for
                   everyone.
                 </p>
-                <div className="mx-auto max-w-4xl">
-                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                <div className="mx-auto max-w-6xl">
+                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {featuredProjects.map((project) => (
                     <a
                       key={project.title}
